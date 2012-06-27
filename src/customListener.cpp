@@ -9,29 +9,9 @@
 
 #include "customListener.h"
 
-void customListener::BeginContact(b2Contact * contact){
-
-
-	b2Fixture* fixtureA = contact->GetFixtureA();
-	b2Fixture* fixtureB = contact->GetFixtureB();
+void customListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impulse){
 	
-	collisionData * aData = (collisionData *)fixtureA->GetUserData();
-	collisionData * bData = (collisionData *)fixtureB->GetUserData();
-	
-	if(aData){
-	
-		aData->initContact = true;
-	
-	}else if(bData){
-	
-		bData->initContact = true;
-		
-	}
-	
-
-}
-
-void customListener::EndContact(b2Contact* contact){
+	float f_impulse = impulse->normalImpulses[0];	
 
 	b2Fixture* fixtureA = contact->GetFixtureA();
 	b2Fixture* fixtureB = contact->GetFixtureB();
@@ -39,15 +19,21 @@ void customListener::EndContact(b2Contact* contact){
 	collisionData * aData = (collisionData *)fixtureA->GetUserData();
 	collisionData * bData = (collisionData *)fixtureB->GetUserData();
 	
-	if(aData){
 
-		aData->initContact = false;
 	
-	}else if(bData){
+	if(f_impulse > 0.01){
 		
-		bData->initContact = false;
+		if(aData){
+		
+			aData->initContact = true;
+		
+		}else if(bData){
+		
+			bData->initContact = true;
+			
+		}
 	}
 	
-	
-	
+
 }
+

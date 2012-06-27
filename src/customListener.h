@@ -16,10 +16,7 @@ class customListener : public b2ContactListener{
 
 	public:
 	
-	void BeginContact(b2Contact * contact);
-	
-	void EndContact(b2Contact * contact);
-	
+	void PostSolve(b2Contact* contact, const b2ContactImpulse* impulse);
 
 
 };

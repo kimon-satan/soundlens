@@ -15,6 +15,21 @@
 #include "customListener.h"
 #include <Box2D/Box2D.h>
 
+struct pivotDims{
+	
+	float d, iAngle, rSpeed, cRot;
+	ofVec2f cPos;
+	
+};
+
+struct stemDims{
+	
+	float offset, rSpeed, iAngle, cum_rSpeed, length;
+	ofVec2f cPos;
+	
+};
+
+
 
 class chime{
 
@@ -34,8 +49,14 @@ public:
 	void setSensors(b2Body ** s);
 	b2Body ** getSensors();
 	
-	void setStem(b2Body * s);
-	b2Body * getStem();
+	void setStemBody(b2Body * s);
+	b2Body * getStemBody();
+	
+	void setStemDims(stemDims sd);
+	stemDims getStemDims();
+	
+	void setPivotDims(vector<pivotDims> pd);
+	vector<pivotDims> getPivotDims();
 	
 	void setSensorData(collisionData ** cd);
 	collisionData ** getSensorData();
@@ -45,25 +66,8 @@ public:
 	void setFreq(float tf);
 	float getFreq();
 	
-	void setStemLength(float l);
-	float getStemLength();
-	
-	void addPivotBody(b2Body * b);
-	void addPivotJoint(b2RevoluteJoint * j);
-	void addPivotBodyDim(float f);
-	
-	b2Body * getFinalBody();
-	vector<b2Body *> getPivotBodies();
-	vector<float> getPivotBodyDims();
-	
-	void setAnchorBody(b2Body * b);
-	b2Body * getAnchor();
-	
 	float getHammerAlpha();
 	void setHammerAlpha(float f);
-	
-	bool getIsContact();
-	void setIsContact(bool b);
 	
 	void setReactSecs(float f);
 	float getReactSecs();
@@ -73,6 +77,9 @@ public:
 	
 	void setReactCount(int i);
 	int getReactCount();
+	
+	void setAnchorPos(ofVec2f t);
+	ofVec2f getAnchorPos();
 	
 	int getIndex();
 	
@@ -84,26 +91,24 @@ private:
 	
 	b2World * mWorld;
 	
-	b2Body * mAnchor;
-	b2Body  * mStem;
+	b2Body  * mStemBody;
+	stemDims mStemDims;
+	
 	b2Body * mHammer;
 	b2Body * mSensors[2];
-	
-	vector<b2Body *> mPivotBodies;
-	vector<float> mPivotBodyDims;
-	vector<b2RevoluteJoint *> mPivotJoints;
 	
 	collisionData * mSensorData[2];
 	customListener mListener;
 	
-	bool isContact;
-	bool isActive;
+	vector<pivotDims> mPivotDims;
 
 	float reactSecs;
 	int reactCount, reactTotal;
 	
 	float mHammerAlpha;
 	
-	float freq, mStemLength;
+	float freq;
+	
+	ofVec2f anchorPos;
 
 };

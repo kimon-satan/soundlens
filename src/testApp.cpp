@@ -30,17 +30,22 @@ void testApp::setup(){
 		chimeDef cd;
 		cd.length = 3.0;
 		cd.iAngle = b2_pi * (float)i/NUM_CHIMES; //ofRandom(0,b2_pi);
-		cd.anchorPos = myUtils::add(b2Vec2(0,-4.5), 
-									myUtils::mul(b2Vec2(0,0.2), (float)i)
-									);
+		cd.anchorPos =  ofVec2f(-5,0) + ofVec2f(0.4,0)* (float)i;
+							
+		cd.freq = (float)(i+1)/NUM_CHIMES;
 		
-		cd.freq = (float)i/NUM_CHIMES;
-		
-		int p = 6; //ofRandom(1,6);
+		int p = 5; //ofRandom(1,6);
 		
 		for(int j = 0; j < p; j++){
 			
-			cd.pivots.push_back(pivotDef(b2Vec2(0.2,0.5),0.02 * (j+1)));
+			pivotDims pd;
+			
+			pd.d = 1;
+			pd.iAngle = 0.25 * b2_pi;
+			pd.rSpeed = 0.06 * (j+1);
+			pd.cRot = pd.iAngle;			
+			cd.pivots.push_back(pd);
+			
 		}
 
 
@@ -62,6 +67,7 @@ void testApp::update(){
 	ofBackground(255);
 	
 	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeUpdater::update(*it);
+	chimeUpdater::step();
 	
 	
 }
@@ -97,6 +103,30 @@ void testApp::draw(){
 
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
+	
+	if(key == 'x'){
+		
+		int count = 0;
+		for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
+			ofVec2f v(0.005,0); 
+			v *= count;
+			v += ofVec2f(-0.005,0) * NUM_CHIMES/2;
+			chimeUpdater::moveView(*it, v);
+			count += 1;
+		}
+	}
+	
+	if(key == 'z'){
+		
+		int count = 0;
+		for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
+			ofVec2f v(-0.005,0); 
+			v *= count;
+			v += ofVec2f(0.005,0) * NUM_CHIMES/2;
+			chimeUpdater::moveView(*it, v);
+			count += 1;
+		}
+	}
 	
 
 }

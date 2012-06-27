@@ -20,9 +20,16 @@ class chimeUpdater{
 	
 	static void update(ofPtr<chime> c);
 	static void setOscSender(ofxOscSender * s);
+	static void moveView(ofPtr<chime> c, ofVec2f v);
+	static void step();
 	
 	private:
 	
+	static void updateDims(ofPtr<chime> c);
+	static void updateSensors(ofPtr<chime> c);
+	
+	static unsigned long mTimeStamp1;
+	static unsigned long mTimeStamp2;
 	static float vel_i, pos_i, timeStep;
 	static ofxOscSender * mSender;
 

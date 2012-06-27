@@ -19,7 +19,7 @@ chime::chime(){
 
 	mWorld = NULL;
 	mHammer = NULL;
-	mStem = NULL;
+	mStemBody = NULL;
 	
 	for(int i = 0; i < 2; i++){
 		mSensors[i] = NULL;
@@ -28,7 +28,6 @@ chime::chime(){
 	
 	reactCount = 0;
 	reactSecs = ofRandom(0.25,1.0);
-	isContact = false;
 
 	freq = ofRandom(0,1);
 	
@@ -57,8 +56,14 @@ void chime::setSensors(b2Body ** s){
 }
 b2Body ** chime::getSensors(){return &mSensors[0];}
 
-void chime::setStem(b2Body * s){mStem = s;}
-b2Body * chime::getStem(){return mStem;}
+void chime::setStemBody(b2Body * s){mStemBody = s;}
+b2Body * chime::getStemBody(){return mStemBody;}
+
+void chime::setStemDims(stemDims sd){mStemDims = sd;}
+stemDims chime::getStemDims(){return mStemDims;}
+
+void chime::setPivotDims(vector<pivotDims> pd){mPivotDims = pd;}
+vector<pivotDims> chime::getPivotDims(){return mPivotDims;}
 
 void chime::setSensorData(collisionData ** cd){
 	mSensorData[0] = cd[0];
@@ -69,32 +74,9 @@ collisionData ** chime::getSensorData(){return &mSensorData[0];}
 void chime::setFreq(float tf){freq = tf;}
 float chime::getFreq(){return freq;}
 
-void chime::addPivotBody(b2Body * b){mPivotBodies.push_back(b);}
-vector<b2Body *> chime::getPivotBodies(){return mPivotBodies;}
-
-void chime::addPivotBodyDim(float f){mPivotBodyDims.push_back(f);}
-vector<float> chime::getPivotBodyDims(){return mPivotBodyDims;}
-
-void chime::addPivotJoint(b2RevoluteJoint * j){mPivotJoints.push_back(j);}
-
-
-b2Body * chime::getFinalBody(){
-	
-	return(mPivotBodies.size() > 0)? mPivotBodies.back() : mAnchor;
-	
-}
-
-void chime::setStemLength(float l){mStemLength = l;}
-float chime::getStemLength(){return mStemLength;}
-
-void chime::setAnchorBody(b2Body * b){mAnchor = b;}
-b2Body * chime::getAnchor(){return mAnchor;}
 
 float chime::getHammerAlpha(){return mHammerAlpha;}
 void chime::setHammerAlpha(float f){mHammerAlpha = f;}
-
-bool chime::getIsContact(){return isContact;}
-void chime::setIsContact(bool b){isContact = b;}
 
 void chime::setReactSecs(float f){reactSecs = f;}
 float chime::getReactSecs(){return reactSecs;}
@@ -104,6 +86,9 @@ int chime::getReactTotal(){return reactTotal;}
 
 void chime::setReactCount(int i){reactCount = i;}
 int chime::getReactCount(){return reactCount;}
+
+void chime::setAnchorPos(ofVec2f t){anchorPos.set(t);}
+ofVec2f chime::getAnchorPos(){return anchorPos;}
 
 chime::~chime(){
 

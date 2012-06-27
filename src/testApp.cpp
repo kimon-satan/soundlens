@@ -16,6 +16,7 @@ void testApp::setup(){
 	sender.setup(HOST,PORT);
 	
 	chimeUpdater::setOscSender(&sender);
+	chimeRenderer::loadSprites();
 	
 	ofxOscMessage m;
 	m.setAddress("/init");
@@ -28,13 +29,22 @@ void testApp::setup(){
 	for(int i = 0; i < NUM_CHIMES; i ++){
 		
 		chimeDef cd;
-		cd.length = 3.0;
-		cd.iAngle = b2_pi * (float)i/NUM_CHIMES; //ofRandom(0,b2_pi);
+		cd.length = 5.0;
+		cd.iAngle = b2_pi * (float)i/NUM_CHIMES; 
 		cd.anchorPos =  ofVec2f(-5,0) + ofVec2f(0.4,0)* (float)i;
-							
-		cd.freq = (float)(i+1)/NUM_CHIMES;
+		cd.offset = 0;					
+		cd.freq[0] = (float)(i+1)/NUM_CHIMES;
+		cd.freq[1] = 1 - (float)(i+1)/NUM_CHIMES;
+		cd.decay[0] = 0.5;
+		cd.decay[1] = 1.5;
+		cd.rSpeed = 0.2;
+		cd.colors[0] = ofColor(255,0,0);
+		cd.colors[1] = ofColor(0,255,0);
+		cd.sensOn[0] = true; //(i%2 == 0);
+		cd.sensOn[1] = true; //(i%2 == 1);
 		
-		int p = 5; //ofRandom(1,6);
+		
+		int p = 3; //ofRandom(1,6);
 		
 		for(int j = 0; j < p; j++){
 			
@@ -42,7 +52,7 @@ void testApp::setup(){
 			
 			pd.d = 1;
 			pd.iAngle = 0.25 * b2_pi;
-			pd.rSpeed = 0.06 * (j+1);
+			pd.rSpeed = 0.05 * (j+1);
 			pd.cRot = pd.iAngle;			
 			cd.pivots.push_back(pd);
 			
@@ -73,8 +83,6 @@ void testApp::update(){
 }
 
 
-
-
 //--------------------------------------------------------------
 void testApp::draw(){
 	
@@ -83,12 +91,16 @@ void testApp::draw(){
 	glPushMatrix();
 	glScalef(scale, scale, 0);
 	
-	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeRenderer::drawAnchor(*it);
+	//ofEnableBlendMode(OF_BLENDMODE_ALPHA);
+	ofEnableAlphaBlending();
+	//for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeRenderer::drawAnchor(*it);
 	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeRenderer::drawPivots(*it);
 	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeRenderer::drawStem(*it);
-	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeRenderer::drawSensors(*it);
 	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeRenderer::drawHammer(*it);
+	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)chimeRenderer::drawSensors(*it);
 	
+	//ofDisableBlendMode();
+	ofDisableAlphaBlending();
 	
 	glPopMatrix();
 	
@@ -138,7 +150,15 @@ void testApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y ){
-
+	
+	float b = ofMap(x, 0, ofGetScreenWidth(), 0,1, true);
+	
+	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
+		
+		(*it)->setBlur(b);
+		
+	}
+	
 }
 
 //--------------------------------------------------------------

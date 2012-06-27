@@ -63,23 +63,36 @@ public:
 	
 	void setCollisionListener(customListener & l);
 
-	void setFreq(float tf);
-	float getFreq();
+	bool getSensorOn(int i);
+	void setSensorOn(int i, bool b);
 	
-	float getHammerAlpha();
-	void setHammerAlpha(float f);
+	void setSensorFreq(int i, float tf);
+	float getSensorFreq(int i);
 	
-	void setReactSecs(float f);
-	float getReactSecs();
+	float getSensorAlpha(int i);
+	void setSensorAlpha(int i, float a);
 	
-	void setReactTotal(int i);
-	int getReactTotal();
+	ofColor getSensorColor(int i);
+	void setSensorColor(int i, ofColor c);
 	
-	void setReactCount(int i);
-	int getReactCount();
+	void setReactSecs(int i, float f);
+	float getReactSecs(int i);
+	
+	void setReactTotal(int i, int t);
+	int getReactTotal(int i);
+	
+	void setReactCount(int i, int c);
+	int getReactCount(int i);
 	
 	void setAnchorPos(ofVec2f t);
 	ofVec2f getAnchorPos();
+	
+	void setBlur(float f);
+	float getBlur();
+	
+	void setSpIndex(int i);
+	int getSpIndex();
+	
 	
 	int getIndex();
 	
@@ -102,12 +115,18 @@ private:
 	
 	vector<pivotDims> mPivotDims;
 
-	float reactSecs;
-	int reactCount, reactTotal;
+	float reactSecs[2];
+	int reactCount[2], reactTotal[2];
 	
-	float mHammerAlpha;
+	ofColor mSensorColors[2];
 	
-	float freq;
+	float mSensorAlphas[2];
+	float mSensorFreqs[2];
+	
+	bool mSensorOn[2];
+	
+	float mBlur;
+	int spIndex;
 	
 	ofVec2f anchorPos;
 

@@ -26,10 +26,17 @@ chime::chime(){
 		mSensorData[i] =NULL;
 	}
 	
-	reactCount = 0;
-	reactSecs = ofRandom(0.25,1.0);
-
-	freq = ofRandom(0,1);
+	for(int i = 0; i < 2; i ++){
+		reactCount[i] = 0;
+		mSensorAlphas[i] = 0;
+		mSensorFreqs[i] = 0.5;
+		reactSecs[i] = 0.5;
+		mSensorColors[i] = ofColor(255,0,0);
+		mSensorOn[i] = true;
+	}
+	
+	mBlur = 0;
+	spIndex = 0;
 	
 }
 
@@ -71,24 +78,35 @@ void chime::setSensorData(collisionData ** cd){
 }
 collisionData ** chime::getSensorData(){return &mSensorData[0];}
 
-void chime::setFreq(float tf){freq = tf;}
-float chime::getFreq(){return freq;}
+bool chime::getSensorOn(int i){return mSensorOn[i];}
+void chime::setSensorOn(int i, bool b){mSensorOn[i] = b;}
 
+void chime::setSensorFreq(int i, float tf){mSensorFreqs[i] = tf;}
+float chime::getSensorFreq(int i){return mSensorFreqs[i];}
 
-float chime::getHammerAlpha(){return mHammerAlpha;}
-void chime::setHammerAlpha(float f){mHammerAlpha = f;}
+float chime::getSensorAlpha(int i){return mSensorAlphas[i];}
+void chime::setSensorAlpha(int i, float a){mSensorAlphas[i] = a;}
 
-void chime::setReactSecs(float f){reactSecs = f;}
-float chime::getReactSecs(){return reactSecs;}
+ofColor chime::getSensorColor(int i){return mSensorColors[i];}
+void chime::setSensorColor(int i, ofColor c){mSensorColors[i] = c;}
 
-void chime::setReactTotal(int i){reactTotal  = i;}
-int chime::getReactTotal(){return reactTotal;}
+void chime::setReactSecs(int i, float f){reactSecs[i] = f;}
+float chime::getReactSecs(int i){return reactSecs[i];}
 
-void chime::setReactCount(int i){reactCount = i;}
-int chime::getReactCount(){return reactCount;}
+void chime::setReactTotal(int i, int t){reactTotal[i]  = t;}
+int chime::getReactTotal(int i){return reactTotal[i];}
+
+void chime::setReactCount(int i, int c){reactCount[i] = c;}
+int chime::getReactCount(int i){return reactCount[i];}
 
 void chime::setAnchorPos(ofVec2f t){anchorPos.set(t);}
 ofVec2f chime::getAnchorPos(){return anchorPos;}
+
+void chime::setBlur(float f){mBlur = f;}
+float chime::getBlur(){return mBlur;}
+
+void chime::setSpIndex(int i){spIndex = i;}
+int chime::getSpIndex(){return spIndex;}
 
 chime::~chime(){
 

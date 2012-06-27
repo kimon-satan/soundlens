@@ -21,7 +21,14 @@ namespace chimeFactory {
 		b2World * world  = new b2World(gravity, doSleep);
 		
 		c->setWorld(world);
-		c->setFreq(cd.freq);
+		
+		for(int i = 0; i < 2; i++){
+			c->setSensorFreq(i, cd.freq[i]);
+			c->setReactSecs(i, cd.decay[i]);
+			c->setSensorColor(i, cd.colors[i]);
+			c->setSensorOn(i, cd.sensOn[i]);
+		}
+		
 		c->setAnchorPos(cd.anchorPos);
 		c->setPivotDims(cd.pivots);
 		
@@ -31,6 +38,7 @@ namespace chimeFactory {
 		sd.offset = cd.offset;
 		sd.iAngle = cd.iAngle;
 		sd.rSpeed = cd.rSpeed;
+		sd.cum_rSpeed = sd.rSpeed;
 		
 		
 		for(int i = 0; i < cd.pivots.size(); i++){
@@ -56,7 +64,7 @@ namespace chimeFactory {
 		
 		b2BodyDef bd;
 		bd.type = b2_kinematicBody;
-		bd.position = b2Vec2(0,0);  // needs to include offset and angle
+		bd.position = b2Vec2(0,0);  
 		bd.fixedRotation = false;
 		bd.angle = sd.iAngle;
 		
@@ -65,7 +73,7 @@ namespace chimeFactory {
 		stem->SetAngularVelocity(sd.cum_rSpeed); 
 		
 		b2PolygonShape stemShape;
-		stemShape.SetAsBox(0.01,sd.length/2);
+		stemShape.SetAsBox(0.01,sd.length/2, b2Vec2(0,sd.offset),0); // needs to include offset and angle
 		b2FixtureDef fd;
 		fd.shape = &stemShape;
 		fd.density = 0.25;
@@ -82,9 +90,12 @@ namespace chimeFactory {
 		
 		stemDims sd = c->getStemDims();
 		
+		ofVec2f o(0,sd.offset * sd.length/2);
+		o.rotateRad(sd.iAngle);
+		
 		b2BodyDef hd;
 		hd.type = b2_dynamicBody;
-		hd.position = b2Vec2(0,0); // needs to include offset and angle
+		hd.position.Set(o.x,o.y); // needs to include offset and angle
 		hd.angle = sd.iAngle;
 		hd.fixedRotation = false;
 		
@@ -99,7 +110,7 @@ namespace chimeFactory {
 		fd.shape = &hShape;
 		fd.density = 1.0;
 		fd.friction = 0.05;
-		fd.restitution = 0.1;
+		fd.restitution = 0.3;
 		hammer->CreateFixture(&fd);
 		
 		c->setHammer(hammer);
@@ -110,38 +121,43 @@ namespace chimeFactory {
 		
 		stemDims sd = c->getStemDims();
 		
-		b2Body * sensors[2];
-		collisionData * sensorData[2];
+		b2Body * sensors[2] = {NULL,NULL};
+		collisionData * sensorData[2] = {NULL,NULL};
+		
 		
 		for(int i = 0; i < 2; i ++){
 			
-			ofVec2f tmp(0, 0); //will need to be set to offset
-			tmp.y += (i == 0)? sd.length/2 : -sd.length/2;
-			tmp.rotateRad(sd.iAngle); //will need to pivot around offsetPoint
+			if(c->getSensorOn(i)){
 			
-			b2BodyDef sdef;
-			sdef.type = b2_dynamicBody;
-			sdef.position.Set(tmp.x,tmp.y);
-			sdef.angle = sd.iAngle;
-			sdef.fixedRotation = false;
-			
-			sensors[i] = c->getWorld()->CreateBody(&sdef);
-			sensors[i]->SetSleepingAllowed(true);
-			
-			b2PolygonShape sShape;
-			sShape.SetAsBox(0.1,0.1);
-			b2FixtureDef sfd;
-			sfd.shape = &sShape;
-			sfd.density = 1.0;
-			sfd.restitution = 0.001;
-			//sfd.isSensor = true;
-			
-			b2Fixture * b  = sensors[i]->CreateFixture(&sfd);
-			
-			sensorData[i] = new collisionData();
-			sensorData[i]->mIndex = i;
-			sensorData[i]->cIndex = c->getIndex();
-			b->SetUserData(sensorData[i]);
+				ofVec2f tmp(0, 0); //will need to be set to offset
+				tmp.y += (i == 0)? sd.length/2 : -sd.length/2;
+				tmp.y += sd.offset * sd.length/2;
+				tmp.rotateRad(sd.iAngle); //will need to pivot around offsetPoint
+				
+				b2BodyDef sdef;
+				sdef.type = b2_dynamicBody;
+				sdef.position.Set(tmp.x,tmp.y);
+				sdef.angle = sd.iAngle;
+				sdef.fixedRotation = false;
+				
+				sensors[i] = c->getWorld()->CreateBody(&sdef);
+				sensors[i]->SetSleepingAllowed(true);
+				
+				b2PolygonShape sShape;
+				sShape.SetAsBox(0.1,0.1);
+				b2FixtureDef sfd;
+				sfd.shape = &sShape;
+				sfd.density = 1.0;
+				sfd.restitution = 0.3;
+				//sfd.isSensor = true;
+				
+				b2Fixture * b  = sensors[i]->CreateFixture(&sfd);
+				
+				sensorData[i] = new collisionData();
+				sensorData[i]->mIndex = i;
+				sensorData[i]->cIndex = c->getIndex();
+				b->SetUserData(sensorData[i]);
+			}
 			
 		}
 		
@@ -170,9 +186,11 @@ namespace chimeFactory {
 		sensors[1] = c->getSensors()[1];
 		
 		for(int i = 0; i < 2; i++){
-			b2WeldJointDef wd;
-			wd.Initialize(sensors[i], stem,  sensors[i]->GetPosition());
-			tw->CreateJoint(&wd);
+			if(sensors[i]){
+				b2WeldJointDef wd;
+				wd.Initialize(sensors[i], stem,  sensors[i]->GetPosition());
+				tw->CreateJoint(&wd);
+			}
 		}
 		
 		

@@ -20,7 +20,6 @@ void customListener::PostSolve(b2Contact* contact, const b2ContactImpulse* impul
 	collisionData * bData = (collisionData *)fixtureB->GetUserData();
 	
 
-	
 	if(f_impulse > 0.01){
 		
 		if(aData){

@@ -47,6 +47,7 @@ namespace chimeFactory {
 		}
 		
 		c->setStemDims(sd);
+		c->setSpIndex(100);
 		
 		createStem(c);
 		createSensors(c);

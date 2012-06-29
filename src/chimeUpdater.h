@@ -11,7 +11,7 @@
 
 #include "chime.h"
 #include "ofxOsc.h"
-
+#define TARGET_FRAME 60
 
 class chimeUpdater{
 	
@@ -19,6 +19,7 @@ class chimeUpdater{
 	public:
 	
 	static void update(ofPtr<chime> c);
+	static void updateSpIndex(ofPtr<chime> c);
 	static void setOscSender(ofxOscSender * s);
 	static void moveView(ofPtr<chime> c, ofVec2f v);
 	static void step();

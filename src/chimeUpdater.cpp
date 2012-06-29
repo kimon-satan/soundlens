@@ -9,8 +9,8 @@
 
 #include "chimeUpdater.h"
 
-float chimeUpdater::timeStep = 1.0f / 60.0f;
-float chimeUpdater::vel_i = 3;
+float chimeUpdater::timeStep = 1.0f / TARGET_FRAME;
+float chimeUpdater::vel_i = 2;
 float chimeUpdater::pos_i = 1;
 unsigned long chimeUpdater::mTimeStamp1 = ofGetSystemTime();
 unsigned long chimeUpdater::mTimeStamp2 = ofGetSystemTime();
@@ -43,7 +43,7 @@ void chimeUpdater::updateDims(ofPtr<chime> c){
 	vector<pivotDims> pds(c->getPivotDims());
 	
 	for(int i = 0; i < pds.size(); i++){
-		pds[i].cRot += pds[i].rSpeed * tPassed;
+		pds[i].cRot += pds[i].rSpeed * tPassed * ofGetFrameRate()/TARGET_FRAME;
 		fmod(pds[i].cRot,360.0f);
 		
 		ofVec2f t(0,pds[i].d);
@@ -83,6 +83,7 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 			m.addIntArg(c->getIndex());
 			m.addFloatArg(c->getSensorFreq(sIndex));
 			m.addFloatArg(c->getReactSecs(sIndex));
+			m.addFloatArg(c->getBlur());
 			mSender->sendMessage(m);
 		}
 		
@@ -100,6 +101,12 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 			c->setSensorAlpha(i, 0);
 		}
 	}
+	
+	updateSpIndex(c);
+	
+}
+
+void chimeUpdater::updateSpIndex(ofPtr<chime> c){
 	
 	c->setSpIndex(c->getBlur() * 100);
 	

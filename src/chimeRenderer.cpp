@@ -98,15 +98,19 @@ void chimeRenderer::drawPivots(ofPtr<chime> c){
 
 void chimeRenderer::drawStem(ofPtr<chime> c){
 
+	if(c->getSpIndex() >= 99)return;
+	
 	b2Body * b = c->getStemBody();
 	stemDims sd = c->getStemDims();
+	float zt = c->getBlur()-(1.0 - 0.1);
+	zt = (zt > 0) ? zt/0.1 * -25.0: 0;
 	
 	ofVec2f sp(sd.cPos);
 	
 	ofPushMatrix();
-	ofTranslate(sd.cPos.x,sd.cPos.y,-2);
+	ofTranslate(sd.cPos.x,sd.cPos.y,0);
 	glPushMatrix();
-	glTranslatef(b->GetPosition().x, b->GetPosition().y, 0); //maybe not needed (depends on offset)
+	glTranslatef(b->GetPosition().x, b->GetPosition().y, zt); //maybe not needed (depends on offset)
 	glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
 	glTranslatef(0, sd.offset * sd.length/2, 0);
 	ofSetColor(100);
@@ -118,21 +122,28 @@ void chimeRenderer::drawStem(ofPtr<chime> c){
 
 void chimeRenderer::drawHammer(ofPtr<chime> c){
 	
+	if(c->getSpIndex() >= 99)return;
+	
 	b2Body * b = c->getHammer();
 	stemDims sd = c->getStemDims();
+	float zt = c->getBlur()-(1.0 - 0.1);
+	zt = (zt > 0) ? zt/0.1 * -25.0: 0;
 	
 	float dim = mEmptyHammerSprite[c->getSpIndex()]->getWidth()/80.0f;
 	dim *= 1.1;
 	
 	ofPushMatrix();
-	ofTranslate(sd.cPos.x,sd.cPos.y,-1);
+	ofTranslate(sd.cPos.x,sd.cPos.y,0);
 	glPushMatrix();
-	glTranslatef(b->GetPosition().x, b->GetPosition().y, 0);
+	glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
 	glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
 	
 	ofFill();
-	ofSetColor(255,255);
-	mFilledHammerSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+	if(c->getSpIndex() < 30){
+		ofSetColor(255,50);
+		
+		mFilledHammerSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+	}
 	
 	ofSetColor(0);
 	mEmptyHammerSprite[c->getSpIndex()]->draw(0,0,dim,dim);
@@ -145,16 +156,18 @@ void chimeRenderer::drawHammer(ofPtr<chime> c){
 
 void chimeRenderer::drawSensors(ofPtr<chime> c){
 	
+	if(c->getSpIndex() >= 99)return;
+	
 	b2Body ** b = c->getSensors();
-	
-	
+	float zt = c->getBlur()-(1.0 - 0.1);
+	zt = (zt > 0) ? zt/0.1 * -25.0: 0;
 	stemDims sd = c->getStemDims();
 	
 	ofPushMatrix();
-	ofTranslate(sd.cPos.x,sd.cPos.y,0);
+	ofTranslate(sd.cPos.x,sd.cPos.y, 0);
 	
 	float dim = mFilledSensorSprite[c->getSpIndex()]->getWidth()/80.0f;
-	dim *= 1.2;
+	dim *= 1.1;
 	
 	for(int i = 0; i < 2; i++){
 		
@@ -162,18 +175,22 @@ void chimeRenderer::drawSensors(ofPtr<chime> c){
 			 
 			 float a = c->getSensorAlpha(i);	
 		 	 glPushMatrix();
-			 glTranslatef(b[i]->GetPosition().x, b[i]->GetPosition().y, 0);
+			 glTranslatef(b[i]->GetPosition().x, b[i]->GetPosition().y, zt);
 			 glRotatef(ofRadToDeg(b[i]->GetAngle()), 0, 0, 1);
 			
 			 ofColor col = c->getSensorColor(i);
 			 
-			 ofFill();
-			 ofSetColor(255,255);
-			 mFilledSensorSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+			 //ofFill();
+			 //ofSetColor(255,50);
+			 //mFilledSensorSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+			 
+			 //float l = ofRandom(0.5,2.0); work this out later
 			 
 			 ofFill();
+			 if(a > 0){
 			 ofSetColor(col.r,col.g,col.b,a);
 			 mFilledSensorSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+			 }
 			 
 			 
 			 ofSetColor(50);

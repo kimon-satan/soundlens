@@ -35,8 +35,9 @@ chime::chime(){
 		mSensorOn[i] = true;
 	}
 	
-	mBlur = 0;
+	mBlur = 1.0;
 	spIndex = 0;
+	
 	
 }
 

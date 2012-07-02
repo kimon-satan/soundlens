@@ -26,8 +26,8 @@ class chimeRenderer{
 	private:
 	
 	static vector<ofPtr<ofImage> >  mStemSprite;
-	static vector<ofPtr<ofImage> >  mEmptySensorSprite;
-	static vector<ofPtr<ofImage> >	mFilledSensorSprite;
+	static vector<vector<ofPtr<ofImage> > > mEmptySensorSprite;
+	static vector<vector<ofPtr<ofImage> > >	mFilledSensorSprite;
 	static vector<ofPtr<ofImage> >	mEmptyHammerSprite;
 	static vector<ofPtr<ofImage> >	mFilledHammerSprite;
 	static vector<ofPtr<ofImage> >	mPivotSprite;

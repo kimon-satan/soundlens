@@ -7,7 +7,7 @@
 
 #define HOST "127.0.0.1"
 #define PORT 57120
-#define NUM_CHIMES 60
+#define NUM_CHIMES 85
 
 
 class testApp : public ofBaseApp{

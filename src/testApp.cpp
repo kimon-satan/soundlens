@@ -232,7 +232,7 @@ void testApp::rePopulateRenderList(){
 			
 			chimeUpdater::updateSpIndex(*it);
 			int bin = (*it)->getSpIndex();
-			renderList[bin].push_back(*it);
+			if(bin < renderList.size())renderList[bin].push_back(*it);
 			
 		}
 	}

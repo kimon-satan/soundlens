@@ -10,8 +10,8 @@
 #include "chimeRenderer.h"
 
 vector<ofPtr<ofImage> > chimeRenderer::mStemSprite;
-vector<ofPtr<ofImage> > chimeRenderer::mEmptySensorSprite;
-vector<ofPtr<ofImage> > chimeRenderer::mFilledSensorSprite;
+vector<vector<ofPtr<ofImage> > >chimeRenderer::mEmptySensorSprite(3);
+vector<vector<ofPtr<ofImage> > >chimeRenderer::mFilledSensorSprite(3);
 vector<ofPtr<ofImage> > chimeRenderer::mEmptyHammerSprite;
 vector<ofPtr<ofImage> > chimeRenderer::mFilledHammerSprite;
 vector<ofPtr<ofImage> > chimeRenderer::mPivotSprite;
@@ -19,10 +19,19 @@ vector<ofPtr<ofImage> > chimeRenderer::mPivotSprite;
 void chimeRenderer::loadSprites(){
 
 	string filePath = "images/";
-	string spriteNames[6] = {"stemSprite0", "emptySensorSprite0", "filledSensorSprite0", 
-						"emptyHammerSprite0" ,"pivotSprite0", "filledHammerSprite0"};
+	string spriteNames[9] = {
+						"stemSprite0","pivotSprite0", 
+						"comboHammerSprite0",
+						"comboSensorSprite0", 
+						"comboSensorSprite1", 
+						"comboSensorSprite2", 
+						"filledSensorSprite0",
+						"filledSensorSprite1",
+						"filledSensorSprite2"
+						};
 	
-	for(int s = 0; s < 6; s++){
+	
+	for(int s = 0; s < 9; s++){
 		
 		string path = filePath + spriteNames[s] + "/";
 		ofDirectory dir(path);
@@ -34,11 +43,11 @@ void chimeRenderer::loadSprites(){
 				ofPtr<ofImage> img = ofPtr<ofImage>(new ofImage(path + spriteNames[s] + "_" + ofToString(i,0) + ".png"));
 				switch(s){
 					case 0:mStemSprite.push_back(img);break;
-					case 1:mEmptySensorSprite.push_back(img);break;
-					case 2:mFilledSensorSprite.push_back(img);break;
-					case 3:mEmptyHammerSprite.push_back(img);break;
-					case 4:mPivotSprite.push_back(img);break;
-					case 5:mFilledHammerSprite.push_back(img);break;
+					case 1:mPivotSprite.push_back(img);break;
+					case 2:mEmptyHammerSprite.push_back(img);
+					case 3: case 4: case 5:mEmptySensorSprite[s - 3].push_back(img);break;
+					case 6: case 7: case 8:mFilledSensorSprite[s - 6].push_back(img);break;
+	
 				}
 			}
 			
@@ -129,7 +138,9 @@ void chimeRenderer::drawHammer(ofPtr<chime> c){
 	float zt = c->getBlur()-(1.0 - 0.1);
 	zt = (zt > 0) ? zt/0.1 * -25.0: 0;
 	
-	float dim = mEmptyHammerSprite[c->getSpIndex()]->getWidth()/80.0f;
+	ofVec2f dim(mEmptyHammerSprite[c->getSpIndex()]->getWidth()/80.0f,
+				mEmptyHammerSprite[c->getSpIndex()]->getHeight()/80.0f);
+				
 	dim *= 1.1;
 	
 	ofPushMatrix();
@@ -138,15 +149,8 @@ void chimeRenderer::drawHammer(ofPtr<chime> c){
 	glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
 	glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
 	
-	ofFill();
-	if(c->getSpIndex() < 30){
-		ofSetColor(255,50);
-		
-		mFilledHammerSprite[c->getSpIndex()]->draw(0,0,dim,dim);
-	}
-	
-	ofSetColor(0);
-	mEmptyHammerSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+	ofSetColor(255);
+	mEmptyHammerSprite[c->getSpIndex()]->draw(0,0,dim.x,dim.y);
 	
 	glPopMatrix();
 	ofPopMatrix();
@@ -166,35 +170,50 @@ void chimeRenderer::drawSensors(ofPtr<chime> c){
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y, 0);
 	
-	float dim = mFilledSensorSprite[c->getSpIndex()]->getWidth()/80.0f;
-	dim *= 1.1;
+
 	
 	for(int i = 0; i < 2; i++){
 		
 		 if(c->getSensorOn(i)){
 			 
-			 float a = c->getSensorAlpha(i);	
+			 float sAlpha = c->getSensorAlpha(i);	
 		 	 glPushMatrix();
 			 glTranslatef(b[i]->GetPosition().x, b[i]->GetPosition().y, zt);
 			 glRotatef(ofRadToDeg(b[i]->GetAngle()), 0, 0, 1);
 			
 			 ofColor col = c->getSensorColor(i);
 			 
-			 //ofFill();
-			 //ofSetColor(255,50);
-			 //mFilledSensorSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+			 float frq =  0.5 + (1 - c->getSensorFreq(i)) * 3.0;
 			 
-			 //float l = ofRandom(0.5,2.0); work this out later
+			 int imgIndex = (frq < 0.75) ? 0 : (frq > 1.5) ? 2 : 1;
+			 
+			 float y_off = 0.1 * frq - 0.1;
+			 y_off *= (i == 0)? 1 : -1;
+			 
+			 frq *= (imgIndex == 0) ? 2.0 : (imgIndex == 2) ? 0.5 : 1;
+			 
+			 ofVec2f dim_f(mFilledSensorSprite[imgIndex][c->getSpIndex()]->getWidth()/80.0f,
+						   mFilledSensorSprite[imgIndex][c->getSpIndex()]->getHeight()/80.0f);
+			 
+			 ofVec2f dim_e(mEmptySensorSprite[imgIndex][c->getSpIndex()]->getWidth()/80.0f,
+						   mEmptySensorSprite[imgIndex][c->getSpIndex()]->getHeight()/80.0f);
+			 
+			 dim_f.y *= frq;
+			 dim_e.y *= frq;
+			 
+	
 			 
 			 ofFill();
-			 if(a > 0){
-			 ofSetColor(col.r,col.g,col.b,a);
-			 mFilledSensorSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+
+			 
+			 if(sAlpha > 0){
+			 ofSetColor(col.r,col.g,col.b,sAlpha);
+			 mFilledSensorSprite[imgIndex][c->getSpIndex()]->draw(0,y_off,dim_f.x,dim_f.y);
 			 }
 			 
 			 
-			 ofSetColor(50);
-			 mEmptySensorSprite[c->getSpIndex()]->draw(0,0,dim,dim);
+			 ofSetColor(255);
+			 mEmptySensorSprite[imgIndex][c->getSpIndex()]->draw(0,y_off,dim_e.x,dim_e.y);
 			 glPopMatrix();
 		 
 		 }

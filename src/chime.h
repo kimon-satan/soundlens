@@ -16,6 +16,9 @@
 #include <Box2D/Box2D.h>
 
 
+#define MIDI_RANGE 93
+#define MIDI_MIN 28
+
 struct pivotDims{
 	
 	float d, iAngle, rSpeed, cRot;
@@ -67,8 +70,11 @@ public:
 	bool getSensorOn(int i);
 	void setSensorOn(int i, bool b);
 	
-	void setSensorFreq(int i, float tf);
-	float getSensorFreq(int i);
+	void setSensorHeight(int i, float tf);
+	float getSensorHeight(int i);
+	
+	void setSensorMidi(int i, float tf);
+	float getSensorMidi(int i);
 	
 	float getSensorAlpha(int i);
 	void setSensorAlpha(int i, float a);
@@ -93,7 +99,9 @@ public:
 	
 	void setSpIndex(int i);
 	int getSpIndex();
-	
+
+	void setZpos(float f);
+	float getZpos();
 	
 	int getIndex();
 	
@@ -122,7 +130,8 @@ private:
 	ofColor mSensorColors[2];
 	
 	float mSensorAlphas[2];
-	float mSensorFreqs[2];
+	float mSensorHeights[2];
+	float mSensorMidis[2];
 	
 	bool mSensorOn[2];
 	
@@ -130,5 +139,6 @@ private:
 	int spIndex;
 	
 	ofVec2f anchorPos;
+	float zPos;
 
 };

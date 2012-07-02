@@ -7,7 +7,7 @@
 
 #define HOST "127.0.0.1"
 #define PORT 57120
-#define NUM_CHIMES 85
+#define NUM_CHIMES 1
 
 
 class testApp : public ofBaseApp{
@@ -37,14 +37,19 @@ class testApp : public ofBaseApp{
 	
 	ofCamera mCam;
 	float scale;
-	vector<vector<ofPtr<chime> > > mChimes;
-
+	
+	vector<ofPtr<chime> > mChimes;
+	vector<ofPtr<chime> > mSelected;
+	vector<vector<ofPtr<chime> > >mOldGroups;
 	vector<vector<ofPtr<chime> > > renderList;
 	
 	customListener mListener;
 	ofxOscSender sender;
 	
+	
 	int selCGroup;
+	float mMaxZ;
+	
 	
 	bool isBlurring;
 	

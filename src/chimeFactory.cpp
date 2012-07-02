@@ -23,13 +23,17 @@ namespace chimeFactory {
 		c->setWorld(world);
 		
 		for(int i = 0; i < 2; i++){
-			c->setSensorFreq(i, cd.freq[i]);
+			c->setSensorMidi(i, cd.midi[i]);
+			float h = (float)(cd.midi[i] - MIDI_MIN)/MIDI_RANGE;
+			h = pow(h,0.5f);
+			c->setSensorHeight(i,h);
 			c->setReactSecs(i, cd.decay[i]);
 			c->setSensorColor(i, cd.colors[i]);
 			c->setSensorOn(i, cd.sensOn[i]);
 		}
 		
 		c->setAnchorPos(cd.anchorPos);
+		c->setZpos(cd.zPos);
 		c->setPivotDims(cd.pivots);
 		
 		stemDims sd;

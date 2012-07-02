@@ -18,7 +18,8 @@ struct chimeDef{
 	
 	vector<pivotDims> pivots; 
 	ofVec2f anchorPos;
-	float length, freq[2], decay[2], iAngle, offset, rSpeed;
+	float zPos; //0-1 val
+	float length, midi[2], decay[2], iAngle, offset, rSpeed;
 	ofColor colors[2];
 	bool sensOn[2];
 	

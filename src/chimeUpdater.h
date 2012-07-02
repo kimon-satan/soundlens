@@ -24,6 +24,9 @@ class chimeUpdater{
 	static void moveView(ofPtr<chime> c, ofVec2f v);
 	static void step();
 	
+	static void setFocalPoint(float f);
+	static float getFocalPoint();
+	
 	private:
 	
 	static void updateDims(ofPtr<chime> c);
@@ -33,5 +36,7 @@ class chimeUpdater{
 	static unsigned long mTimeStamp2;
 	static float vel_i, pos_i, timeStep;
 	static ofxOscSender * mSender;
+	static float mFocalPoint;
+
 
 };

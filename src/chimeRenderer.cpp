@@ -62,9 +62,9 @@ void chimeRenderer::loadSprites(){
 
 void chimeRenderer::draw(ofPtr<chime> c){
 	
-	drawAnchor(c);
+	//drawAnchor(c);
+	//drawPivots(c);
 	drawStem(c);
-	drawPivots(c);
 	drawSensors(c);
 	drawHammer(c);
 
@@ -107,7 +107,7 @@ void chimeRenderer::drawPivots(ofPtr<chime> c){
 
 void chimeRenderer::drawStem(ofPtr<chime> c){
 
-	if(c->getSpIndex() >= 99)return;
+	//if(c->getSpIndex() >= 99)return;
 	
 	b2Body * b = c->getStemBody();
 	stemDims sd = c->getStemDims();
@@ -119,7 +119,7 @@ void chimeRenderer::drawStem(ofPtr<chime> c){
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y,0);
 	glPushMatrix();
-	glTranslatef(b->GetPosition().x, b->GetPosition().y, zt); //maybe not needed (depends on offset)
+	glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
 	glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
 	glTranslatef(0, sd.offset * sd.length/2, 0);
 	ofSetColor(100);
@@ -131,7 +131,7 @@ void chimeRenderer::drawStem(ofPtr<chime> c){
 
 void chimeRenderer::drawHammer(ofPtr<chime> c){
 	
-	if(c->getSpIndex() >= 99)return;
+	//if(c->getSpIndex() >= 99)return;
 	
 	b2Body * b = c->getHammer();
 	stemDims sd = c->getStemDims();
@@ -160,7 +160,7 @@ void chimeRenderer::drawHammer(ofPtr<chime> c){
 
 void chimeRenderer::drawSensors(ofPtr<chime> c){
 	
-	if(c->getSpIndex() >= 99)return;
+	//if(c->getSpIndex() >= 99)return;
 	
 	b2Body ** b = c->getSensors();
 	float zt = c->getBlur()-(1.0 - 0.1);
@@ -170,7 +170,6 @@ void chimeRenderer::drawSensors(ofPtr<chime> c){
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y, 0);
 	
-
 	
 	for(int i = 0; i < 2; i++){
 		
@@ -183,7 +182,7 @@ void chimeRenderer::drawSensors(ofPtr<chime> c){
 			
 			 ofColor col = c->getSensorColor(i);
 			 
-			 float frq =  0.5 + (1 - c->getSensorFreq(i)) * 3.0;
+			 float frq =  0.5 + (1 - c->getSensorHeight(i)) * 3.0;
 			 
 			 int imgIndex = (frq < 0.75) ? 0 : (frq > 1.5) ? 2 : 1;
 			 

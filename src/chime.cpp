@@ -29,7 +29,7 @@ chime::chime(){
 	for(int i = 0; i < 2; i ++){
 		reactCount[i] = 0;
 		mSensorAlphas[i] = 0;
-		mSensorFreqs[i] = 0.5;
+		mSensorHeights[i] = 0.5;
 		reactSecs[i] = 0.5;
 		mSensorColors[i] = ofColor(255,0,0);
 		mSensorOn[i] = true;
@@ -37,6 +37,7 @@ chime::chime(){
 	
 	mBlur = 1.0;
 	spIndex = 0;
+	zPos = 0;
 	
 	
 }
@@ -82,8 +83,11 @@ collisionData ** chime::getSensorData(){return &mSensorData[0];}
 bool chime::getSensorOn(int i){return mSensorOn[i];}
 void chime::setSensorOn(int i, bool b){mSensorOn[i] = b;}
 
-void chime::setSensorFreq(int i, float tf){mSensorFreqs[i] = tf;}
-float chime::getSensorFreq(int i){return mSensorFreqs[i];}
+void chime::setSensorHeight(int i, float tf){mSensorHeights[i] = tf;}
+float chime::getSensorHeight(int i){return mSensorHeights[i];}
+
+void chime::setSensorMidi(int i, float tf){mSensorMidis[i] = tf;}
+float chime::getSensorMidi(int i){return mSensorMidis[i];}
 
 float chime::getSensorAlpha(int i){return mSensorAlphas[i];}
 void chime::setSensorAlpha(int i, float a){mSensorAlphas[i] = a;}
@@ -108,6 +112,9 @@ float chime::getBlur(){return mBlur;}
 
 void chime::setSpIndex(int i){spIndex = i;}
 int chime::getSpIndex(){return spIndex;}
+
+void chime::setZpos(float f){zPos = f;}
+float chime::getZpos(){return zPos;}
 
 chime::~chime(){
 

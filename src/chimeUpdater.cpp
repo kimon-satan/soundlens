@@ -12,8 +12,10 @@
 float chimeUpdater::timeStep = 1.0f / TARGET_FRAME;
 float chimeUpdater::vel_i = 2;
 float chimeUpdater::pos_i = 1;
+float chimeUpdater::mFocalPoint = 0.0f;
 unsigned long chimeUpdater::mTimeStamp1 = ofGetSystemTime();
 unsigned long chimeUpdater::mTimeStamp2 = ofGetSystemTime();
+
 
 ofxOscSender * chimeUpdater::mSender = NULL;
 
@@ -69,21 +71,25 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 	for(int i = 0; i < 2; i ++)if(c->getSensorOn(i))if(cd[i]->initContact)sIndex = i;
 		
 	
-	if(sIndex > -1){
+	if(sIndex > -1 ){
 		
 		cd[sIndex]->initContact = false;
 		
 		c->setReactTotal(sIndex, ofGetFrameRate() * c->getReactSecs(sIndex));
 		c->setReactCount(sIndex, c->getReactTotal(sIndex));
 		
-		if(mSender){
+		if(mSender && c->getBlur() < 0.99){
 			
 			ofxOscMessage m;
 			m.setAddress("/chime");
 			m.addIntArg(c->getIndex());
-			m.addFloatArg(c->getSensorFreq(sIndex));
+			m.addFloatArg(c->getSensorMidi(sIndex));
 			m.addFloatArg(c->getReactSecs(sIndex));
 			m.addFloatArg(c->getBlur());
+			float p = c->getHammer()->GetPosition().x;
+			p += c->getStemDims().cPos.x;
+			p = min(8.0f, max(-8.0f, p))/8.0f;
+			m.addFloatArg(p);
 			mSender->sendMessage(m);
 		}
 		
@@ -102,13 +108,15 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 		}
 	}
 	
-	updateSpIndex(c);
 	
 }
 
 void chimeUpdater::updateSpIndex(ofPtr<chime> c){
 	
-	c->setSpIndex(c->getBlur() * 100);
+	float b = max(0.0f,min(1.0f, abs(c->getZpos()- mFocalPoint)));
+	c->setBlur(b);
+	c->setSpIndex(c->getBlur() * 100); //objects out of range are assigned index 100
+									   //so not placed in renderList
 	
 }
 
@@ -123,3 +131,7 @@ void chimeUpdater::step(){
 	mTimeStamp1 = mTimeStamp2;
 	mTimeStamp2 = ofGetSystemTime();
 }
+
+
+void chimeUpdater::setFocalPoint(float f){mFocalPoint = f;}
+float chimeUpdater::getFocalPoint(){return mFocalPoint;}

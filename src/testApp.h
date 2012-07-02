@@ -1,14 +1,13 @@
 #pragma once
 
 #include "ofMain.h"
-#include "chimeFactory.h"
-#include "chimeRenderer.h"
-#include "chimeUpdater.h"
+#include "chimeManager.h"
 
 #define HOST "127.0.0.1"
-#define PORT 57120
-#define NUM_CHIMES 1
-
+#define SC_PORT 57120
+#define IN_PORT 8010
+#define I_HOST "192.168.1.3"
+#define I_PORT 9000
 
 class testApp : public ofBaseApp{
 
@@ -17,8 +16,7 @@ class testApp : public ofBaseApp{
 		void update();
 		void draw();
 		
-		void setupChimes();
-		void rePopulateRenderList();
+
 	
 		void keyPressed  (int key);
 		void keyReleased(int key);
@@ -31,27 +29,16 @@ class testApp : public ofBaseApp{
 		void gotMessage(ofMessage msg);
 	
 		void exit();
-		
+	
 	private:
 	
+	void handleMessages();	
 	
 	ofCamera mCam;
 	float scale;
 	
-	vector<ofPtr<chime> > mChimes;
-	vector<ofPtr<chime> > mSelected;
-	vector<vector<ofPtr<chime> > >mOldGroups;
-	vector<vector<ofPtr<chime> > > renderList;
-	
-	customListener mListener;
-	ofxOscSender sender;
-	
-	
-	int selCGroup;
-	float mMaxZ;
-	
-	
-	bool isBlurring;
+	ofxOscSender sender, iSender;
+	ofxOscReceiver receiver;
 	
 	
 	

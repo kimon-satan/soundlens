@@ -159,6 +159,8 @@ void testApp::keyPressed(int key){
 	
 	if(key == 'a')chimeManager::shiftZPos(0.0f);
 	if(key == 's')chimeManager::shiftZPos(1.0f);
+	
+	if(key == OF_KEY_RETURN)chimeManager::addChime();
 		
 
 }

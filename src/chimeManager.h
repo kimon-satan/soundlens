@@ -33,7 +33,7 @@ class chimeManager{
 	static void update();
 	static void draw();
 	
-	static void setupChimes();
+	
 	static void rePopulateRenderList();
 	
 	static void shiftFocalPoint(float direction);
@@ -41,6 +41,8 @@ class chimeManager{
 	static void selectNewGroup();
 	
 	static void createChimes(groupPreset p);
+	static void addChime();
+	static void setupChimes();
 	
 	private:
 
@@ -53,5 +55,6 @@ class chimeManager{
 	static float mMaxZ;
 	static customListener mListener;
 	static ofxOscSender * iSender;
+	
 	
 };

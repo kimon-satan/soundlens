@@ -41,14 +41,19 @@ namespace chimeFactory {
 		sd.length = cd.length;
 		sd.offset = cd.offset;
 		sd.iAngle = cd.iAngle;
-		sd.rSpeed = cd.rSpeed;
+		sd.rSpeed = cd.rSpeed; //cd.rSpeed should be the cumulative one
 		sd.cum_rSpeed = sd.rSpeed;
 		
 		
 		for(int i = 0; i < cd.pivots.size(); i++){
-			sd.cum_rSpeed += cd.pivots[i].rSpeed;
+			sd.cum_rSpeed += cd.pivots[i].rSpeed; //might need to think about this when pivots are flexible 
+												//(should be the other way round)
 			sd.iAngle += cd.pivots[i].iAngle;
 		}
+		
+		
+		//normalize so phases can be compared
+		sd.iAngle += fmod(sd.cum_rSpeed * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
 		
 		c->setStemDims(sd);
 		c->setSpIndex(100);
@@ -95,7 +100,30 @@ namespace chimeFactory {
 		
 		stemDims sd = c->getStemDims();
 		
-		ofVec2f o(0,sd.offset * sd.length/2);
+		
+		//position the hammer
+		//probably needs to go into another method
+		
+		sd.iHoff = -sd.length/2 + 0.1;
+		
+		if(sd.iAngle > 0){
+		
+			if(sd.iAngle > b2_pi * 0.82 &&
+			   sd.iAngle < b2_pi * 1.82){
+				sd.iHoff *= -1;
+			}
+			
+		}else{
+			
+			if(sd.iAngle < -b2_pi * 0.82 &&
+			   sd.iAngle > -b2_pi * 1.82){
+				sd.iHoff *= -1;
+			}
+			
+		}
+		
+					
+		ofVec2f o(0,sd.offset * sd.length/2 + sd.iHoff);
 		o.rotateRad(sd.iAngle);
 		
 		b2BodyDef hd;
@@ -203,17 +231,19 @@ namespace chimeFactory {
 		
 		b2Body * hammer = c->getHammer();
 		
-		ofVec2f axis(0,1);
-		axis.rotateRad(hammer->GetAngle());
+		ofVec2f axis = myUtils::b2ToOF(hammer->GetPosition());
 		axis.normalize();
-		
+	
 		b2PrismaticJointDef hjd;
-		hjd.Initialize(hammer, stem,  hammer->GetPosition(), b2Vec2(-axis.x,-axis.y));
-		hjd.lowerTranslation = -sd.length/2;
-		hjd.upperTranslation = sd.length/2; 
+		hjd.Initialize(hammer, stem,  hammer->GetPosition(), b2Vec2(axis.x,axis.y));
+		
+		hjd.lowerTranslation = 0;
+		hjd.upperTranslation = sd.length - 0.2; 
+		
+
 		hjd.enableLimit = true;
 		
-		hjd.maxMotorForce = 0.07; //ofRandom(0,0.5);
+		hjd.maxMotorForce = 0.07;
 		hjd.motorSpeed = 0.0f;
 		hjd.enableMotor = true;
 		

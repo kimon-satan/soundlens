@@ -31,12 +31,13 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 		renderList.push_back(tc);
 	}
 	
-	setupChimes();
+	//setupChimes();
 
 
 }
 
 void chimeManager::createChimes(groupPreset p){
+	
 	
 	vector<ofPtr<chime> > tc;
 	
@@ -56,7 +57,7 @@ void chimeManager::createChimes(groupPreset p){
 		cd.colors[1] = ofColor(255,0,0);
 		cd.sensOn[0] = true; //(i%2 == 0);
 		cd.sensOn[1] = true; //(i%2 == 1);
-		cd.zPos = chimeUpdater::getFocalPoint() + 1.0;
+		cd.zPos = chimeUpdater::getFocalPoint(); // + 1.0; //not for now
 		
 		
 		ofPtr<chime> c = chimeFactory::createChime(cd);
@@ -73,6 +74,29 @@ void chimeManager::createChimes(groupPreset p){
 	
 	rePopulateRenderList();
 
+
+}
+
+void chimeManager::addChime(){
+
+	
+	groupPreset p;
+	p.numChimes = 100;
+	p.pos.initVal.set(ofVec2f(0,0));
+	p.pos.dType = DT_NONE;
+	p.pos.increment.set(ofVec2f(0,0.5));
+	p.pos.range = 5;
+	p.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
+	p.freq.dType = DT_FLAT;
+	p.freq.range = 12;
+	p.freq.increment = 3;
+	p.iAngle.initVal = 0;
+	p.iAngle.dType =  DT_STEP;
+	p.iAngle.increment = b2_pi * 0.01;
+	p.speed.initVal = -0.2;
+	p.length.initVal = 4.0;
+	
+	createChimes(p);
 
 }
 

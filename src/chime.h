@@ -28,7 +28,7 @@ struct pivotDims{
 
 struct stemDims{
 	
-	float offset, rSpeed, iAngle, cum_rSpeed, length;
+	float offset, rSpeed, iAngle, cum_rSpeed, length, iHoff;
 	ofVec2f cPos;
 	
 };

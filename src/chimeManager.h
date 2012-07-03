@@ -12,8 +12,18 @@
 #include "chimeFactory.h"
 #include "chimeRenderer.h"
 #include "chimeUpdater.h"
+#include "attributeDef.h"
 
-#define NUM_CHIMES 30
+struct groupPreset{
+	
+	int numChimes;
+	attributeDef<ofVec2f> pos;
+	attributeDef<float> freq;
+	attributeDef<float> iAngle;
+	attributeDef<float> speed;
+	attributeDef<float> length;
+	
+};
 
 class chimeManager{
 
@@ -29,6 +39,8 @@ class chimeManager{
 	static void shiftFocalPoint(float direction);
 	static void shiftZPos(float direction);
 	static void selectNewGroup();
+	
+	static void createChimes(groupPreset p);
 	
 	private:
 

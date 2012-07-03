@@ -12,8 +12,6 @@
 #include "chime.h"
 
 
-
-
 struct chimeDef{
 	
 	vector<pivotDims> pivots; 

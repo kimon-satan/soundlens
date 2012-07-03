@@ -33,43 +33,30 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 	
 	setupChimes();
 
+
 }
 
-void chimeManager::setupChimes(){
+void chimeManager::createChimes(groupPreset p){
 	
 	vector<ofPtr<chime> > tc;
 	
-	for(int i = 0; i < NUM_CHIMES; i ++){
+	for(int i = 0; i < p.numChimes; i ++){
 		
 		chimeDef cd;
-		cd.length = 3.0;
-		cd.iAngle = b2_pi * (float)i/NUM_CHIMES; 
-		cd.anchorPos =  ofVec2f(0,-1);//ofVec2f(-5,0) + ofVec2f(0.4,0)* (float)i;
+		cd.length = p.length.getValue(i);
+		cd.iAngle = p.iAngle.getValue(i); 
+		cd.anchorPos =  p.pos.getValue(i);
 		cd.offset = 0;					
-		cd.midi[0] = MIDI_MIN + ((float)(i+1)/NUM_CHIMES) * MIDI_RANGE;
-		cd.midi[1] = MIDI_MIN + (1 - (float)(i+1)/NUM_CHIMES) * MIDI_RANGE;
+		cd.midi[0] = p.freq.getValue(i);
+		cd.midi[1] = p.freq.getValue(i);
 		cd.decay[0] = 1.8;
 		cd.decay[1] = 1.8;
-		cd.rSpeed = 0.2;
+		cd.rSpeed = p.speed.getValue(i);
 		cd.colors[0] = ofColor(255,0,0);
 		cd.colors[1] = ofColor(255,0,0);
 		cd.sensOn[0] = true; //(i%2 == 0);
 		cd.sensOn[1] = true; //(i%2 == 1);
-		cd.zPos = 0;
-		
-		int p = 0; //ofRandom(1,6);
-		
-		for(int j = 0; j < p; j++){
-			
-			pivotDims pd;
-			
-			pd.d = 1;
-			pd.iAngle = 0.25 * b2_pi;
-			pd.rSpeed = 0.05 * (j+1);
-			pd.cRot = pd.iAngle;			
-			cd.pivots.push_back(pd);
-			
-		}
+		cd.zPos = chimeUpdater::getFocalPoint() + 1.0;
 		
 		
 		ofPtr<chime> c = chimeFactory::createChime(cd);
@@ -82,145 +69,53 @@ void chimeManager::setupChimes(){
 	
 	
 	mOldGroups.push_back(tc);
-	
-	
-	tc.clear();
-	
-	for(int i = 0; i < NUM_CHIMES; i ++){
-		
-		chimeDef cd;
-		cd.length = 3.0;
-		cd.iAngle = b2_pi * (float)i/NUM_CHIMES; 
-		cd.anchorPos =  ofVec2f(0,0);
-		cd.offset = 0;					
-		cd.midi[0] = MIDI_MIN + ofRandom(0.15 * MIDI_RANGE,0.2 * MIDI_RANGE);
-		cd.midi[1] = cd.midi[0];
-		cd.decay[0] = 1.0;
-		cd.decay[1] = 1.0;
-		cd.rSpeed = 0.4;
-		cd.colors[0] = ofColor(0,0,100);
-		cd.colors[1] = ofColor(0,0,100);
-		cd.sensOn[0] = true; //(i%2 == 0);
-		cd.sensOn[1] = true; //(i%2 == 1);
-		cd.zPos = 0.25;
-		
-		int p = 0;//ofRandom(1,6);
-		
-		for(int j = 0; j < p; j++){
-			
-			pivotDims pd;
-			
-			pd.d = 1;
-			pd.iAngle = ofRandom(0.1,0.25) * b2_pi;
-			pd.rSpeed = 0.05 * (j+1);
-			pd.cRot = pd.iAngle;			
-			cd.pivots.push_back(pd);
-			
-		}
-		
-		
-		ofPtr<chime> c = chimeFactory::createChime(cd);
-		
-		c->setCollisionListener(mListener);
-		
-		mChimes.push_back(c);
-		tc.push_back(c);
-	}
-	
-	mOldGroups.push_back(tc);
-	
-	
-	tc.clear();
-	
-	for(int i = 0; i < NUM_CHIMES; i ++){
-		
-		chimeDef cd;
-		cd.length = 3.0;
-		cd.iAngle =  ((float)i/NUM_CHIMES) * b2_pi; 
-		cd.anchorPos =  ofVec2f(0,0);
-		cd.offset = 0;					
-		cd.midi[0] =  MIDI_MIN + ofRandom(0.5 * MIDI_RANGE,0.6 * MIDI_RANGE);
-		cd.midi[1] = cd.midi[0];
-		cd.decay[0] = 1.5;
-		cd.decay[1] = 1.5;
-		cd.rSpeed = 0.25;
-		cd.colors[0] = ofColor(0,100,0);
-		cd.colors[1] = ofColor(100,0,0);
-		cd.sensOn[0] = true; ////(ofRandomf() > 0.05);
-		cd.sensOn[1] = true; //(ofRandomf() > 0.05);
-		cd.zPos = 0.5;
-		
-		int p = 1;//ofRandom(1,6);
-		
-		for(int j = 0; j < p; j++){
-			
-			pivotDims pd;
-			
-			pd.d = 4;
-			pd.iAngle = ((float)i/NUM_CHIMES) * 2 * b2_pi ;
-			pd.rSpeed = 0.25; //0.05 * (j+1);
-			pd.cRot = pd.iAngle;			
-			cd.pivots.push_back(pd);
-			
-		}
-		
-		
-		ofPtr<chime> c = chimeFactory::createChime(cd);
-		
-		c->setCollisionListener(mListener);
-		
-		mChimes.push_back(c);
-		tc.push_back(c);
-	}
-	
-	mOldGroups.push_back(tc);
-	
-	tc.clear();
-	
-	for(int i = 0; i < NUM_CHIMES; i ++){
-		
-		chimeDef cd;
-		cd.length = 2.0;
-		cd.iAngle =  ((float)i/NUM_CHIMES) * b2_pi; 
-		cd.anchorPos =  ofVec2f(0,0);
-		cd.offset = 0;					
-		cd.midi[0] =  MIDI_MIN + ofRandom(0.7 * MIDI_RANGE,0.9 * MIDI_RANGE);
-		cd.midi[1] = cd.midi[0];
-		cd.decay[0] = 1.5;
-		cd.decay[1] = 1.5;
-		cd.rSpeed = 0.25;
-		cd.colors[0] = ofColor(0,255,255);
-		cd.colors[1] = ofColor(0,255,255);
-		cd.sensOn[0] = true; ////(ofRandomf() > 0.05);
-		cd.sensOn[1] = true; //(ofRandomf() > 0.05);
-		cd.zPos = 0.75;
-		
-		int p = 2;//ofRandom(1,6);
-		
-		for(int j = 0; j < p; j++){
-			
-			pivotDims pd;
-			
-			pd.d = 1;
-			pd.iAngle = ((float)i/NUM_CHIMES) * 2 * b2_pi ;
-			pd.rSpeed = 0.05 * (j+1);
-			pd.cRot = pd.iAngle;			
-			cd.pivots.push_back(pd);
-			
-		}
-		
-		
-		ofPtr<chime> c = chimeFactory::createChime(cd);
-		
-		c->setCollisionListener(mListener);
-		
-		mChimes.push_back(c);
-		tc.push_back(c);
-	}
-	
-	mOldGroups.push_back(tc);
+	mSelected = tc;
 	
 	rePopulateRenderList();
+
+
+}
+
+void chimeManager::setupChimes(){
+	
+	groupPreset p;
+	p.numChimes = 10;
+	p.pos.initVal.set(ofVec2f(0,0));
+	p.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
+	p.iAngle.initVal = 0;
+	p.iAngle.dType = DT_STEP;
+	p.iAngle.increment = b2_pi/10.0f;
+	p.speed.initVal = 0.2;
+	p.length.initVal = 2.0;
+	
+	createChimes(p);
+	
+	groupPreset p2;
+	p2.numChimes = 40;
+	p2.pos.initVal.set(ofVec2f(0,0));
+	p2.pos.dType = DT_RADIAL;
+	p2.pos.radius = 3.0;
+	p2.pos.rot = PI * 2.0f/40.0f;
+	
+	p2.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
+	p2.freq.dType = DT_FLAT;
+	p2.freq.increment = 1;
+	p2.freq.range = 12;
+	
+	
+	p2.iAngle.initVal = 0;
+	p2.iAngle.dType = DT_STEP;
+	p2.iAngle.increment = b2_pi/5.0f;
+	p2.speed.initVal = 0.2;
+	
+	p2.length.initVal = 2.0;
+	p2.length.dType = DT_NORMAL;
+	p2.length.increment = 0.05;
+	p2.length.range = 20;
+	
+	createChimes(p2);
+	
+	
 	
 }
 

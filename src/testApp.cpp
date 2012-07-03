@@ -28,7 +28,7 @@ void testApp::setup(){
 
 	ofEnableSmoothing();
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-	ofSetRectMode(OF_RECTMODE_CENTER);
+
 		
 
 	
@@ -83,6 +83,8 @@ void testApp::draw(){
 	
 	GLfloat fogColor[4]= {1.0f, 1.0f, 1.0f, 1.0f}; 
 	
+	ofSetRectMode(OF_RECTMODE_CENTER);
+	
 	mCam.begin();
 	
 	glFogi(GL_FOG_MODE, GL_LINEAR);      
@@ -109,9 +111,14 @@ void testApp::draw(){
 	
 	mCam.end();
 	
+	ofSetRectMode(OF_RECTMODE_CORNER);
 	
+	ofEnableAlphaBlending();
+	ofSetColor(0,50);
+	//ofRect(0,0,200,ofGetScreenHeight());
+	ofDisableAlphaBlending();
 	ofSetColor(0);
-	ofDrawBitmapString("fps:" + ofToString(ofGetFrameRate(),2), 20,20);
+	ofDrawBitmapString("fps:" + ofToString(ofGetFrameRate(),2), 20,40);
 
 	
 }

@@ -116,6 +116,9 @@ int chime::getSpIndex(){return spIndex;}
 void chime::setZpos(float f){zPos = f;}
 float chime::getZpos(){return zPos;}
 
+void chime::setIsSelected(bool b){isSelected = b;}
+bool chime::getIsSelected(){return isSelected;}
+
 chime::~chime(){
 
 	if(mWorld)delete mWorld;

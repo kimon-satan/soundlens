@@ -30,14 +30,14 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 		vector<ofPtr<chime> > tc;
 		renderList.push_back(tc);
 	}
-	
-	//setupChimes();
 
 
 }
 
-void chimeManager::createChimes(groupPreset p){
+void chimeManager::createChimes(groupPreset p, ofVec2f pos){
 	
+	
+	p.pos.initVal =  pos;
 	
 	vector<ofPtr<chime> > tc;
 	
@@ -57,7 +57,7 @@ void chimeManager::createChimes(groupPreset p){
 		cd.colors[1] = ofColor(255,0,0);
 		cd.sensOn[0] = true; //(i%2 == 0);
 		cd.sensOn[1] = true; //(i%2 == 1);
-		cd.zPos = chimeUpdater::getFocalPoint(); // + 1.0; //not for now
+		cd.zPos = chimeUpdater::getFocalPoint() + 1.0; //not for now
 		
 		
 		ofPtr<chime> c = chimeFactory::createChime(cd);
@@ -77,71 +77,6 @@ void chimeManager::createChimes(groupPreset p){
 
 }
 
-void chimeManager::addChime(){
-
-	
-	groupPreset p;
-	p.numChimes = 100;
-	p.pos.initVal.set(ofVec2f(0,0));
-	p.pos.dType = DT_NONE;
-	p.pos.increment.set(ofVec2f(0,0.5));
-	p.pos.range = 5;
-	p.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
-	p.freq.dType = DT_FLAT;
-	p.freq.range = 12;
-	p.freq.increment = 3;
-	p.iAngle.initVal = 0;
-	p.iAngle.dType =  DT_STEP;
-	p.iAngle.increment = b2_pi * 0.01;
-	p.speed.initVal = -0.2;
-	p.length.initVal = 4.0;
-	
-	createChimes(p);
-
-}
-
-void chimeManager::setupChimes(){
-	
-	groupPreset p;
-	p.numChimes = 10;
-	p.pos.initVal.set(ofVec2f(0,0));
-	p.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
-	p.iAngle.initVal = 0;
-	p.iAngle.dType = DT_STEP;
-	p.iAngle.increment = b2_pi/10.0f;
-	p.speed.initVal = 0.2;
-	p.length.initVal = 2.0;
-	
-	createChimes(p);
-	
-	groupPreset p2;
-	p2.numChimes = 40;
-	p2.pos.initVal.set(ofVec2f(0,0));
-	p2.pos.dType = DT_RADIAL;
-	p2.pos.radius = 3.0;
-	p2.pos.rot = PI * 2.0f/40.0f;
-	
-	p2.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
-	p2.freq.dType = DT_FLAT;
-	p2.freq.increment = 1;
-	p2.freq.range = 12;
-	
-	
-	p2.iAngle.initVal = 0;
-	p2.iAngle.dType = DT_STEP;
-	p2.iAngle.increment = b2_pi/5.0f;
-	p2.speed.initVal = 0.2;
-	
-	p2.length.initVal = 2.0;
-	p2.length.dType = DT_NORMAL;
-	p2.length.increment = 0.05;
-	p2.length.range = 20;
-	
-	createChimes(p2);
-	
-	
-	
-}
 
 void chimeManager::rePopulateRenderList(){
 	
@@ -219,6 +154,33 @@ void chimeManager::selectNewGroup(){
 	
 }
 
+//selection methods
+
+void chimeManager::selectByPos(ofVec2f p, float r){
+
+	mSelected.clear(); //will eventually need a way of storing old groups
+	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
+		if(p.distance((*it)->getAnchorPos()) < r){
+			mSelected.push_back(*it);
+		}
+	}
+
+}
+
+
+void chimeManager::selectByRotSpeed(float rs, float tol){
+	
+	mSelected.clear(); //will eventually need a way of storing old groups
+	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
+		if((*it)->getStemDims().cum_rSpeed >= rs - tol &&
+		   (*it)->getStemDims().cum_rSpeed <= rs + tol){
+			mSelected.push_back(*it);
+		}
+	}
+
+}
+
+
 
 void chimeManager::update(){
 
@@ -237,5 +199,14 @@ void chimeManager::draw(){
 		
 	}
 	
+
+}
+
+
+void chimeManager::drawSelected(){
+	
+
+	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)chimeRenderer::drawSelected(*it);
+
 
 }

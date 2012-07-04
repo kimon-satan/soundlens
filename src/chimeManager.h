@@ -16,6 +16,8 @@
 
 struct groupPreset{
 	
+	string name;
+	
 	int numChimes;
 	attributeDef<ofVec2f> pos;
 	attributeDef<float> freq;
@@ -32,7 +34,7 @@ class chimeManager{
 	static void setup(ofxOscSender & s , ofxOscSender & i_s);
 	static void update();
 	static void draw();
-	
+	static void drawSelected();
 	
 	static void rePopulateRenderList();
 	
@@ -40,9 +42,12 @@ class chimeManager{
 	static void shiftZPos(float direction);
 	static void selectNewGroup();
 	
-	static void createChimes(groupPreset p);
-	static void addChime();
-	static void setupChimes();
+	static void createChimes(groupPreset p, ofVec2f pos);
+	
+	//selection methods
+	
+	static void selectByPos(ofVec2f p, float r);
+	static void selectByRotSpeed(float rs, float tol);
 	
 	private:
 

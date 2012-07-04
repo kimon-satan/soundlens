@@ -103,6 +103,9 @@ public:
 	void setZpos(float f);
 	float getZpos();
 	
+	void setIsSelected(bool b);
+	bool getIsSelected();
+	
 	int getIndex();
 	
 	static int cIndex;
@@ -140,5 +143,7 @@ private:
 	
 	ofVec2f anchorPos;
 	float zPos;
+	
+	bool isSelected;
 
 };

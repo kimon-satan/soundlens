@@ -75,10 +75,10 @@ public:
 	};
 
 	
-	T initVal;
-	T increment; 
-	int range;
-	float deviation;
+	T initVal; //may need max and min vals for mouse control 
+	T increment; //may need max and min vals for mouse control 
+	int range; //may need max and min vals for mouse control 
+	float deviation; //may need max and min vals for mouse control 
 	vector<T> localVals;
 	e_distributionType dType;
 	
@@ -140,10 +140,10 @@ public:
 	};
 	
 	
-	ofVec2f initVal, increment; 
-	int range;
-	float deviation;
-	float radius, rot;
+	ofVec2f initVal, increment; //not sure about increment here ?
+	int range; //may need max and min vals for mouse control 
+	float deviation; //may need max and min vals for mouse control 
+	float radius, rot; //may need max and min vals for mouse control 
 	vector<ofVec2f> localVals;
 	e_distributionType dType;
 	

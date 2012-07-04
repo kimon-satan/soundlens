@@ -118,13 +118,13 @@ void chimeRenderer::drawStem(ofPtr<chime> c){
 	
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y,0);
-	glPushMatrix();
-	glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
-	glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
-	glTranslatef(0, sd.offset * sd.length/2, 0);
-	ofSetColor(100);
-	mStemSprite[c->getSpIndex()]->draw(0,0,mStemSprite[c->getSpIndex()]->getWidth()/80, sd.length * 1.25);
-	glPopMatrix();
+		glPushMatrix();
+		glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
+		glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
+		glTranslatef(0, sd.offset * sd.length/2, 0);
+		ofSetColor(100);
+		mStemSprite[c->getSpIndex()]->draw(0,0,mStemSprite[c->getSpIndex()]->getWidth()/80, sd.length * 1.25);
+		glPopMatrix();
 	ofPopMatrix();
 	
 }
@@ -145,14 +145,14 @@ void chimeRenderer::drawHammer(ofPtr<chime> c){
 	
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y,0);
-	glPushMatrix();
-	glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
-	glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
-	
-	ofSetColor(255);
-	mEmptyHammerSprite[c->getSpIndex()]->draw(0,0,dim.x,dim.y);
-	
-	glPopMatrix();
+		glPushMatrix();
+		glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
+		glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
+		
+		ofSetColor(255);
+		mEmptyHammerSprite[c->getSpIndex()]->draw(0,0,dim.x,dim.y);
+		
+		glPopMatrix();
 	ofPopMatrix();
 
 
@@ -220,6 +220,29 @@ void chimeRenderer::drawSensors(ofPtr<chime> c){
 	}
 	ofPopMatrix();
 	
+}
+
+void chimeRenderer::drawSelected(ofPtr<chime> c){
+	
+	b2Body * b = c->getStemBody();
+	stemDims sd = c->getStemDims();
+
+	
+	ofVec2f sp(sd.cPos);
+	
+	ofPushMatrix();
+	ofTranslate(sd.cPos.x,sd.cPos.y,0);
+		glPushMatrix();
+		glTranslatef(b->GetPosition().x, b->GetPosition().y, 0);
+		glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
+		glTranslatef(0, sd.offset * sd.length/2, 0);
+		ofSetColor(100,0,0);
+		mStemSprite[min(c->getSpIndex(),30)]->draw(0,0,mStemSprite[0]->getWidth()/80, sd.length * 1.25);
+		glPopMatrix();
+	ofPopMatrix();
+	
+
+
 }
 
 

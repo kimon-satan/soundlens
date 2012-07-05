@@ -117,10 +117,8 @@ void testApp::setupPresets(){
 	p1.phase.dType =  DT_FLAT;
 	p1.phase.increment.set(b2_pi * 0.01);
 	p1.phase.range.set(100);
-	p1.speed.dType = DT_NORMAL;
-	p1.speed.initVal.set( -0.3);
-	p1.speed.increment.set(0.05);
-	p1.speed.range.set(10);
+	p1.speed.dType = DT_NONE;
+	p1.speed.initVal.set(-0.7,0.7,SET_USER_B);
 	p1.length.initVal.set(4.0);
 	
 	mPresets.push_back(p1);
@@ -295,6 +293,10 @@ void testApp::drawActions(){
 	if(currentAction  == AT_ADD){
 	
 		chimeManager::drawPreviewChimes();
+		ofSetColor(100);
+		ofLine(mouseDownPos.x, mouseDownPos.y, mouseDragPos.x, mouseDragPos.y);
+		ofDrawBitmapString(mDisplayString, mouseDragPos.x, mouseDragPos.y);
+		
 	};
 	
 	if(currentAction == AT_SELECT){
@@ -302,13 +304,13 @@ void testApp::drawActions(){
 		
 		if(currentFilter == ST_SAMP_PHASE_FUND){
 			
-			float d = 0.5 + dragDist/2;
+			float d = 0.5 + dragDist * 3;
 			
 			ofNoFill();
 			ofSetColor(150);
 			ofCircle(mouseDownPos,d);
 			ofVec2f p(mouseDownPos + ofVec2f(0,d));
-			p.rotate(dragAngle ,mouseDownPos);
+			p.rotate(dragAngle * 360,mouseDownPos);
 			ofLine(mouseDownPos.x, mouseDownPos.y, p.x, p.y);
 			ofDrawBitmapString("fundPhase: " + ofToString(angleParam) +
 							   "\ntolleranceDegrees: " + ofToString(distParam),
@@ -352,14 +354,13 @@ void testApp::continueAction(){
 	
 	switch (currentAction) {
 		case AT_ADD:
-			chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos);
+			mDisplayString = chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos, dragDist, dragAngle);
 			break;
 		case AT_SELECT:
 			if(currentFilter == ST_SAMP_PHASE_FUND){
 				
-				distParam = max(0.5, dragDist - 0.5);
-				distParam = ofMap(distParam, 0.5,3.0, 1,45, true);
-				angleParam = ofMap(abs(dragAngle),0,180, 51, 1);
+				distParam = ofMap(dragDist,0,1,1,45);
+				angleParam = ofMap(dragAngle,0,1,51,1);
 				
 				angleParam = floor(angleParam);
 				distParam = floor(distParam);
@@ -492,8 +493,10 @@ void testApp::mouseMoved(int x, int y ){
 void testApp::mouseDragged(int x, int y, int button){
 
 	mouseDragPos = getZPlaneProjection(ofVec2f(x,y));
-	dragDist = ofVec2f(mouseDragPos - mouseDownPos).length();
-	dragAngle = -ofVec2f(mouseDragPos -mouseDownPos).angle(ofVec2f(0,1));
+	dragDist = ofMap(ofVec2f(mouseDragPos - mouseDownPos).length(),1,4,0,1,true);
+	dragAngle = ofVec2f(mouseDownPos - mouseDragPos).angle(ofVec2f(0,-1));
+	if(dragAngle < 0)dragAngle += 360;
+	dragAngle = ofMap(dragAngle, 0,360, 0, 1);
 	continueAction();
 	
 }

@@ -87,6 +87,7 @@ class testApp : public ofBaseApp{
 	ofVec2f mouseDownPos, mouseDragPos, mouseMovePos;
 	float dragDist, dragAngle;
 	float distParam, angleParam;
+	string mDisplayString;
 	
 	//search stuff
 	

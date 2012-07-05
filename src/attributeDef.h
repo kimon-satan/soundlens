@@ -39,10 +39,16 @@ class attributeElement{
 
 	public:
 	
+	attributeElement(){
+		
+		setType = e_setType(0);
+		
+	}
+	
 	void set(T t_ab){
 		
 		abs_val = t_ab;
-		setType = SET_FIXED;
+		setType = e_setType(0);
 		
 	};
 	
@@ -52,12 +58,29 @@ class attributeElement{
 		max_val = t_ma;
 		setType = e_setType(s);
 	
-	}
+	};
 	
-	int setType;
+	string setUserValues(float ua, float ub){
+		
+		if(setType != SET_FIXED){
+			abs_val = ofMap((setType == SET_USER_A)? ua:ub,0,1,min_val, max_val);
+			if(name != ""){
+				return name + ", " + ofToString(abs_val,2);
+			}else{
+				return ofToString(abs_val,2);
+			}
+			
+		}else{
+			
+			return "";
+		}
+	};
+	
+	e_setType setType;
 	T abs_val;
 	T min_val;
 	T max_val;
+	string name;
 
 };
 
@@ -71,8 +94,11 @@ public:
 	
 		deviation = 0.25;
 		range.abs_val = 100;
+		range.name = "range";
 		increment.abs_val = 0.01;
+		increment.name = "increment";
 		dType = DT_NONE;
+		name = "";
 		
 	};	
 	
@@ -114,13 +140,24 @@ public:
 	
 	
 	};
+	
+	string setUserValues(float ua, float ub){
+		
+		string pString = "";
+		
+		pString += initVal.setUserValues(ua,ub);
+		pString += increment.setUserValues(ua,ub);
+		pString += range.setUserValues(ua,ub);
+		if(pString != ""){return name + ": " + pString + "\n";}else{return "";}
+	
+	};
 
 	
 	attributeElement<T> initVal;
-	attributeElement<T> increment; //may need max and min vals for mouse control 
-	attributeElement<int>  range; //may need max and min vals for mouse control 
+	attributeElement<T> increment; 
+	attributeElement<int>  range; 
 	float deviation; //may need max and min vals for mouse control 
-	
+	string name;
 	vector<T> localVals;
 	e_distributionType dType;
 	

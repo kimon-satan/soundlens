@@ -16,6 +16,17 @@
 
 struct groupPreset{
 	
+	
+	groupPreset(){
+		
+		numChimes.name = "numChimes";
+		freq.name = "freq";
+		phase.name = "phase";
+		speed.name = "speed";
+		length.name = "length";
+	
+	};
+	
 	string name;
 	
 	attributeDef<int> numChimes;
@@ -42,7 +53,7 @@ class chimeManager{
 	static void shiftZPos(float direction);
 	static void nextPrevSelected();
 	
-	static void createChimes(groupPreset p, ofVec2f pos);
+	static string createChimes(groupPreset p, ofVec2f pos, float userA, float userB);
 	static void endNewChimes();
 	
 	//selection methods

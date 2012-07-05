@@ -41,11 +41,19 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 
 }
 
-void chimeManager::createChimes(groupPreset p, ofVec2f pos){
+string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float userB){
 	
 	mPreviewChimes.clear();
 	
 	p.pos.initVal =  pos;
+	
+	string infoString = "";
+	
+	infoString = p.numChimes.setUserValues(userA, userB);
+	infoString += p.length.setUserValues(userA, userB);
+	infoString += p.freq.setUserValues(userA, userB);
+	infoString += p.speed.setUserValues(userA, userB);
+	infoString += p.phase.setUserValues(userA, userB);
 	
 	int nc = p.numChimes.getValue();
 	
@@ -55,7 +63,7 @@ void chimeManager::createChimes(groupPreset p, ofVec2f pos){
 		cd.length = p.length.getValue(i,nc);
 		cd.phase = p.phase.getValue(i,nc); 
 		cd.anchorPos =  p.pos.getValue(i,nc);
-		cd.offset = 0;					
+		cd.offset = 0;	//ultimately remove this				
 		cd.midi[0] = p.freq.getValue(i,nc);
 		cd.midi[1] = p.freq.getValue(i,nc);
 		cd.decay[0] = 1.8;
@@ -76,6 +84,7 @@ void chimeManager::createChimes(groupPreset p, ofVec2f pos){
 
 	}
 	
+	return infoString;
 	
 
 }

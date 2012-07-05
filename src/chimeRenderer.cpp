@@ -222,13 +222,11 @@ void chimeRenderer::drawSensors(ofPtr<chime> c){
 	
 }
 
-void chimeRenderer::drawSelected(ofPtr<chime> c){
+void chimeRenderer::drawHighlight(ofPtr<chime> c, ofColor col, bool outLine){
 	
 	b2Body * b = c->getStemBody();
 	stemDims sd = c->getStemDims();
 
-	
-	ofVec2f sp(sd.cPos);
 	
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y,0);
@@ -236,13 +234,23 @@ void chimeRenderer::drawSelected(ofPtr<chime> c){
 		glTranslatef(b->GetPosition().x, b->GetPosition().y, 0);
 		glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
 		glTranslatef(0, sd.offset * sd.length/2, 0);
-		ofSetColor(100,0,0);
-		mStemSprite[min(c->getSpIndex(),30)]->draw(0,0,mStemSprite[0]->getWidth()/80, sd.length * 1.25);
+	
+		if(!outLine){
+			ofSetColor(col);
+			ofRect(0,0, 0.1,sd.length * 1.25);
+		}else{
+			ofSetColor(col);
+			mStemSprite[min(c->getSpIndex(),10)]->draw(0,0,mStemSprite[0]->getWidth()/80, sd.length * 1.25);
+		}
+	
+		
 		glPopMatrix();
 	ofPopMatrix();
 	
 
 
 }
+
+
 
 

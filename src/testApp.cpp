@@ -12,7 +12,6 @@ void testApp::setup(){
 	
 	scale = 80;
 	
-	
 	mCam.cacheMatrices(true);
 	mCam.setNearClip(0);
 	mCam.setFarClip(2000);
@@ -36,7 +35,10 @@ void testApp::setup(){
 	
 	mCurrentPreset = 0;
 	currentMode = e_MenuType(0);
-
+	currentFilter= e_SelectType(1);
+	currentPreFilter = ST_SAMP_SPEED;
+	
+	isSearching = false;
 	
 }
 
@@ -45,6 +47,11 @@ void testApp::setupMenus(){
 	menuStrings.push_back("add");
 	menuStrings.push_back("select");
 	menuStrings.push_back("adjust");
+	
+
+	selectStrings.push_back("samp_speed");
+	selectStrings.push_back("samp_phase_fund");
+	selectStrings.push_back("quant_phase");
 	
 }
 
@@ -59,13 +66,13 @@ void testApp::setupPresets(){
 	p.pos.increment.set(ofVec2f(0,0.5));
 	p.pos.range = 5;
 	p.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
-	p.freq.dType = DT_FLAT;
+	p.freq.dType = DT_NONE;
 	p.freq.range = 12;
 	p.freq.increment = 3;
-	p.iAngle.initVal = 0;
-	p.iAngle.dType =  DT_FLAT;
-	p.iAngle.increment = b2_pi * 0.05;
-	p.iAngle.range = 10;
+	p.phase.initVal = 0.5;
+	p.phase.dType =  DT_FLAT;
+	p.phase.increment = b2_pi * 1.0f/64.0f;
+	p.phase.range = 10;
 	p.speed.initVal = 1.0;
 	p.length.initVal = 2.0;
 	
@@ -74,16 +81,16 @@ void testApp::setupPresets(){
 	groupPreset p2;
 	
 	p2.name = "multipleQuantPhase";
-	p2.numChimes = ofRandom(5,20);
+	p2.numChimes = 11;
 	p2.pos.initVal.set(ofVec2f(0,0));
 	p2.pos.dType = DT_NONE;
 	p2.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
 	p2.freq.dType = DT_FLAT;
 	p2.freq.range = 12;
 	p2.freq.increment = 3;
-	p2.iAngle.initVal = 0;
-	p2.iAngle.dType =  DT_STEP;
-	p2.iAngle.increment = b2_pi * (float)1.0f/p2.numChimes;
+	p2.phase.initVal = ofRandom(0.0,0.25) * b2_pi;
+	p2.phase.dType =  DT_STEP;
+	p2.phase.increment = b2_pi * (float)1.0f/p2.numChimes;
 	p2.speed.initVal = 1.0;
 	p2.length.initVal = 2.0;
 	
@@ -102,10 +109,10 @@ void testApp::setupPresets(){
 	p1.freq.dType = DT_FLAT;
 	p1.freq.range = 12;
 	p1.freq.increment = 3;
-	p1.iAngle.initVal = 0;
-	p1.iAngle.dType =  DT_FLAT;
-	p1.iAngle.increment = b2_pi * 0.01;
-	p1.iAngle.range = 100;
+	p1.phase.initVal = 0;
+	p1.phase.dType =  DT_FLAT;
+	p1.phase.increment = b2_pi * 0.01;
+	p1.phase.range = 100;
 	p1.speed.dType = DT_NORMAL;
 	p1.speed.initVal =  -0.3;
 	p1.speed.increment = 0.05;
@@ -129,6 +136,16 @@ void testApp::update(){
 	
 	chimeManager::update();
 	
+	if(currentMode == MT_SELECT){
+		if(isSearching){
+			chimeManager::selectSample(mouseMovePos);
+			chimeManager::newSearch();
+			if(currentPreFilter == ST_SAMP_SPEED){
+				chimeManager::filterBySampleSpeed();
+			}
+		}
+	}
+	
 	
 }
 
@@ -150,7 +167,7 @@ void testApp::handleMessages(){
 			
 		}else if ( m.getAddress() == "/switchGroup" ){
 			
-			chimeManager::selectNewGroup();
+			//chimeManager::selectNewGroup();
 			
 		}
 			
@@ -209,7 +226,19 @@ void testApp::draw(){
 	
 	chimeManager::draw();
 	
+	if(MT_SELECT){
+		
+		if(isSearching){
+			chimeManager::drawSample();
+		}
+		
+		chimeManager::drawTmpSelected();
+		chimeManager::drawSelected();
+	}
+	
 	drawActions();
+	
+	
 	
 	ofDisableBlendMode();
 	
@@ -230,7 +259,24 @@ void testApp::draw(){
 	ofSetColor(100);
 	
 	ofDrawBitmapString("mode: " + menuStrings[currentMode], 20,20);
-	ofDrawBitmapString("preset: " + mPresets[mCurrentPreset].name, 300,20);
+	
+	switch (currentMode) {
+		case MT_ADD:
+			ofDrawBitmapString("preset: " + mPresets[mCurrentPreset].name, 300,20);
+			break;
+		case MT_SELECT:
+			ofDrawBitmapString("preFilter: " + selectStrings[currentPreFilter], 300,20);
+			ofDrawBitmapString("filter: " + selectStrings[currentFilter], 600,20);
+			break;
+		case MT_ADJUST:
+			ofDrawBitmapString("adjustType: " , 300,20);
+			break;
+			
+		default:
+			break;
+	}
+	
+	
 	ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate(),2), 1100,20);
 	
 
@@ -244,30 +290,27 @@ void testApp::drawActions(){
 	
 	if(currentAction  == AT_ADD){};
 	
-	if(currentAction == AT_SELECT_POS){
-			
-			ofNoFill();
-			ofSetColor(150);
-			ofCircle(mouseDownPos, distParam);
-			chimeManager::drawSelected();
-			
-	}
-			
-	if(currentAction == AT_SELECT_SPEED){
-			
-		float d = 1.0 + distParam * 2.5;
+	if(currentAction == AT_SELECT){
 		
+		
+		if(currentFilter == ST_SAMP_PHASE_FUND){
+			
+			float d = 0.5 + dragDist/2;
+			
 			ofNoFill();
 			ofSetColor(150);
 			ofCircle(mouseDownPos,d);
 			ofVec2f p(mouseDownPos + ofVec2f(0,d));
-			p.rotateRad(angleParam * 2,mouseDownPos);
+			p.rotate(dragAngle ,mouseDownPos);
 			ofLine(mouseDownPos.x, mouseDownPos.y, p.x, p.y);
-			ofDrawBitmapString("rSpeed: " + ofToString(angleParam,2) +
-							   "\ntollerance: " + ofToString(distParam, 2),
+			ofDrawBitmapString("fundPhase: " + ofToString(angleParam) +
+							   "\ntolleranceDegrees: " + ofToString(distParam),
 							   mouseDownPos + d);
-			chimeManager::drawSelected();
+			
+		
+		}
 	}
+	
 			
 	if(currentAction == AT_ADJUST){};
 			
@@ -283,14 +326,15 @@ void testApp::beginAction(){
 	
 	switch (currentAction) {
 		case AT_ADD:
-			
 			break;
-		case AT_SELECT_POS:
 			
+		case AT_SELECT:
+			if(currentFilter == ST_SAMP_SPEED)chimeManager::filterBySampleSpeed();
 			break;
+			
 		case AT_ADJUST:
-			
 			break;
+			
 		default:
 			break;
 	}
@@ -303,21 +347,25 @@ void testApp::continueAction(){
 		case AT_ADD:
 			
 			break;
-		case AT_SELECT_POS:
-			distParam = dragDist/2;
-			chimeManager::selectByPos(mouseDownPos, distParam);
+		case AT_SELECT:
+			if(currentFilter == ST_SAMP_PHASE_FUND){
+				
+				distParam = max(0.5, dragDist - 0.5);
+				distParam = ofMap(distParam, 0.5,3.0, 1,45, true);
+				angleParam = ofMap(abs(dragAngle),0,180, 51, 1);
+				
+				angleParam = floor(angleParam);
+				distParam = floor(distParam);
+				
+				chimeManager::filterByPhaseFundamental(angleParam, distParam);
+				
+			}
 			break;
+			
 		
-		case AT_SELECT_SPEED:
-			distParam = max(0.0, dragDist - 2.0)/5;
-			angleParam = -ofDegToRad(dragAngle)/2;
-			angleParam -= fmod(angleParam, 0.01f);
-			chimeManager::selectByRotSpeed(angleParam, distParam);
-			break;
-			
 		case AT_ADJUST:
-			
 			break;
+			
 		default:
 			break;
 	}
@@ -329,25 +377,24 @@ void testApp::endAction(){
 
 	switch (currentAction) {
 		case AT_ADD:
-			chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos); //probably will add dragdist and direction 
+			chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos); //probably will add dragdist and direction	
 			break;																//for user presets
 																				//maybe use old strategy of screen mapping for extra controls
-		case AT_SELECT_POS:
-
-			
+		case AT_SELECT:
+			chimeManager::endSearch();
 			break;
-		case AT_SELECT_SPEED:
+		
 
-			
-			break;
 		case AT_ADJUST:
-			
 			break;
+			
 		default:
 			break;
 	}
 	
 	currentAction = AT_NONE;
+	
+	
 	
 }
 
@@ -356,13 +403,27 @@ void testApp::keyPressed(int key){
 	
 	for(int i = 0; i < MT_COUNT; i++){
 	
-		if(key == 49 + i)currentMode = e_MenuType(i);
+		if(key == 49 + i){
+			currentMode = e_MenuType(i);
+			if(currentMode == MT_SELECT)chimeManager::clearTmps();
+			break;
+		}
 	
 	}
 	
+	if(currentMode == MT_ADD){
+		if(key == OF_KEY_UP)mCurrentPreset = min(mCurrentPreset + 1, (int)mPresets.size() -1);
+		if(key == OF_KEY_DOWN)mCurrentPreset = max(mCurrentPreset - 1,0);
+	}
 	
-	if(key == OF_KEY_UP)mCurrentPreset = min(mCurrentPreset + 1, (int)mPresets.size() -1);
-	if(key == OF_KEY_DOWN)mCurrentPreset = max(mCurrentPreset - 1,0);
+	if(currentMode == MT_SELECT){
+		
+		if(key == OF_KEY_UP)currentFilter = min(currentFilter + 1, (int)ST_COUNT -1);
+		if(key == OF_KEY_DOWN)currentFilter = max(currentFilter - 1,0);
+		if(key == ' '){isSearching = true;}
+
+	}
+	
 	
 	if(key == 'x')chimeManager::shiftFocalPoint(0.0f);
 	if(key == 'z')chimeManager::shiftFocalPoint(1.0f);
@@ -370,6 +431,8 @@ void testApp::keyPressed(int key){
 	if(key == 'a')chimeManager::shiftZPos(0.0f);
 	if(key == 's')chimeManager::shiftZPos(1.0f);
 	
+	
+
 	
 	/*if(key == 'n'){
 	 
@@ -401,12 +464,20 @@ void testApp::keyPressed(int key){
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
 
+	if(key == ' '){
+		isSearching = false;
+		if(currentPreFilter == ST_SAMP_SPEED){
+			chimeManager::endSearch();
+		}
+		
+	}
+	
 }
 
 //--------------------------------------------------------------
 void testApp::mouseMoved(int x, int y ){
 	
-
+	mouseMovePos = getZPlaneProjection(ofVec2f(x,y));
 	
 }
 
@@ -415,7 +486,7 @@ void testApp::mouseDragged(int x, int y, int button){
 
 	mouseDragPos = getZPlaneProjection(ofVec2f(x,y));
 	dragDist = ofVec2f(mouseDragPos - mouseDownPos).length();
-	dragAngle = ofVec2f(mouseDragPos - mouseDownPos).angle(ofVec2f(0,1));
+	dragAngle = -ofVec2f(mouseDragPos -mouseDownPos).angle(ofVec2f(0,1));
 	continueAction();
 	
 }
@@ -428,7 +499,7 @@ void testApp::mousePressed(int x, int y, int button){
 	switch (currentMode) {
 			
 		case MT_ADD:currentAction = AT_ADD;break;
-		case MT_SELECT:currentAction = (button == 0)? AT_SELECT_POS : AT_SELECT_SPEED; break;
+		case MT_SELECT:currentAction = AT_SELECT; break;
 		case MT_ADJUST:currentAction = AT_ADJUST;break;
 			
 		default:

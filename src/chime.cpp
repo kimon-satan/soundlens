@@ -38,7 +38,10 @@ chime::chime(){
 	mBlur = 1.0;
 	spIndex = 0;
 	zPos = 0;
-	
+	isSelected = false;
+	isTmpSelected = false;
+	phase = 0;
+	speed = 0;
 	
 }
 
@@ -118,6 +121,15 @@ float chime::getZpos(){return zPos;}
 
 void chime::setIsSelected(bool b){isSelected = b;}
 bool chime::getIsSelected(){return isSelected;}
+
+void chime::setIsTmpSelected(bool b){isTmpSelected = b;}
+bool chime::getIsTmpSelected(){return isTmpSelected;}
+
+void chime::setSpeed(float f){speed = f;}
+float chime::getSpeed(){return speed; }
+
+void chime::setPhase(float f){phase = f;}
+float chime::getPhase(){return phase; }
 
 chime::~chime(){
 

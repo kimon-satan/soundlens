@@ -40,20 +40,24 @@ namespace chimeFactory {
 		
 		sd.length = cd.length;
 		sd.offset = cd.offset;
-		sd.iAngle = cd.iAngle;
-		sd.rSpeed = cd.rSpeed; //cd.rSpeed should be the cumulative one
-		sd.cum_rSpeed = sd.rSpeed;
+		sd.iAngle = cd.phase;
+		sd.rSpeed = cd.speed; //cd.rSpeed should be the cumulative one
+		c->setSpeed(cd.speed);
+		c->setPhase(cd.phase);
 		
+		//might need to think about this when pivots are flexible 
+		//(should be the other way round)
 		
+		/*
 		for(int i = 0; i < cd.pivots.size(); i++){
-			sd.cum_rSpeed += cd.pivots[i].rSpeed; //might need to think about this when pivots are flexible 
-												//(should be the other way round)
+			sd.cum_rSpeed += cd.pivots[i].rSpeed; 
+												
 			sd.iAngle += cd.pivots[i].iAngle;
-		}
+		}*/
 		
 		
 		//normalize so phases can be compared
-		sd.iAngle += fmod(sd.cum_rSpeed * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
+		sd.iAngle += fmod(c->getSpeed() * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
 		
 		c->setStemDims(sd);
 		c->setSpIndex(100);
@@ -80,7 +84,7 @@ namespace chimeFactory {
 		
 		b2Body * stem = c->getWorld()->CreateBody(&bd);
 		stem->SetSleepingAllowed(true);
-		stem->SetAngularVelocity(sd.cum_rSpeed); 
+		stem->SetAngularVelocity(c->getSpeed()); 
 		
 		b2PolygonShape stemShape;
 		stemShape.SetAsBox(0.01,sd.length/2, b2Vec2(0,sd.offset),0); // needs to include offset and angle

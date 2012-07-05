@@ -22,7 +22,7 @@ class chimeRenderer{
 	static void drawStem(ofPtr<chime> c);
 	static void drawHammer(ofPtr<chime> c);
 	static void drawSensors(ofPtr<chime> c);
-	static void drawSelected(ofPtr<chime> c);
+	static void drawHighlight(ofPtr<chime> c, ofColor c, bool outLine);
 	
 	private:
 	

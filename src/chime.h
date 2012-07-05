@@ -28,7 +28,7 @@ struct pivotDims{
 
 struct stemDims{
 	
-	float offset, rSpeed, iAngle, cum_rSpeed, length, iHoff;
+	float offset, rSpeed, iAngle, length, iHoff;
 	ofVec2f cPos;
 	
 };
@@ -94,6 +94,12 @@ public:
 	void setAnchorPos(ofVec2f t);
 	ofVec2f getAnchorPos();
 	
+	void setSpeed(float f);
+	float getSpeed();
+	
+	void setPhase(float f);
+	float getPhase();
+	
 	void setBlur(float f);
 	float getBlur();
 	
@@ -105,6 +111,9 @@ public:
 	
 	void setIsSelected(bool b);
 	bool getIsSelected();
+	
+	void setIsTmpSelected(bool b);
+	bool getIsTmpSelected();
 	
 	int getIndex();
 	
@@ -138,12 +147,14 @@ private:
 	
 	bool mSensorOn[2];
 	
+	float phase, speed;
+	
 	float mBlur;
 	int spIndex;
 	
 	ofVec2f anchorPos;
 	float zPos;
 	
-	bool isSelected;
+	bool isSelected, isTmpSelected;
 
 };

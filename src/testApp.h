@@ -34,8 +34,7 @@ class testApp : public ofBaseApp{
 	
 	enum e_ActionType {
 		AT_ADD,
-		AT_SELECT_POS,
-		AT_SELECT_SPEED,
+		AT_SELECT,
 		AT_ADJUST,
 		AT_NONE
 	};
@@ -48,16 +47,9 @@ class testApp : public ofBaseApp{
 	};
 	
 	enum e_SelectType {
-		ST_POS,
-		ST_SPEED,
-		ST_PHASE,
-		ST_DSPEED,
-		ST_DPHASE,
-		ST_PHASE_SPEED,
-		ST_DPHASE_SPEED,
-		ST_DPHASE_DSPEED,
-		ST_FREQ,
-		ST_COL,
+		ST_SAMP_SPEED,
+		ST_SAMP_PHASE_FUND,
+		ST_QUANT_PHASE,
 		ST_COUNT,
 	};
 	
@@ -85,12 +77,23 @@ class testApp : public ofBaseApp{
 	
 	e_ActionType currentAction;
 	e_MenuType currentMode;
+
 	
 	vector<string> menuStrings;
+	vector<string> selectStrings;
 	
-	ofVec2f mouseDownPos, mouseDragPos;
+	//mouse stuff
+	
+	ofVec2f mouseDownPos, mouseDragPos, mouseMovePos;
 	float dragDist, dragAngle;
 	float distParam, angleParam;
+	
+	//search stuff
+	
+	bool isSearching;
+	int currentFilter;
+	int currentPreFilter;
+
 	
 	
 };

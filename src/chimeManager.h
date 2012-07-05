@@ -21,7 +21,7 @@ struct groupPreset{
 	int numChimes;
 	attributeDef<ofVec2f> pos;
 	attributeDef<float> freq;
-	attributeDef<float> iAngle;
+	attributeDef<float> phase;
 	attributeDef<float> speed;
 	attributeDef<float> length;
 	
@@ -34,32 +34,49 @@ class chimeManager{
 	static void setup(ofxOscSender & s , ofxOscSender & i_s);
 	static void update();
 	static void draw();
-	static void drawSelected();
+	
 	
 	static void rePopulateRenderList();
 	
 	static void shiftFocalPoint(float direction);
 	static void shiftZPos(float direction);
-	static void selectNewGroup();
+	static void nextPrevSelected();
 	
 	static void createChimes(groupPreset p, ofVec2f pos);
 	
 	//selection methods
 	
-	static void selectByPos(ofVec2f p, float r);
-	static void selectByRotSpeed(float rs, float tol);
+	static void newSearch();
+	static void endSearch();
+	static void clearTmps();
+	
+	static void selectSample(ofVec2f p);
+	
+	static void filterBySampleSpeed();
+	static void filterByPhaseFundamental(int pf, int tol);
+	static void filterByQInterval(int pMul, int pOff);
+	
+	static void drawSample();
+	static void drawSelected();
+	static void drawTmpSelected();
 	
 	private:
 
 	static vector<ofPtr<chime> > mChimes;
+	
 	static vector<ofPtr<chime> > mSelected;
-	static vector<vector<ofPtr<chime> > >mOldGroups;
+	static vector<ofPtr<chime> > mTmpSelected;
+	
+	static vector<vector<ofPtr<chime> > >mPrevSelected;
 	static vector<vector<ofPtr<chime> > > renderList;
 	
-	static int selCGroup;
+	static int prevSelIndex;
 	static float mMaxZ;
 	static customListener mListener;
 	static ofxOscSender * iSender;
 	
+	static ofPtr<chime> mSampleChime;
+	static float mPhaseTol;
+	static int mPhaseFund;
 	
 };

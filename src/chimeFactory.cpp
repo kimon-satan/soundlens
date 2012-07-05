@@ -42,6 +42,7 @@ namespace chimeFactory {
 		sd.offset = cd.offset;
 		sd.iAngle = cd.phase;
 		sd.rSpeed = cd.speed; //cd.rSpeed should be the cumulative one
+		sd.cPos = cd.anchorPos; //mightNeed to think about this one when pivots come back
 		c->setSpeed(cd.speed);
 		c->setPhase(cd.phase);
 		

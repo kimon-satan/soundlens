@@ -10,6 +10,8 @@
 #include "chimeManager.h"
 
 vector<ofPtr<chime> > chimeManager::mChimes;
+vector<ofPtr<chime> > chimeManager::mPreviewChimes;
+
 vector<ofPtr<chime> > chimeManager::mSelected;
 vector<ofPtr<chime> > chimeManager::mTmpSelected;
 vector<vector<ofPtr<chime> > > chimeManager::mPrevSelected;
@@ -41,27 +43,28 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 
 void chimeManager::createChimes(groupPreset p, ofVec2f pos){
 	
+	mPreviewChimes.clear();
 	
 	p.pos.initVal =  pos;
 	
-	vector<ofPtr<chime> > tc;
+	int nc = p.numChimes.getValue();
 	
-	for(int i = 0; i < p.numChimes; i ++){
+	for(int i = 0; i < nc; i ++){
 		
 		chimeDef cd;
-		cd.length = p.length.getValue(i);
-		cd.phase = p.phase.getValue(i); 
-		cd.anchorPos =  p.pos.getValue(i);
+		cd.length = p.length.getValue(i,nc);
+		cd.phase = p.phase.getValue(i,nc); 
+		cd.anchorPos =  p.pos.getValue(i,nc);
 		cd.offset = 0;					
-		cd.midi[0] = p.freq.getValue(i);
-		cd.midi[1] = p.freq.getValue(i);
+		cd.midi[0] = p.freq.getValue(i,nc);
+		cd.midi[1] = p.freq.getValue(i,nc);
 		cd.decay[0] = 1.8;
 		cd.decay[1] = 1.8;
-		cd.speed = p.speed.getValue(i);
+		cd.speed = p.speed.getValue(i,nc);
 		cd.colors[0] = ofColor(255,0,0);
 		cd.colors[1] = ofColor(255,0,0);
-		cd.sensOn[0] = true; //(i%2 == 0);
-		cd.sensOn[1] = true; //(i%2 == 1);
+		cd.sensOn[0] = true;
+		cd.sensOn[1] = true; 
 		cd.zPos = chimeUpdater::getFocalPoint() + 1.0; //not for now
 		
 		
@@ -69,19 +72,23 @@ void chimeManager::createChimes(groupPreset p, ofVec2f pos){
 		
 		c->setCollisionListener(mListener);
 		
-		mChimes.push_back(c);
-		tc.push_back(c);
+		mPreviewChimes.push_back(c);
+
 	}
 	
 	
-	mPrevSelected.push_back(tc);
-	mSelected = tc;
-	
-	rePopulateRenderList();
-
 
 }
 
+void chimeManager::endNewChimes(){
+
+	mSelected = mPreviewChimes;
+	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++)mChimes.push_back(*it);
+	mPreviewChimes.clear();
+	
+	rePopulateRenderList();
+
+}
 
 void chimeManager::rePopulateRenderList(){
 	
@@ -298,7 +305,7 @@ void chimeManager::draw(){
 void chimeManager::drawSelected(){
 	
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
-		if(!(*it)->getIsTmpSelected() && (*it)->getIsSelected())chimeRenderer::drawHighlight(*it, ofColor(255,0,0,255), true);
+		if(!(*it)->getIsTmpSelected() && (*it)->getIsSelected())chimeRenderer::drawOutline(*it, ofColor(255,0,0,255));
 	}
 
 
@@ -307,14 +314,23 @@ void chimeManager::drawSelected(){
 void chimeManager::drawTmpSelected(){
 	
 	for(vector<ofPtr<chime> >::iterator it = mTmpSelected.begin(); it != mTmpSelected.end(); it++){
-		if((*it)->getIsTmpSelected())chimeRenderer::drawHighlight(*it, ofColor(255,0,0,50), false);
+		if((*it)->getIsTmpSelected())chimeRenderer::drawHighlight(*it, ofColor(255,0,0,50));
 	}
 		
 }
 
 void chimeManager::drawSample(){
 	
-	if(mSampleChime)chimeRenderer::drawHighlight(mSampleChime, ofColor(0,0,255,50), false);
+	if(mSampleChime)chimeRenderer::drawHighlight(mSampleChime, ofColor(0,0,255,50));
 	
+}
+
+void chimeManager::drawPreviewChimes(){
+
+	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++){
+		chimeRenderer::drawOutline(*it, ofColor(150,0,0,150));
+	}
+	
+
 }
 

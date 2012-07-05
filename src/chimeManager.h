@@ -18,7 +18,7 @@ struct groupPreset{
 	
 	string name;
 	
-	int numChimes;
+	attributeDef<int> numChimes;
 	attributeDef<ofVec2f> pos;
 	attributeDef<float> freq;
 	attributeDef<float> phase;
@@ -43,6 +43,7 @@ class chimeManager{
 	static void nextPrevSelected();
 	
 	static void createChimes(groupPreset p, ofVec2f pos);
+	static void endNewChimes();
 	
 	//selection methods
 	
@@ -59,11 +60,13 @@ class chimeManager{
 	static void drawSample();
 	static void drawSelected();
 	static void drawTmpSelected();
+	static void drawPreviewChimes();
 	
 	private:
 
 	static vector<ofPtr<chime> > mChimes;
 	
+	static vector<ofPtr<chime> > mPreviewChimes;
 	static vector<ofPtr<chime> > mSelected;
 	static vector<ofPtr<chime> > mTmpSelected;
 	

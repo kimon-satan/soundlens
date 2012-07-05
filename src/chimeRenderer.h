@@ -22,12 +22,14 @@ class chimeRenderer{
 	static void drawStem(ofPtr<chime> c);
 	static void drawHammer(ofPtr<chime> c);
 	static void drawSensors(ofPtr<chime> c);
-	static void drawHighlight(ofPtr<chime> c, ofColor c, bool outLine);
+	static void drawHighlight(ofPtr<chime> c, ofColor c);
+	static void drawOutline(ofPtr<chime> c, ofColor c);
 	
 	private:
 	
 	static vector<ofPtr<ofImage> >  mStemSprite;
 	static vector<vector<ofPtr<ofImage> > > mEmptySensorSprite;
+	static vector<vector<ofPtr<ofImage> > > mAlphaSensorSprite;
 	static vector<vector<ofPtr<ofImage> > >	mFilledSensorSprite;
 	static vector<ofPtr<ofImage> >	mEmptyHammerSprite;
 	static vector<ofPtr<ofImage> >	mFilledHammerSprite;

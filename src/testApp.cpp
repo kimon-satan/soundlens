@@ -60,39 +60,43 @@ void testApp::setupPresets(){
 	groupPreset p;
 	
 	p.name = "singleQuantPhase";
-	p.numChimes = 1;
+	p.numChimes.initVal.set(1);
 	p.pos.initVal.set(ofVec2f(0,0));
 	p.pos.dType = DT_NONE;
 	p.pos.increment.set(ofVec2f(0,0.5));
 	p.pos.range = 5;
-	p.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
+	p.freq.initVal.set(MIDI_MIN + MIDI_RANGE/2);
 	p.freq.dType = DT_NONE;
-	p.freq.range = 12;
-	p.freq.increment = 3;
-	p.phase.initVal = 0.5;
+	p.freq.range.set(12);
+	p.freq.increment.set(3);
+	p.phase.initVal.set(0.5);
 	p.phase.dType =  DT_FLAT;
-	p.phase.increment = b2_pi * 1.0f/64.0f;
-	p.phase.range = 10;
-	p.speed.initVal = 1.0;
-	p.length.initVal = 2.0;
+	p.phase.increment.set(b2_pi * 1.0f/64.0f);
+	p.phase.range.set(10);
+	p.speed.initVal.set(1.0);
+	p.length.initVal.set(2.0);
 	
 	mPresets.push_back(p);
 	
 	groupPreset p2;
 	
 	p2.name = "multipleQuantPhase";
-	p2.numChimes = 11;
+	p2.numChimes.dType = DT_FLAT;
+	p2.numChimes.increment.set(1);
+	p2.numChimes.range.set(4);
+	p2.numChimes.initVal.set(12);
 	p2.pos.initVal.set(ofVec2f(0,0));
 	p2.pos.dType = DT_NONE;
-	p2.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
+	p2.freq.initVal.set(MIDI_MIN + MIDI_RANGE/2);
 	p2.freq.dType = DT_FLAT;
-	p2.freq.range = 12;
-	p2.freq.increment = 3;
-	p2.phase.initVal = ofRandom(0.0,0.25) * b2_pi;
-	p2.phase.dType =  DT_STEP;
-	p2.phase.increment = b2_pi * (float)1.0f/p2.numChimes;
-	p2.speed.initVal = 1.0;
-	p2.length.initVal = 2.0;
+	p2.freq.range.set(12);
+	p2.freq.increment.set(3);
+	p2.phase.initVal.set(0);
+	p2.phase.dType =  DT_SLICE;
+	p2.phase.increment.set(b2_pi);
+	p2.phase.range.set(1);
+	p2.speed.initVal.set(1.0);
+	p2.length.initVal.set(2.0);
 	
 	mPresets.push_back(p2);
 	
@@ -100,24 +104,24 @@ void testApp::setupPresets(){
 	groupPreset p1;
 	
 	p1.name = "singleNormSpeed";
-	p1.numChimes = 1;
+	p1.numChimes.initVal.set(1);
 	p1.pos.initVal.set(ofVec2f(0,0));
 	p1.pos.dType = DT_NONE;
 	p1.pos.increment.set(ofVec2f(0,0.5));
 	p1.pos.range = 5;
-	p1.freq.initVal = MIDI_MIN + MIDI_RANGE/2;
+	p1.freq.initVal.set(MIDI_MIN + MIDI_RANGE/2);
 	p1.freq.dType = DT_FLAT;
-	p1.freq.range = 12;
-	p1.freq.increment = 3;
-	p1.phase.initVal = 0;
+	p1.freq.range.set(12.0f);
+	p1.freq.increment.set(3);
+	p1.phase.initVal.set(0);
 	p1.phase.dType =  DT_FLAT;
-	p1.phase.increment = b2_pi * 0.01;
-	p1.phase.range = 100;
+	p1.phase.increment.set(b2_pi * 0.01);
+	p1.phase.range.set(100);
 	p1.speed.dType = DT_NORMAL;
-	p1.speed.initVal =  -0.3;
-	p1.speed.increment = 0.05;
-	p1.speed.range = 10;
-	p1.length.initVal = 4.0;
+	p1.speed.initVal.set( -0.3);
+	p1.speed.increment.set(0.05);
+	p1.speed.range.set(10);
+	p1.length.initVal.set(4.0);
 	
 	mPresets.push_back(p1);
 	
@@ -288,7 +292,10 @@ void testApp::drawActions(){
 	
 	ofEnableSmoothing();
 	
-	if(currentAction  == AT_ADD){};
+	if(currentAction  == AT_ADD){
+	
+		chimeManager::drawPreviewChimes();
+	};
 	
 	if(currentAction == AT_SELECT){
 		
@@ -345,7 +352,7 @@ void testApp::continueAction(){
 	
 	switch (currentAction) {
 		case AT_ADD:
-			
+			chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos);
 			break;
 		case AT_SELECT:
 			if(currentFilter == ST_SAMP_PHASE_FUND){
@@ -377,7 +384,7 @@ void testApp::endAction(){
 
 	switch (currentAction) {
 		case AT_ADD:
-			chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos); //probably will add dragdist and direction	
+			chimeManager::endNewChimes();										//probably will add dragdist and direction	
 			break;																//for user presets
 																				//maybe use old strategy of screen mapping for extra controls
 		case AT_SELECT:

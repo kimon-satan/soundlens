@@ -15,6 +15,7 @@ enum e_distributionType{
 	
 	DT_NONE,
 	DT_STEP,
+	DT_SLICE,
 	DT_FLAT,
 	DT_NORMAL,
 	DT_CHOOSE,
@@ -22,6 +23,42 @@ enum e_distributionType{
 	DT_RADIAL,
 	DT_COUNT,
 	
+};
+
+enum e_setType{
+	
+	SET_FIXED,
+	SET_USER_A,
+	SET_USER_B,
+	
+};
+
+template <class T>
+
+class attributeElement{
+
+	public:
+	
+	void set(T t_ab){
+		
+		abs_val = t_ab;
+		setType = SET_FIXED;
+		
+	};
+	
+	void set(T t_mi, T t_ma, int s){
+		
+		min_val = t_mi;
+		max_val = t_ma;
+		setType = e_setType(s);
+	
+	}
+	
+	int setType;
+	T abs_val;
+	T min_val;
+	T max_val;
+
 };
 
 template <class T>
@@ -33,13 +70,13 @@ public:
 	attributeDef(){
 	
 		deviation = 0.25;
-		range = 100;
-		increment = 0.01;
+		range.abs_val = 100;
+		increment.abs_val = 0.01;
 		dType = DT_NONE;
 		
 	};	
 	
-	T getValue(int step = 0){
+	T getValue(int step = 0, int tot = 1){
 		
 		T r;
 		
@@ -50,22 +87,26 @@ public:
 		switch(dType){
 		
 			case DT_STEP:
-				r = initVal + step * increment;break;
+				r = initVal.abs_val + step * increment.abs_val;break;
+			case DT_SLICE:
+				r = initVal.abs_val + (float)step/tot * increment.abs_val * (float)range.abs_val;
+				break;
 			case DT_FLAT:
-				r = initVal + (int)ofRandom(-range,range) * increment;
+				r = initVal.abs_val + (int)ofRandom(-range.abs_val,range.abs_val) * increment.abs_val;
 				break;
 			case DT_NORMAL:
-				r = max(min(1.0f,gen()),-1.0f) * range;
-				r = initVal + (int)r * increment;
+				r = max(min(1.0f,gen()),-1.0f) * range.abs_val;
+				r = initVal.abs_val + (int)r * increment.abs_val;
 				break;
 			case DT_CHOOSE:
-				r = initVal + localVals[(int)(ofRandomf() * localVals.size())];
+				r = initVal.abs_val + localVals[(int)(ofRandomf() * localVals.size())];
 				break;
 			case DT_SEQ:
-				r = initVal + localVals[step%(int)localVals.size()];
+				r = initVal.abs_val + localVals[step%(int)localVals.size()];
 				break;
+
 			default:
-				r = initVal; break;
+				r = initVal.abs_val; break;
 			
 		}
 		
@@ -75,10 +116,11 @@ public:
 	};
 
 	
-	T initVal; //may need max and min vals for mouse control 
-	T increment; //may need max and min vals for mouse control 
-	int range; //may need max and min vals for mouse control 
+	attributeElement<T> initVal;
+	attributeElement<T> increment; //may need max and min vals for mouse control 
+	attributeElement<int>  range; //may need max and min vals for mouse control 
 	float deviation; //may need max and min vals for mouse control 
+	
 	vector<T> localVals;
 	e_distributionType dType;
 	
@@ -98,7 +140,7 @@ public:
 		
 	};	
 	
-	ofVec2f getValue(int step = 0){
+	ofVec2f getValue(int step = 0, int tot = 1){
 		
 		ofVec2f r;
 		float f;
@@ -111,6 +153,8 @@ public:
 				
 			case DT_STEP:
 				r = initVal + step * increment;break;
+			case DT_SLICE:
+				r = initVal + ((float)step/(float)tot) * increment * range;
 			case DT_FLAT:
 				r =  initVal + (int)ofRandom(-range,range) * increment;
 				r.rotate(ofRandom(0,360),initVal);

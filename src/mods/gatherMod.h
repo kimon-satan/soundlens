@@ -16,6 +16,8 @@ class gatherMod : public baseMod{
 	public:
 	
 	gatherMod();
+	void makeMod(int modType, vector<ofPtr<chime> > chimes);
+	void drawControl(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle);
 	
 	private:
 

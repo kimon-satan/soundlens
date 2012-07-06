@@ -80,6 +80,7 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 		c->setCollisionListener(mListener);
 		
 		mPreviewChimes.push_back(c);
+		
 
 	}
 	
@@ -91,7 +92,9 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 void chimeManager::endNewChimes(){
 
 	mSelected = mPreviewChimes;
-	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++)mChimes.push_back(*it);
+	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++){
+		mChimes.push_back(*it);
+	}
 	mPreviewChimes.clear();
 	
 	rePopulateRenderList();

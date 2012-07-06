@@ -108,7 +108,7 @@ void chime::setReactCount(int i, int c){reactCount[i] = c;}
 int chime::getReactCount(int i){return reactCount[i];}
 
 void chime::setAnchorPos(ofVec2f t){anchorPos.set(t);}
-ofVec2f chime::getAnchorPos(){return anchorPos;}
+ofVec2f chime::getAnchorPos(){return anchorPos.getCVal();}
 
 void chime::setBlur(float f){mBlur = f;}
 float chime::getBlur(){return mBlur;}

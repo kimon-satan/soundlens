@@ -14,3 +14,15 @@ gatherMod::gatherMod(){
 
 
 }
+
+
+void gatherMod::makeMod(int modType, vector<ofPtr<chime> > chimes){
+
+
+}
+
+void gatherMod::drawControl(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
+
+
+
+}

@@ -13,6 +13,7 @@
 
 #include "collisionData.h"
 #include "customListener.h"
+#include "modifiable.h"
 #include <Box2D/Box2D.h>
 
 
@@ -41,6 +42,9 @@ public:
 	
 	chime();
 	virtual ~chime();
+	
+	void stepIncrement(int direction);
+	void autoIncrement();
 	
 	//getters and setters
 	
@@ -93,6 +97,7 @@ public:
 	
 	void setAnchorPos(ofVec2f t);
 	ofVec2f getAnchorPos();
+	void setAnchorTarget(ofVec2f t, bool isAuto);
 	
 	void setSpeed(float f);
 	float getSpeed();
@@ -152,7 +157,7 @@ private:
 	float mBlur;
 	int spIndex;
 	
-	ofVec2f anchorPos;
+	modifiable<ofVec2f> anchorPos;
 	float zPos;
 	
 	bool isSelected, isTmpSelected;

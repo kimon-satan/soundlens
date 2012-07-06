@@ -35,8 +35,8 @@ void testApp::setup(){
 	
 	mCurrentPreset = 0;
 	currentMode = e_MenuType(0);
-	currentFilter= e_SelectType(1);
-	currentPreFilter = ST_SAMP_SPEED;
+	currentFilter= e_SearchType(1);
+	currentPreFilter = SEARCH_SAMP_SPEED;
 	
 	isSearching = false;
 	
@@ -142,8 +142,8 @@ void testApp::update(){
 		if(isSearching){
 			chimeManager::selectSample(mouseMovePos);
 			chimeManager::newSearch();
-			if(currentPreFilter == ST_SAMP_SPEED){
-				chimeManager::filterBySampleSpeed();
+			if(currentPreFilter == SEARCH_SAMP_SPEED){
+				chimeManager::continueSearch(currentPreFilter, dragDist, dragAngle);
 			}
 		}
 	}
@@ -232,10 +232,10 @@ void testApp::draw(){
 		
 		if(isSearching){
 			chimeManager::drawSample();
+			chimeManager::drawTmpSelected();
 		}
 		
-		chimeManager::drawTmpSelected();
-		chimeManager::drawSelected();
+
 	}
 	
 	drawActions();
@@ -301,23 +301,12 @@ void testApp::drawActions(){
 	
 	if(currentAction == AT_SELECT){
 		
+		ofSetColor(100);
+		ofDrawBitmapString(mDisplayString, mouseDragPos.x, mouseDragPos.y);
+		chimeManager::drawSearchEngine(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+		chimeManager::drawTmpSelected();
+		chimeManager::drawSelected();
 		
-		if(currentFilter == ST_SAMP_PHASE_FUND){
-			
-			float d = 0.5 + dragDist * 3;
-			
-			ofNoFill();
-			ofSetColor(150);
-			ofCircle(mouseDownPos,d);
-			ofVec2f p(mouseDownPos + ofVec2f(0,d));
-			p.rotate(dragAngle * 360,mouseDownPos);
-			ofLine(mouseDownPos.x, mouseDownPos.y, p.x, p.y);
-			ofDrawBitmapString("fundPhase: " + ofToString(angleParam) +
-							   "\ntolleranceDegrees: " + ofToString(distParam),
-							   mouseDownPos + d);
-			
-		
-		}
 	}
 	
 			
@@ -338,7 +327,6 @@ void testApp::beginAction(){
 			break;
 			
 		case AT_SELECT:
-			if(currentFilter == ST_SAMP_SPEED)chimeManager::filterBySampleSpeed();
 			break;
 			
 		case AT_ADJUST:
@@ -356,21 +344,11 @@ void testApp::continueAction(){
 		case AT_ADD:
 			mDisplayString = chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos, dragDist, dragAngle);
 			break;
+			
 		case AT_SELECT:
-			if(currentFilter == ST_SAMP_PHASE_FUND){
-				
-				distParam = ofMap(dragDist,0,1,1,45);
-				angleParam = ofMap(dragAngle,0,1,51,1);
-				
-				angleParam = floor(angleParam);
-				distParam = floor(distParam);
-				
-				chimeManager::filterByPhaseFundamental(angleParam, distParam);
-				
-			}
+			mDisplayString = chimeManager::continueSearch(currentFilter, dragDist, dragAngle);
 			break;
 			
-		
 		case AT_ADJUST:
 			break;
 			
@@ -426,7 +404,7 @@ void testApp::keyPressed(int key){
 	
 	if(currentMode == MT_SELECT){
 		
-		if(key == OF_KEY_UP)currentFilter = min(currentFilter + 1, (int)ST_COUNT -1);
+		if(key == OF_KEY_UP)currentFilter = min(currentFilter + 1, (int)SEARCH_COUNT -1);
 		if(key == OF_KEY_DOWN)currentFilter = max(currentFilter - 1,0);
 		if(key == ' '){isSearching = true;}
 
@@ -474,7 +452,7 @@ void testApp::keyReleased(int key){
 
 	if(key == ' '){
 		isSearching = false;
-		if(currentPreFilter == ST_SAMP_SPEED){
+		if(currentPreFilter == SEARCH_SAMP_SPEED){
 			chimeManager::endSearch();
 		}
 		

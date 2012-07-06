@@ -16,11 +16,9 @@ vector<ofPtr<chime> > chimeManager::mSelected;
 vector<ofPtr<chime> > chimeManager::mTmpSelected;
 vector<vector<ofPtr<chime> > > chimeManager::mPrevSelected;
 vector<vector<ofPtr<chime> > > chimeManager::renderList;
-ofxOscSender * chimeManager::iSender = NULL;
 
-ofPtr<chime> chimeManager::mSampleChime;
-float chimeManager::mPhaseTol = 0.0f;
-int chimeManager::mPhaseFund = 64;
+allSearches chimeManager::mSearchEngine;
+ofxOscSender * chimeManager::iSender = NULL;
 
 int chimeManager::prevSelIndex = 0;
 float chimeManager::mMaxZ = 0.0f;
@@ -185,6 +183,16 @@ void chimeManager::newSearch(){
 	
 }
 
+string chimeManager::continueSearch(int searchType, float userA, float userB){
+
+	clearTmps();
+	string s = mSearchEngine.updateUserValues(searchType, userA, userB);
+	mTmpSelected =  mSearchEngine.search(searchType, mSelected);
+	
+	return s;
+	
+}
+
 void chimeManager::endSearch(){
 
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
@@ -192,7 +200,6 @@ void chimeManager::endSearch(){
 	mSelected = mTmpSelected;
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
 	clearTmps();
-	
 	
 }
 
@@ -213,80 +220,12 @@ void chimeManager::selectSample(ofVec2f p){
 		float td = p.distance((*it)->getStemDims().cPos);
 		if(td < dist){
 			dist = td;
-			mSampleChime = *it;
+			mSearchEngine.setSample(*it);
 		}
 		
 	}	
 
 }
-
-void chimeManager::filterBySampleSpeed(){
-	
-	clearTmps();
-	
-	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
-		
-		if((*it)->getSpeed()  == mSampleChime->getSpeed()){
-			mTmpSelected.push_back(*it);
-			(*it)->setIsTmpSelected(true);
-		}else{
-			(*it)->setIsTmpSelected(false);
-		}		
-	}
-	
-
-}
-
-void chimeManager::filterByPhaseFundamental(int pf, int tol){
-	
-	clearTmps();
-	
-	tol = max(tol, 1); //tol is in degrees
-	float tol_r = tol * b2_pi/180;
-	float angle = 2 * b2_pi/pf;
-	
-	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
-		
-		float rmdr = fmod((*it)->getPhase() - mSampleChime->getPhase(),angle);
-		
-		if(rmdr <= tol_r || angle - rmdr <= tol_r){
-			mTmpSelected.push_back(*it);
-			(*it)->setIsTmpSelected(true);
-		}else{
-			(*it)->setIsTmpSelected(false);
-		}	
-	}
-	
-	mPhaseFund = pf;
-
-}
-
-void chimeManager::filterByQInterval(int pMul, int pOff){
-	
-	vector<ofPtr<chime> > tmp;
-	
-	float tol = mPhaseTol;
-	float angle = 2 * b2_pi/mPhaseFund;
-	float offset = mSampleChime->getPhase() + (float)pOff * angle;
-	angle *= pMul;
-	
-	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
-		
-		float rmdr = fmod((*it)->getPhase() - offset,angle);
-		if(rmdr <= tol || angle - rmdr <= tol){
-			mTmpSelected.push_back(*it);
-			(*it)->setIsTmpSelected(true);
-		}else{
-			(*it)->setIsTmpSelected(false);
-		}	
-	}
-	
-	mTmpSelected = tmp;
-	
-}
-
-
-
 
 
 
@@ -330,7 +269,7 @@ void chimeManager::drawTmpSelected(){
 
 void chimeManager::drawSample(){
 	
-	if(mSampleChime)chimeRenderer::drawHighlight(mSampleChime, ofColor(0,0,255,50));
+	if(mSearchEngine.getSample())chimeRenderer::drawHighlight(mSearchEngine.getSample(), ofColor(0,0,255,50));
 	
 }
 
@@ -342,4 +281,11 @@ void chimeManager::drawPreviewChimes(){
 	
 
 }
+
+void chimeManager::drawSearchEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle){
+	
+	mSearchEngine.drawSearch(searchType, mdown, mdrag, dragDist, dragAngle);
+
+}
+
 

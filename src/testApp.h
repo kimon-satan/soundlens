@@ -46,12 +46,7 @@ class testApp : public ofBaseApp{
 		MT_COUNT
 	};
 	
-	enum e_SelectType {
-		ST_SAMP_SPEED,
-		ST_SAMP_PHASE_FUND,
-		ST_QUANT_PHASE,
-		ST_COUNT,
-	};
+
 	
 	
 	void setupMenus();

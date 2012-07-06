@@ -12,10 +12,11 @@
 #include "chimeFactory.h"
 #include "chimeRenderer.h"
 #include "chimeUpdater.h"
-#include "attributeDef.h"
+#include "presetParameter.h"
+#include "allSearches.h"
+
 
 struct groupPreset{
-	
 	
 	groupPreset(){
 		
@@ -29,12 +30,12 @@ struct groupPreset{
 	
 	string name;
 	
-	attributeDef<int> numChimes;
-	attributeDef<ofVec2f> pos;
-	attributeDef<float> freq;
-	attributeDef<float> phase;
-	attributeDef<float> speed;
-	attributeDef<float> length;
+	presetParameter<int> numChimes;
+	presetParameter<ofVec2f> pos;
+	presetParameter<float> freq;
+	presetParameter<float> phase;
+	presetParameter<float> speed;
+	presetParameter<float> length;
 	
 };
 
@@ -45,7 +46,6 @@ class chimeManager{
 	static void setup(ofxOscSender & s , ofxOscSender & i_s);
 	static void update();
 	static void draw();
-	
 	
 	static void rePopulateRenderList();
 	
@@ -59,19 +59,18 @@ class chimeManager{
 	//selection methods
 	
 	static void newSearch();
+	static string continueSearch(int searchType, float userA, float userB);
 	static void endSearch();
 	static void clearTmps();
-	
 	static void selectSample(ofVec2f p);
 	
-	static void filterBySampleSpeed();
-	static void filterByPhaseFundamental(int pf, int tol);
-	static void filterByQInterval(int pMul, int pOff);
+	//rendering 
 	
 	static void drawSample();
 	static void drawSelected();
 	static void drawTmpSelected();
 	static void drawPreviewChimes();
+	static void drawSearchEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle);
 	
 	private:
 
@@ -89,8 +88,7 @@ class chimeManager{
 	static customListener mListener;
 	static ofxOscSender * iSender;
 	
-	static ofPtr<chime> mSampleChime;
-	static float mPhaseTol;
-	static int mPhaseFund;
+	static allSearches mSearchEngine;
+	
 	
 };

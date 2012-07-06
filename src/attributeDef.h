@@ -7,7 +7,9 @@
  *
  */
 
-#include "ofMain.h"
+
+#pragma once
+#include "dataElement.h"
 #include <boost/random.hpp>
 #include <boost/random/normal_distribution.hpp>
 
@@ -25,64 +27,6 @@ enum e_distributionType{
 	
 };
 
-enum e_setType{
-	
-	SET_FIXED,
-	SET_USER_A,
-	SET_USER_B,
-	
-};
-
-template <class T>
-
-class attributeElement{
-
-	public:
-	
-	attributeElement(){
-		
-		setType = e_setType(0);
-		
-	}
-	
-	void set(T t_ab){
-		
-		abs_val = t_ab;
-		setType = e_setType(0);
-		
-	};
-	
-	void set(T t_mi, T t_ma, int s){
-		
-		min_val = t_mi;
-		max_val = t_ma;
-		setType = e_setType(s);
-	
-	};
-	
-	string setUserValues(float ua, float ub){
-		
-		if(setType != SET_FIXED){
-			abs_val = ofMap((setType == SET_USER_A)? ua:ub,0,1,min_val, max_val);
-			if(name != ""){
-				return name + ", " + ofToString(abs_val,2);
-			}else{
-				return ofToString(abs_val,2);
-			}
-			
-		}else{
-			
-			return "";
-		}
-	};
-	
-	e_setType setType;
-	T abs_val;
-	T min_val;
-	T max_val;
-	string name;
-
-};
 
 template <class T>
 
@@ -153,9 +97,9 @@ public:
 	};
 
 	
-	attributeElement<T> initVal;
-	attributeElement<T> increment; 
-	attributeElement<int>  range; 
+	dataElement<T> initVal;
+	dataElement<T> increment; 
+	dataElement<int>  range; 
 	float deviation; //may need max and min vals for mouse control 
 	string name;
 	vector<T> localVals;

@@ -37,6 +37,7 @@ void testApp::setup(){
 	currentMode = e_MenuType(0);
 	currentFilter= e_SearchType(1);
 	currentPreFilter = SEARCH_SAMP_SPEED;
+	currentMod = MOD_GATHER;
 	
 	isSearching = false;
 	
@@ -81,7 +82,7 @@ void testApp::setupPresets(){
 	groupPreset p2;
 	
 	p2.name = "multipleQuantPhase";
-	p2.numChimes.dType = DT_FLAT;
+	p2.numChimes.dType = DT_NONE;
 	p2.numChimes.increment.set(1);
 	p2.numChimes.range.set(4);
 	p2.numChimes.initVal.set(12);
@@ -295,22 +296,29 @@ void testApp::drawActions(){
 		chimeManager::drawPreviewChimes();
 		ofSetColor(100);
 		ofLine(mouseDownPos.x, mouseDownPos.y, mouseDragPos.x, mouseDragPos.y);
-		ofDrawBitmapString(mDisplayString, mouseDragPos.x, mouseDragPos.y);
+		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 		
-	};
+	}
 	
 	if(currentAction == AT_SELECT){
 		
-		ofSetColor(100);
-		ofDrawBitmapString(mDisplayString, mouseDragPos.x, mouseDragPos.y);
-		chimeManager::drawSearchEngine(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 		chimeManager::drawTmpSelected();
 		chimeManager::drawSelected();
+		chimeManager::drawSearchEngine(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+		ofSetColor(100);
+		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
+		
 		
 	}
 	
 			
-	if(currentAction == AT_ADJUST){};
+	if(currentAction == AT_ADJUST){
+	
+		chimeManager::drawSelected();
+		chimeManager::drawModEngine(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+		ofSetColor(100);
+		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
+	}
 			
 	
 	ofDisableSmoothing();
@@ -350,6 +358,7 @@ void testApp::continueAction(){
 			break;
 			
 		case AT_ADJUST:
+			mDisplayString = chimeManager::continueMod(currentMod, dragDist, dragAngle);
 			break;
 			
 		default:
@@ -372,6 +381,7 @@ void testApp::endAction(){
 		
 
 		case AT_ADJUST:
+			chimeManager::endMod(currentMod);
 			break;
 			
 		default:

@@ -1,5 +1,5 @@
 /*
- *  baseSearch.h
+ *  baseMod.h
  *  testBed1
  *
  *  Created by Simon Katan on 06/07/2012.
@@ -12,29 +12,24 @@
 #include "dataElement.h"
 #include "chime.h"
 
-struct searchData{
-	
-	int phaseFund;
-	float phaseTol;
+class baseMod{
 
-};
-
-class baseSearch{
-
-public:
+	public:
 	
-	virtual vector<ofPtr<chime> >getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup) = 0;
-	virtual void drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle) = 0;
+	virtual void makeMod(int modType, vector<ofPtr<chime> > chimes) = 0;
+	virtual void drawControl(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle) = 0;
 	
-	string setUserData(float ua, float ub);
 	void setName(string s);
+	string setUserData(float ua, float ub);
 	
-protected:
-
+	private:
+	
 	string name;
 	string userDataString;
 	vector <dataElement<float> > floatParameters;
 	vector <dataElement<int> > intParameters;
 	vector <dataElement<ofVec2f> > vecParameters;
-	
+
 };
+
+

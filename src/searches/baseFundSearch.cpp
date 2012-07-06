@@ -28,6 +28,7 @@ vector<ofPtr<chime> > baseFundSearch::getChimes(searchData& sd, ofPtr<chime> sam
 	float tol_r = intParameters[1].abs_val * b2_pi/180.0f;
 	tol_r = max(tol_r, 0.0001f);
 	float angle = 2.0f * b2_pi/(float)intParameters[0].abs_val;
+	sd.phaseTol = tol_r;
 	
 	vector<ofPtr<chime> > tmp;
 	
@@ -53,13 +54,13 @@ void baseFundSearch::drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, flo
 	
 	//may end up as a method in baseSearch for reuse
 	
-	float d = 0.5 + dragDist * 3;
+	float d = 0.5 + intParameters[1].abs_val * 3.0f/(float)intParameters[1].max_val;
 	
 	ofNoFill();
 	ofSetColor(150);
 	ofCircle(mouseDownPos,d);
 	ofVec2f p(mouseDownPos + ofVec2f(0,d));
-	p.rotate(dragAngle * 360,mouseDownPos);
+	p.rotate(-intParameters[0].abs_val * 360/intParameters[0].max_val,mouseDownPos);
 	ofLine(mouseDownPos.x, mouseDownPos.y, p.x, p.y);
 	
 	

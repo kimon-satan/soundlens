@@ -31,7 +31,6 @@ string allSearches::updateUserValues(int searchType, float ua, float ub){
 
 vector<ofPtr<chime> >allSearches::search(int searchType, vector<ofPtr<chime> > searchGroup){
 	
-
 	return searches[searchType]->getChimes(mSearchData, mSample, searchGroup);
 
 }

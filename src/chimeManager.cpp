@@ -18,6 +18,7 @@ vector<vector<ofPtr<chime> > > chimeManager::mPrevSelected;
 vector<vector<ofPtr<chime> > > chimeManager::renderList;
 
 allSearches chimeManager::mSearchEngine;
+allMods chimeManager::mModEngine;
 ofxOscSender * chimeManager::iSender = NULL;
 
 int chimeManager::prevSelIndex = 0;
@@ -228,6 +229,19 @@ void chimeManager::selectSample(ofVec2f p){
 }
 
 
+string chimeManager::continueMod(int modType, float userA, float userB){
+
+	string s = "";
+	
+	return s;
+
+}
+
+void chimeManager::endMod(int modType){
+
+
+}
+
 
 void chimeManager::update(){
 
@@ -288,4 +302,8 @@ void chimeManager::drawSearchEngine(int searchType, ofVec2f mdown, ofVec2f mdrag
 
 }
 
+void chimeManager::drawModEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle){
+
+	mModEngine.drawPreview(searchType, mdown, mdrag, dragDist, dragAngle);
+}
 

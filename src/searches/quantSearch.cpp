@@ -13,12 +13,12 @@ quantSearch::quantSearch(){
 	
 	dataElement <int> po;
 	po.name = "offset";
-	po.set(0,20,SET_USER_A);
+	po.set(0,20,SET_USER_B);
 	intParameters.push_back(po);
 
 	dataElement <int> pm;
 	pm.name = "mul";
-	pm.set(1,20,SET_USER_B);
+	pm.set(1,20,SET_USER_A);
 	intParameters.push_back(pm);
 	
 	
@@ -35,7 +35,7 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		float rmdr = fmod((*it)->getPhase() - offset,angle);
+		float rmdr = abs(fmod((*it)->getPhase() - offset,angle));
 		if(rmdr <= tol || angle - rmdr <= tol){
 			tmp.push_back(*it);
 			(*it)->setIsTmpSelected(true);
@@ -53,5 +53,14 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 void quantSearch::drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
 	
 	//not decided yet
+	float d = 0.5 + intParameters[1].abs_val * 3.0f/(float)intParameters[1].max_val;
+	
+	ofNoFill();
+	ofSetColor(150);
+	ofCircle(mouseDownPos,d);
+	ofVec2f p(mouseDownPos + ofVec2f(0,d));
+	p.rotate(-intParameters[0].abs_val * 360/intParameters[0].max_val,mouseDownPos);
+	ofLine(mouseDownPos.x, mouseDownPos.y, p.x, p.y);
+	
 	
 }

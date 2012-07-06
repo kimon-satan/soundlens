@@ -48,7 +48,6 @@ class testApp : public ofBaseApp{
 	
 
 	
-	
 	void setupMenus();
 	
 	void handleMessages();	
@@ -89,6 +88,8 @@ class testApp : public ofBaseApp{
 	bool isSearching;
 	int currentFilter;
 	int currentPreFilter;
+	
+	int currentMod;
 
 	
 	

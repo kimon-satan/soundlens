@@ -50,7 +50,7 @@ public:
 		if(setType != SET_FIXED){
 			abs_val = ofMap((setType == SET_USER_A)? ua:ub,0,1,min_val, max_val);
 			if(name != ""){
-				return name + ", " + ofToString(abs_val,2);
+				return name + " " + ofToString(abs_val,2) + ", ";
 			}else{
 				return ofToString(abs_val,2);
 			}

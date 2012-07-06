@@ -14,6 +14,7 @@
 #include "chimeUpdater.h"
 #include "presetParameter.h"
 #include "allSearches.h"
+#include "allMods.h"
 
 
 struct groupPreset{
@@ -56,13 +57,22 @@ class chimeManager{
 	static string createChimes(groupPreset p, ofVec2f pos, float userA, float userB);
 	static void endNewChimes();
 	
-	//selection methods
+	//search methods
 	
 	static void newSearch();
 	static string continueSearch(int searchType, float userA, float userB);
 	static void endSearch();
 	static void clearTmps();
 	static void selectSample(ofVec2f p);
+	
+	//mod methods
+	
+	static string continueMod(int modType, float userA, float userB);
+	static void endMod(int modType);
+	static void clearAllMods();
+	static void clearSelectedMods();
+	static void incrementMod(int direction);
+	
 	
 	//rendering 
 	
@@ -71,6 +81,7 @@ class chimeManager{
 	static void drawTmpSelected();
 	static void drawPreviewChimes();
 	static void drawSearchEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle);
+	static void drawModEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle);
 	
 	private:
 
@@ -89,6 +100,7 @@ class chimeManager{
 	static ofxOscSender * iSender;
 	
 	static allSearches mSearchEngine;
+	static allMods mModEngine;
 	
 	
 };

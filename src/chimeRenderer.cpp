@@ -232,7 +232,7 @@ void chimeRenderer::drawHighlight(ofPtr<chime> c, ofColor col){
 	b2Body * b = c->getStemBody();
 	stemDims sd = c->getStemDims();
 
-	
+	ofFill();
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y,0);
 		glPushMatrix();

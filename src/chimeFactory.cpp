@@ -23,7 +23,7 @@ namespace chimeFactory {
 		c->setWorld(world);
 		
 		for(int i = 0; i < 2; i++){
-			c->setSensorMidi(i, cd.midi[i]);
+			c->setModParam(CH_FREQ_A + i, cd.midi[i]);
 			float h = (float)(cd.midi[i] - MIDI_MIN)/MIDI_RANGE;
 			h = pow(h,0.5f);
 			c->setSensorHeight(i,h);
@@ -38,13 +38,14 @@ namespace chimeFactory {
 		
 		stemDims sd;
 		
-		sd.length = cd.length;
-		sd.offset = cd.offset;
+		c->setModParam(CH_LENGTH, cd.length);
+		
 		sd.iAngle = cd.phase;
 		sd.rSpeed = cd.speed; //cd.rSpeed should be the cumulative one
 		sd.cPos = cd.anchorPos; //mightNeed to think about this one when pivots come back
-		c->setSpeed(cd.speed);
-		c->setPhase(cd.phase);
+		
+		c->setModParam(CH_SPEED, cd.speed);
+		c->setModParam(CH_PHASE, cd.phase);
 		
 		//might need to think about this when pivots are flexible 
 		//(should be the other way round)
@@ -58,7 +59,7 @@ namespace chimeFactory {
 		
 		
 		//normalize so phases can be compared
-		sd.iAngle += fmod(c->getSpeed() * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
+		sd.iAngle += fmod(c->getModParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
 		
 		c->setStemDims(sd);
 		c->setSpIndex(100);
@@ -85,10 +86,10 @@ namespace chimeFactory {
 		
 		b2Body * stem = c->getWorld()->CreateBody(&bd);
 		stem->SetSleepingAllowed(true);
-		stem->SetAngularVelocity(c->getSpeed()); 
+		stem->SetAngularVelocity(c->getModParam(CH_SPEED)); 
 		
 		b2PolygonShape stemShape;
-		stemShape.SetAsBox(0.01,sd.length/2, b2Vec2(0,sd.offset),0); // needs to include offset and angle
+		stemShape.SetAsBox(0.01,c->getModParam(CH_LENGTH)/2);
 		b2FixtureDef fd;
 		fd.shape = &stemShape;
 		fd.density = 0.25;
@@ -109,7 +110,7 @@ namespace chimeFactory {
 		//position the hammer
 		//probably needs to go into another method
 		
-		sd.iHoff = -sd.length/2 + 0.1;
+		sd.iHoff = -c->getModParam(CH_LENGTH)/2 + 0.1;
 		
 		if(sd.iAngle > 0){
 		
@@ -128,7 +129,7 @@ namespace chimeFactory {
 		}
 		
 					
-		ofVec2f o(0,sd.offset * sd.length/2 + sd.iHoff);
+		ofVec2f o(0,sd.iHoff);
 		o.rotateRad(sd.iAngle);
 		
 		b2BodyDef hd;
@@ -168,8 +169,7 @@ namespace chimeFactory {
 			if(c->getSensorOn(i)){
 			
 				ofVec2f tmp(0, 0); //will need to be set to offset
-				tmp.y += (i == 0)? sd.length/2 : -sd.length/2;
-				tmp.y += sd.offset * sd.length/2;
+				tmp.y += (i == 0)? c->getModParam(CH_LENGTH)/2 : -c->getModParam(CH_LENGTH)/2;
 				tmp.rotateRad(sd.iAngle); //will need to pivot around offsetPoint
 				
 				b2BodyDef sdef;
@@ -243,7 +243,7 @@ namespace chimeFactory {
 		hjd.Initialize(hammer, stem,  hammer->GetPosition(), b2Vec2(axis.x,axis.y));
 		
 		hjd.lowerTranslation = 0;
-		hjd.upperTranslation = sd.length - 0.2; 
+		hjd.upperTranslation = c->getModParam(CH_LENGTH) - 0.2; 
 		
 
 		hjd.enableLimit = true;

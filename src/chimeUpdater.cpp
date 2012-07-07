@@ -83,7 +83,7 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 			ofxOscMessage m;
 			m.setAddress("/chime");
 			m.addIntArg(c->getIndex());
-			m.addFloatArg(c->getSensorMidi(sIndex));
+			m.addFloatArg(c->getModParam(CH_FREQ_A + sIndex));
 			m.addFloatArg(c->getReactSecs(sIndex));
 			m.addFloatArg(c->getBlur());
 			float p = c->getHammer()->GetPosition().x;

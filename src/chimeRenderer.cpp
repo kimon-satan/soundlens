@@ -126,9 +126,8 @@ void chimeRenderer::drawStem(ofPtr<chime> c){
 		glPushMatrix();
 		glTranslatef(b->GetPosition().x, b->GetPosition().y, zt);
 		glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
-		glTranslatef(0, sd.offset * sd.length/2, 0);
 		ofSetColor(100);
-		mStemSprite[c->getSpIndex()]->draw(0,0,mStemSprite[c->getSpIndex()]->getWidth()/80, sd.length * 1.25);
+		mStemSprite[c->getSpIndex()]->draw(0,0,mStemSprite[c->getSpIndex()]->getWidth()/80, c->getModParam(CH_LENGTH) * 1.25);
 		glPopMatrix();
 	ofPopMatrix();
 	
@@ -238,10 +237,9 @@ void chimeRenderer::drawHighlight(ofPtr<chime> c, ofColor col){
 		glPushMatrix();
 		glTranslatef(b->GetPosition().x, b->GetPosition().y, 0);
 		glRotatef(ofRadToDeg(b->GetAngle()), 0, 0, 1);
-		glTranslatef(0, sd.offset * sd.length/2, 0);
 		
 	ofSetColor(col);
-	ofRect(0,0, 0.1,sd.length * 1.25);
+	ofRect(0,0, 0.1,c->getModParam(CH_LENGTH) * 1.25);
 
 		
 		glPopMatrix();
@@ -263,11 +261,10 @@ void chimeRenderer::drawOutline(ofPtr<chime> c, ofColor col){
 		glPushMatrix();
 		glTranslatef(stem->GetPosition().x, stem->GetPosition().y, 0);
 		glRotatef(ofRadToDeg(stem->GetAngle()), 0, 0, 1);
-		glTranslatef(0, sd.offset * sd.length/2, 0);
 		
 
 	ofSetColor(col);
-	mStemSprite[min(c->getSpIndex(),10)]->draw(0,0,mStemSprite[0]->getWidth()/80, sd.length * 1.25);
+	mStemSprite[min(c->getSpIndex(),10)]->draw(0,0,mStemSprite[0]->getWidth()/80, c->getModParam(CH_LENGTH) * 1.25);
 		
 		glPopMatrix();
 	

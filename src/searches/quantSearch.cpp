@@ -32,12 +32,12 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 	
 	float tol = sd.phaseTol;
 	float angle = 2 * b2_pi/sd.phaseFund;
-	float offset = sample->getPhase() + (float)intParameters[0].abs_val * angle;
+	float offset = sample->getModParam(CH_PHASE) + (float)intParameters[0].abs_val * angle;
 	angle *= intParameters[1].abs_val;
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		float rmdr = abs(fmod((*it)->getPhase() - offset,angle));
+		float rmdr = abs(fmod((*it)->getModParam(CH_PHASE) - offset,angle));
 		if(rmdr <= tol || angle - rmdr <= tol){
 			tmp.push_back(*it);
 			(*it)->setIsTmpSelected(true);

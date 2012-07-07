@@ -35,13 +35,19 @@ chime::chime(){
 		mSensorOn[i] = true;
 	}
 	
+	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
+		
+		modifiable<float> mp;
+		modParams.push_back(mp);
+	
+	}
+	
 	mBlur = 1.0;
 	spIndex = 0;
 	zPos = 0;
 	isSelected = false;
 	isTmpSelected = false;
-	phase = 0;
-	speed = 0;
+
 	
 }
 
@@ -49,6 +55,11 @@ chime::chime(){
 void chime::stepIncrement(int direction){
 	
 	anchorPos.shiftValue(direction);
+	
+	for(int i =0; i < modParams.size(); i ++){
+		modParams[i].shiftValue(direction);
+	}
+	
 }
 
 //getters and setters
@@ -94,9 +105,6 @@ void chime::setSensorOn(int i, bool b){mSensorOn[i] = b;}
 void chime::setSensorHeight(int i, float tf){mSensorHeights[i] = tf;}
 float chime::getSensorHeight(int i){return mSensorHeights[i];}
 
-void chime::setSensorMidi(int i, float tf){mSensorMidis[i] = tf;}
-float chime::getSensorMidi(int i){return mSensorMidis[i];}
-
 float chime::getSensorAlpha(int i){return mSensorAlphas[i];}
 void chime::setSensorAlpha(int i, float a){mSensorAlphas[i] = a;}
 
@@ -119,6 +127,13 @@ void chime::setAnchorTarget(ofVec2f t, float increment, bool isAuto){
 	anchorPos.setTarget(t,increment,isAuto);
 }
 
+void chime::setModParam(int p, float val){modParams[p].set(val);}
+float chime::getModParam(int p){return modParams[p].getCVal();}
+
+void chime::setModParamTarget(int p, float val, float increment, bool isAuto){
+	modParams[p].setTarget(val, increment, isAuto);
+}
+
 void chime::setBlur(float f){mBlur = f;}
 float chime::getBlur(){return mBlur;}
 
@@ -133,12 +148,6 @@ bool chime::getIsSelected(){return isSelected;}
 
 void chime::setIsTmpSelected(bool b){isTmpSelected = b;}
 bool chime::getIsTmpSelected(){return isTmpSelected;}
-
-void chime::setSpeed(float f){speed = f;}
-float chime::getSpeed(){return speed; }
-
-void chime::setPhase(float f){phase = f;}
-float chime::getPhase(){return phase; }
 
 chime::~chime(){
 

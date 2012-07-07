@@ -19,12 +19,13 @@ class modifiable{
 	modifiable(){
 		
 		isAuto = false;
-		
+		increment  = 0;
 	};
 	
 	void set(T t){
 		cVal = t;
 		tVal = t;
+		increment = 0;
 	};
 	
 	void setTarget(T t, float i, bool b){
@@ -37,13 +38,18 @@ class modifiable{
 
 	void shiftValue(int direction){
 	
-		if(cVal <= tVal - increment || cVal >= tVal + increment){
-		
-			T vec = cVal - tVal;
-			vec /= abs(vec);
-			vec *= increment * direction;
-			cVal += vec;
+		if(abs(increment) > 0){
+			if(cVal <= tVal - increment || cVal >= tVal + increment){
 			
+				T vec = cVal - tVal;
+				vec /= abs(vec);
+				vec *= increment * direction;
+				cVal += vec;
+				
+			}else{
+				
+				increment  = 0;
+			}
 		}
 	
 	};
@@ -69,7 +75,7 @@ public:
 	modifiable(){
 	
 		isAuto = false;
-		
+		increment = 0;
 	};
 	
 
@@ -77,6 +83,7 @@ public:
 	void set(ofVec2f t){
 		cVal.set(t);
 		tVal.set(t);
+		increment = 0;
 	};
 	
 	void setTarget(ofVec2f t, float i, bool b){
@@ -92,12 +99,16 @@ public:
 	
 	void shiftValue(int direction){
 		
-		if(cVal.distance(tVal) >= increment){
+		if(abs(increment) > 0){
 			
-			ofVec2f vec(tVal-cVal);
-			vec.normalize();
-			vec *= increment * direction;
-			cVal += vec;
+			if(cVal.distance(tVal) >= increment){
+				
+				ofVec2f vec(tVal-cVal);
+				vec.normalize();
+				vec *= increment * direction;
+				cVal += vec;
+				
+			}
 			
 		}
 		

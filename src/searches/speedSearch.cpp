@@ -20,7 +20,7 @@ vector<ofPtr<chime> > speedSearch::getChimes(searchData& sd, ofPtr<chime> sample
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		if((*it)->getSpeed()  == sample->getSpeed()){
+		if((*it)->getModParam(CH_SPEED)  == sample->getModParam(CH_SPEED)){
 			tmp.push_back(*it);
 			(*it)->setIsTmpSelected(true);
 		}else{

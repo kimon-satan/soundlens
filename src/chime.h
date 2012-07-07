@@ -20,21 +20,36 @@
 #define MIDI_RANGE 93
 #define MIDI_MIN 28
 
+
+enum e_chimeParameter {
+	
+	CH_PHASE,
+	CH_SPEED,
+	CH_LENGTH,
+	CH_FREQ_A,
+	CH_FREQ_B,
+	CH_DECAY_A,
+	CH_DECAY_B,
+	CH_FLOAT_COUNT,
+	CH_ANCHOR, //non standard types
+	CH_COL_A,
+	CH_COL_B,
+	
+};
+
 struct pivotDims{
 	
-	float d, iAngle, rSpeed, cRot;
+	float d, iAngle, rSpeed, cRot; //might not need i angle or Rspeed after redefinition
 	ofVec2f cPos;
 	
 };
 
 struct stemDims{
 	
-	float offset, rSpeed, iAngle, length, iHoff;
+	float offset, rSpeed, iAngle, iHoff;
 	ofVec2f cPos;
 	
 };
-
-
 
 class chime{
 
@@ -77,9 +92,6 @@ public:
 	void setSensorHeight(int i, float tf);
 	float getSensorHeight(int i);
 	
-	void setSensorMidi(int i, float tf);
-	float getSensorMidi(int i);
-	
 	float getSensorAlpha(int i);
 	void setSensorAlpha(int i, float a);
 	
@@ -99,11 +111,10 @@ public:
 	ofVec2f getAnchorPos();
 	void setAnchorTarget(ofVec2f t, float increment, bool isAuto);
 	
-	void setSpeed(float f);
-	float getSpeed();
+	void setModParam(int p, float val);
+	float getModParam(int p);
+	void setModParamTarget(int p, float val, float increment, bool isAuto);
 	
-	void setPhase(float f);
-	float getPhase();
 	
 	void setBlur(float f);
 	float getBlur();
@@ -148,18 +159,17 @@ private:
 	
 	float mSensorAlphas[2];
 	float mSensorHeights[2];
-	float mSensorMidis[2];
 	
 	bool mSensorOn[2];
-	
-	float phase, speed;
 	
 	float mBlur;
 	int spIndex;
 	
 	modifiable<ofVec2f> anchorPos;
-	float zPos;
 	
+	vector<modifiable<float> >modParams;
+	
+	float zPos;
 	bool isSelected, isTmpSelected;
 
 };

@@ -35,7 +35,7 @@ vector<ofPtr<chime> > baseFundSearch::getChimes(searchData& sd, ofPtr<chime> sam
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		float rmdr = fmod((*it)->getPhase() - sample->getPhase(),angle);
+		float rmdr = fmod((*it)->getModParam(CH_PHASE) - sample->getModParam(CH_PHASE),angle);
 		
 		if(rmdr <= tol_r || angle - rmdr <= tol_r){
 			tmp.push_back(*it);

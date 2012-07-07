@@ -67,7 +67,7 @@ class chimeManager{
 	
 	//mod methods
 	
-	static string continueMod(int modType, float userA, float userB);
+	static string continueMod(int modType, ofVec2f pos, float userA, float userB);
 	static void endMod(int modType);
 	static void clearAllMods();
 	static void clearSelectedMods();

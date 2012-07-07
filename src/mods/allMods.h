@@ -25,7 +25,7 @@ class allMods{
 	
 	void makeMod(int modType, vector<ofPtr<chime> > targetGrp);
 	void drawPreview(int modType, ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle);
-	string updateUserValues(int modType, float ua, float ub);
+	string updateUserValues(int modType, ofVec2f pos, float ua, float ub);
 	
 	
 	private:

@@ -27,7 +27,7 @@ class modifiable{
 		tVal = t;
 	};
 	
-	void setTargetl(ofVec2f t, float i, bool b){
+	void setTarget(T t, float i, bool b){
 		tVal = t;
 		increment = i;
 		isAuto = b;
@@ -79,7 +79,7 @@ public:
 		tVal.set(t);
 	};
 	
-	void setTargetl(ofVec2f t, float i, bool b){
+	void setTarget(ofVec2f t, float i, bool b){
 		tVal = t;
 		increment = i;
 		isAuto = b;
@@ -94,7 +94,7 @@ public:
 		
 		if(cVal.distance(tVal) >= increment){
 			
-			ofVec2f vec(cVal - tVal);
+			ofVec2f vec(tVal-cVal);
 			vec.normalize();
 			vec *= increment * direction;
 			cVal += vec;

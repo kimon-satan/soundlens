@@ -97,7 +97,7 @@ public:
 	
 	void setAnchorPos(ofVec2f t);
 	ofVec2f getAnchorPos();
-	void setAnchorTarget(ofVec2f t, bool isAuto);
+	void setAnchorTarget(ofVec2f t, float increment, bool isAuto);
 	
 	void setSpeed(float f);
 	float getSpeed();

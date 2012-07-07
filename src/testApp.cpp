@@ -54,6 +54,8 @@ void testApp::setupMenus(){
 	selectStrings.push_back("samp_phase_fund");
 	selectStrings.push_back("quant_phase");
 	
+	modStrings.push_back("gather");
+	
 }
 
 void testApp::setupPresets(){
@@ -272,7 +274,7 @@ void testApp::draw(){
 			ofDrawBitmapString("filter: " + selectStrings[currentFilter], 600,20);
 			break;
 		case MT_ADJUST:
-			ofDrawBitmapString("adjustType: " , 300,20);
+			ofDrawBitmapString("adjustType: " + modStrings[currentMod] , 300,20);
 			break;
 			
 		default:
@@ -315,7 +317,7 @@ void testApp::drawActions(){
 	if(currentAction == AT_ADJUST){
 	
 		chimeManager::drawSelected();
-		chimeManager::drawModEngine(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+		chimeManager::drawModEngine(currentMod, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 		ofSetColor(100);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 	}
@@ -358,7 +360,7 @@ void testApp::continueAction(){
 			break;
 			
 		case AT_ADJUST:
-			mDisplayString = chimeManager::continueMod(currentMod, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueMod(currentMod, mouseDownPos, dragDist, dragAngle);
 			break;
 			
 		default:
@@ -372,9 +374,9 @@ void testApp::endAction(){
 
 	switch (currentAction) {
 		case AT_ADD:
-			chimeManager::endNewChimes();										//probably will add dragdist and direction	
-			break;																//for user presets
-																				//maybe use old strategy of screen mapping for extra controls
+			chimeManager::endNewChimes();										
+			break;																
+																				
 		case AT_SELECT:
 			chimeManager::endSearch();
 			break;
@@ -420,6 +422,13 @@ void testApp::keyPressed(int key){
 
 	}
 	
+	if(currentMode == MT_ADJUST){
+		
+		if(key == OF_KEY_UP)currentMod = min(currentMod + 1, (int)MOD_COUNT -1);
+		if(key == OF_KEY_DOWN)currentMod = max(currentMod - 1,0);
+		
+	}
+	
 	
 	if(key == 'x')chimeManager::shiftFocalPoint(0.0f);
 	if(key == 'z')chimeManager::shiftFocalPoint(1.0f);
@@ -427,7 +436,8 @@ void testApp::keyPressed(int key){
 	if(key == 'a')chimeManager::shiftZPos(0.0f);
 	if(key == 's')chimeManager::shiftZPos(1.0f);
 	
-	
+	if(key == 'n')chimeManager::incrementMod(-1);
+	if(key == 'm')chimeManager::incrementMod(1);
 
 	
 	/*if(key == 'n'){

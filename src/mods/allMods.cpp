@@ -18,6 +18,7 @@ allMods::allMods(){
 
 void allMods::makeMod(int modType, vector<ofPtr<chime> > targetGrp){
 
+	mods[modType]->makeMod(targetGrp);
 	
 }
 
@@ -27,10 +28,10 @@ void allMods::drawPreview(int modType, ofVec2f mouseDownPos, ofVec2f mouseDragPo
 	
 }
 
-string allMods::updateUserValues(int modType, float ua, float ub){
+string allMods::updateUserValues(int modType, ofVec2f pos, float ua, float ub){
 
 	string s = "";
-	s = mods[modType]->setUserData(ua, ub);
+	s = mods[modType]->setUserData(pos, ua, ub);
 	return s;
 
 }

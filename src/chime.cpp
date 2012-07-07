@@ -46,6 +46,11 @@ chime::chime(){
 }
 
 
+void chime::stepIncrement(int direction){
+	
+	anchorPos.shiftValue(direction);
+}
+
 //getters and setters
 
 int chime::getIndex(){return index;}
@@ -109,6 +114,10 @@ int chime::getReactCount(int i){return reactCount[i];}
 
 void chime::setAnchorPos(ofVec2f t){anchorPos.set(t);}
 ofVec2f chime::getAnchorPos(){return anchorPos.getCVal();}
+
+void chime::setAnchorTarget(ofVec2f t, float increment, bool isAuto){
+	anchorPos.setTarget(t,increment,isAuto);
+}
 
 void chime::setBlur(float f){mBlur = f;}
 float chime::getBlur(){return mBlur;}

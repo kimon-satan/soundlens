@@ -232,19 +232,24 @@ void chimeManager::selectSample(ofVec2f p){
 }
 
 
-string chimeManager::continueMod(int modType, float userA, float userB){
+string chimeManager::continueMod(int modType, ofVec2f pos, float userA, float userB){
 
 	string s = "";
-	
+	s = mModEngine.updateUserValues(modType, pos, userA, userB);
 	return s;
 
 }
 
 void chimeManager::endMod(int modType){
 
-
+	mModEngine.makeMod(modType, mSelected);
 }
 
+void chimeManager::incrementMod(int direction){
+
+	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++)(*it)->stepIncrement(direction);
+	
+}
 
 void chimeManager::update(){
 

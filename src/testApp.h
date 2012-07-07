@@ -74,8 +74,6 @@ class testApp : public ofBaseApp{
 
 	
 	vector<string> menuStrings;
-	vector<string> selectStrings;
-	vector<string> modStrings;
 	
 	//mouse stuff
 	

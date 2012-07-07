@@ -9,7 +9,7 @@
 
 #include "baseSearch.h"
 
-string baseSearch::setUserData(float ua, float ub){
+string baseSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 
 	string s = "";
 	
@@ -23,10 +23,8 @@ string baseSearch::setUserData(float ua, float ub){
 		s += it->setUserValues(ua,ub);
 	}
 	
-	/*for(vector<dataElement<ofVec2f> >::iterator it = vecParameters.begin(); it != vecParameters.end(); it++){
-		
-		s += it->setUserValues(ua,ub);
-	}*/
+	mDown.set(mD);
+	mDrag.set(mDr);
 	
 	if(s != "")s = name + ": " + s;
 	
@@ -40,4 +38,10 @@ void baseSearch::setName(string s){
 
 	name = s;
 	
+}
+
+string baseSearch::getName(){
+	
+	return name;
+
 }

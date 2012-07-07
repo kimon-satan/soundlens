@@ -10,15 +10,13 @@
 
 gatherMod::gatherMod(){
 	
-	dataElement<ofVec2f> pos;
-	vecParameters.push_back(pos);
 	
 	dataElement<float> increment;
 	increment.name = "increment";
 	increment.set(0.01,0.2, SET_USER_A);
 	floatParameters.push_back(increment);
 
-	name = "gatherMod";
+	name = "gather";
 
 }
 
@@ -27,18 +25,18 @@ void gatherMod::makeMod( vector<ofPtr<chime> > chimes){
 	
 	for(vector<ofPtr<chime> >::iterator it = chimes.begin(); it != chimes.end(); it++){
 	
-		(*it)->setAnchorTarget(vecParameters[0].abs_val, 0.05f,false);
+		(*it)->setAnchorTarget(mDown, 0.05f,false);
 	
 	}
 	
 
 }
 
-void gatherMod::drawControl(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
+void gatherMod::drawControl(float dragDist, float dragAngle){
 	
 	ofSetColor(100);
 	ofNoFill();
-	ofCircle(mouseDownPos, dragDist);
-	ofLine(mouseDownPos.x, mouseDownPos.y, mouseDragPos.x, mouseDragPos.y);
+	ofCircle(mDown, 0.5 + dragDist);
+	ofLine(mDown.x, mDown.y, mDrag.x, mDrag.y);
 
 }

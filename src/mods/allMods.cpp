@@ -22,16 +22,18 @@ void allMods::makeMod(int modType, vector<ofPtr<chime> > targetGrp){
 	
 }
 
-void allMods::drawPreview(int modType, ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
+void allMods::drawPreview(int modType, float dragDist, float dragAngle){
 
-	mods[modType]->drawControl(mouseDownPos, mouseDragPos, dragDist, dragAngle);
+	mods[modType]->drawControl(dragDist, dragAngle);
 	
 }
 
-string allMods::updateUserValues(int modType, ofVec2f pos, float ua, float ub){
+string allMods::updateUserValues(int modType, ofVec2f mD, ofVec2f mDr, float ua, float ub){
 
 	string s = "";
-	s = mods[modType]->setUserData(pos, ua, ub);
+	s = mods[modType]->setUserData(mD, mDr, ua, ub);
 	return s;
 
 }
+
+string allMods::getModName(int i){return mods[i]->getName();}

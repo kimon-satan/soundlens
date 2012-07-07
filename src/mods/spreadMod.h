@@ -1,8 +1,8 @@
 /*
- *  gatherMod.h
+ *  spreadMod.h
  *  testBed1
  *
- *  Created by Simon Katan on 06/07/2012.
+ *  Created by Simon Katan on 07/07/2012.
  *  Copyright 2012 __MyCompanyName__. All rights reserved.
  *
  */
@@ -11,16 +11,16 @@
 
 #include "baseMod.h"
 
-class gatherMod : public baseMod{
-
-	public:
+class spreadMod : public baseMod{
 	
-	gatherMod();
+public:
+	
+	spreadMod();
 	void makeMod(vector<ofPtr<chime> > chimes);
 	void drawControl(float dragDist, float dragAngle);
 	
-	private:
+private:
 	
 	
-
+	
 };

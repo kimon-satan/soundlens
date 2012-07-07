@@ -10,11 +10,13 @@
 #include "speedSearch.h"
 #include "baseFundSearch.h"
 #include "quantSearch.h"
+#include "positionSearch.h"
 
 enum e_SearchType {
 	SEARCH_SAMP_SPEED,
 	SEARCH_SAMP_PHASE_FUND,
 	SEARCH_QUANT_PHASE,
+	SEARCH_POSITION_SEARCH,
 	SEARCH_COUNT,
 };
 
@@ -26,15 +28,15 @@ class allSearches{
 	allSearches();
 	
 	vector<ofPtr<chime> > search(int searchType, vector<ofPtr<chime> >  searchGroup);
-	string updateUserValues(int searchType, float ua, float ub);
+	string updateUserValues(int searchType, ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	
-	void drawSearch(int searchType, ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle);
+	void drawSearch(int searchType,float dragDist, float dragAngle);
 	
 	//getters and setters
 	
 	void setSample(ofPtr<chime> s);
 	ofPtr<chime> getSample();
-	
+	string getSearchName(int i);
 	
 	private:
 	

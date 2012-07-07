@@ -16,7 +16,7 @@ public:
 	
 	speedSearch();
 	vector<ofPtr<chime> >getChimes(searchData& sd,ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup);
-	void drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle);
+	void drawPreview(float dragDist, float dragAngle);
 	
 	
 private:

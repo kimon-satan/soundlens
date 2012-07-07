@@ -24,10 +24,11 @@ class baseSearch{
 public:
 	
 	virtual vector<ofPtr<chime> >getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup) = 0;
-	virtual void drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle) = 0;
+	virtual void drawPreview(float dragDist, float dragAngle) = 0;
 	
-	string setUserData(float ua, float ub);
+	string setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	void setName(string s);
+	string getName();
 	
 protected:
 
@@ -35,6 +36,6 @@ protected:
 	string userDataString;
 	vector <dataElement<float> > floatParameters;
 	vector <dataElement<int> > intParameters;
-	vector <dataElement<ofVec2f> > vecParameters;
+	ofVec2f mDown, mDrag;
 	
 };

@@ -59,15 +59,19 @@ class chimeManager{
 	
 	//search methods
 	
+	static string getSearchName(int i);
+	
 	static void newSearch();
-	static string continueSearch(int searchType, float userA, float userB);
+	static string continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
 	static void endSearch();
 	static void clearTmps();
 	static void selectSample(ofVec2f p);
 	
 	//mod methods
 	
-	static string continueMod(int modType, ofVec2f pos, float userA, float userB);
+	static string getModName(int i);
+	
+	static string continueMod(int modType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
 	static void endMod(int modType);
 	static void clearAllMods();
 	static void clearSelectedMods();
@@ -80,8 +84,8 @@ class chimeManager{
 	static void drawSelected();
 	static void drawTmpSelected();
 	static void drawPreviewChimes();
-	static void drawSearchEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle);
-	static void drawModEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle);
+	static void drawSearchEngine(int searchType,float dragDist, float dragAngle);
+	static void drawModEngine(int searchType, float dragDist, float dragAngle);
 	
 	private:
 

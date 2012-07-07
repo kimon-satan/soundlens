@@ -187,10 +187,10 @@ void chimeManager::newSearch(){
 	
 }
 
-string chimeManager::continueSearch(int searchType, float userA, float userB){
+string chimeManager::continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, float userA, float userB){
 
 	clearTmps();
-	string s = mSearchEngine.updateUserValues(searchType, userA, userB);
+	string s = mSearchEngine.updateUserValues(searchType, mD, mDr, userA, userB);
 	mTmpSelected =  mSearchEngine.search(searchType, mSelected);
 	
 	return s;
@@ -232,10 +232,10 @@ void chimeManager::selectSample(ofVec2f p){
 }
 
 
-string chimeManager::continueMod(int modType, ofVec2f pos, float userA, float userB){
+string chimeManager::continueMod(int modType, ofVec2f mD, ofVec2f mDr, float userA, float userB){
 
 	string s = "";
-	s = mModEngine.updateUserValues(modType, pos, userA, userB);
+	s = mModEngine.updateUserValues(modType, mD, mDr, userA, userB);
 	return s;
 
 }
@@ -304,14 +304,17 @@ void chimeManager::drawPreviewChimes(){
 
 }
 
-void chimeManager::drawSearchEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle){
+void chimeManager::drawSearchEngine(int searchType, float dragDist, float dragAngle){
 	
-	mSearchEngine.drawSearch(searchType, mdown, mdrag, dragDist, dragAngle);
+	mSearchEngine.drawSearch(searchType, dragDist, dragAngle);
 
 }
 
-void chimeManager::drawModEngine(int searchType, ofVec2f mdown, ofVec2f mdrag, float dragDist, float dragAngle){
+void chimeManager::drawModEngine(int searchType, float dragDist, float dragAngle){
 
-	mModEngine.drawPreview(searchType, mdown, mdrag, dragDist, dragAngle);
+	mModEngine.drawPreview(searchType, dragDist, dragAngle);
 }
 
+
+string chimeManager::getSearchName(int i){return mSearchEngine.getSearchName(i);}
+string chimeManager::getModName(int i){return mModEngine.getModName(i);}

@@ -21,6 +21,8 @@ quantSearch::quantSearch(){
 	pm.set(1,20,SET_USER_A);
 	intParameters.push_back(pm);
 	
+	name = "quantOffset";
+	
 	
 }
 
@@ -50,17 +52,17 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 }
 
 
-void quantSearch::drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
+void quantSearch::drawPreview(float dragDist, float dragAngle){
 	
 	//not decided yet
 	float d = 0.5 + intParameters[1].abs_val * 3.0f/(float)intParameters[1].max_val;
 	
 	ofNoFill();
 	ofSetColor(150);
-	ofCircle(mouseDownPos,d);
-	ofVec2f p(mouseDownPos + ofVec2f(0,d));
-	p.rotate(-intParameters[0].abs_val * 360/intParameters[0].max_val,mouseDownPos);
-	ofLine(mouseDownPos.x, mouseDownPos.y, p.x, p.y);
+	ofCircle(mDown,d);
+	ofVec2f p(mDown + ofVec2f(0,d));
+	p.rotate(-intParameters[0].abs_val * 360/intParameters[0].max_val,mDown);
+	ofLine(mDown.x, mDown.y, p.x, p.y);
 	
 	
 }

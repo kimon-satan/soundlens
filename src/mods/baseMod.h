@@ -17,10 +17,13 @@ class baseMod{
 	public:
 	
 	virtual void makeMod(vector<ofPtr<chime> > chimes) = 0;
-	virtual void drawControl(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle) = 0;
+	virtual void drawControl( float dragDist, float dragAngle) = 0;
 	
 	void setName(string s);
-	string setUserData(ofVec2f pos, float ua, float ub);
+	string getName();
+	string setUserData(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float ua, float ub);
+	
+	
 	
 	protected:
 	
@@ -28,7 +31,11 @@ class baseMod{
 	string userDataString;
 	vector <dataElement<float> > floatParameters;
 	vector <dataElement<int> > intParameters;
-	vector <dataElement<ofVec2f> > vecParameters;
+
+	ofVec2f mDown;
+	ofVec2f mDrag;
+	
+	
 
 };
 

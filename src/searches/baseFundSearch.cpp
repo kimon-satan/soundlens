@@ -20,6 +20,7 @@ baseFundSearch::baseFundSearch(){
 	t.name = "tollerance";
 	t.set(0,20,SET_USER_A);
 	intParameters.push_back(t);
+	name  = "phaseFundamental";
 	
 }
 
@@ -50,7 +51,7 @@ vector<ofPtr<chime> > baseFundSearch::getChimes(searchData& sd, ofPtr<chime> sam
 	
 }
 
-void baseFundSearch::drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
+void baseFundSearch::drawPreview(float dragDist, float dragAngle){
 	
 	//may end up as a method in baseSearch for reuse
 	
@@ -58,10 +59,10 @@ void baseFundSearch::drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, flo
 	
 	ofNoFill();
 	ofSetColor(150);
-	ofCircle(mouseDownPos,d);
-	ofVec2f p(mouseDownPos + ofVec2f(0,d));
-	p.rotate(-intParameters[0].abs_val * 360/intParameters[0].max_val,mouseDownPos);
-	ofLine(mouseDownPos.x, mouseDownPos.y, p.x, p.y);
+	ofCircle(mDown,d);
+	ofVec2f p(mDown + ofVec2f(0,d));
+	p.rotate(-intParameters[0].abs_val * 360/intParameters[0].max_val,mDown);
+	ofLine(mDown.x, mDown.y, p.x, p.y);
 	
 	
 }

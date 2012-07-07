@@ -11,7 +11,7 @@
 
 speedSearch::speedSearch(){
 
-
+	name = "speed";
 }
 
 vector<ofPtr<chime> > speedSearch::getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup){
@@ -33,7 +33,7 @@ vector<ofPtr<chime> > speedSearch::getChimes(searchData& sd, ofPtr<chime> sample
 }
 
 
-void speedSearch::drawPreview(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
+void speedSearch::drawPreview(float dragDist, float dragAngle){
 
 	//nothing to draw
 

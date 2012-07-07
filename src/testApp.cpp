@@ -49,12 +49,7 @@ void testApp::setupMenus(){
 	menuStrings.push_back("select");
 	menuStrings.push_back("adjust");
 	
-
-	selectStrings.push_back("samp_speed");
-	selectStrings.push_back("samp_phase_fund");
-	selectStrings.push_back("quant_phase");
 	
-	modStrings.push_back("gather");
 	
 }
 
@@ -146,7 +141,7 @@ void testApp::update(){
 			chimeManager::selectSample(mouseMovePos);
 			chimeManager::newSearch();
 			if(currentPreFilter == SEARCH_SAMP_SPEED){
-				chimeManager::continueSearch(currentPreFilter, dragDist, dragAngle);
+				chimeManager::continueSearch(currentPreFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			}
 		}
 	}
@@ -270,11 +265,11 @@ void testApp::draw(){
 			ofDrawBitmapString("preset: " + mPresets[mCurrentPreset].name, 300,20);
 			break;
 		case MT_SELECT:
-			ofDrawBitmapString("preFilter: " + selectStrings[currentPreFilter], 300,20);
-			ofDrawBitmapString("filter: " + selectStrings[currentFilter], 600,20);
+			ofDrawBitmapString("preFilter: " + chimeManager::getSearchName(currentPreFilter), 300,20);
+			ofDrawBitmapString("filter: " + chimeManager::getSearchName(currentFilter), 600,20);
 			break;
 		case MT_ADJUST:
-			ofDrawBitmapString("adjustType: " + modStrings[currentMod] , 300,20);
+			ofDrawBitmapString("modType: " + chimeManager::getModName(currentMod) , 300,20);
 			break;
 			
 		default:
@@ -306,7 +301,7 @@ void testApp::drawActions(){
 		
 		chimeManager::drawTmpSelected();
 		chimeManager::drawSelected();
-		chimeManager::drawSearchEngine(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+		chimeManager::drawSearchEngine(currentFilter,dragDist, dragAngle);
 		ofSetColor(100);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 		
@@ -317,7 +312,7 @@ void testApp::drawActions(){
 	if(currentAction == AT_ADJUST){
 	
 		chimeManager::drawSelected();
-		chimeManager::drawModEngine(currentMod, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+		chimeManager::drawModEngine(currentMod, dragDist, dragAngle);
 		ofSetColor(100);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 	}
@@ -356,11 +351,11 @@ void testApp::continueAction(){
 			break;
 			
 		case AT_SELECT:
-			mDisplayString = chimeManager::continueSearch(currentFilter, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueSearch(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			break;
 			
 		case AT_ADJUST:
-			mDisplayString = chimeManager::continueMod(currentMod, mouseDownPos, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueMod(currentMod, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			break;
 			
 		default:

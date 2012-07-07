@@ -9,7 +9,7 @@
 
 #include "baseMod.h"
 
-string baseMod::setUserData(ofVec2f pos, float ua, float ub){
+string baseMod::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 	
 	string s = "";
 	
@@ -23,12 +23,9 @@ string baseMod::setUserData(ofVec2f pos, float ua, float ub){
 		s += it->setUserValues(ua,ub);
 	}
 	
-	 for(vector<dataElement<ofVec2f> >::iterator it = vecParameters.begin(); it != vecParameters.end(); it++){
-	 
-		 it->abs_val = pos;
-		 s += "pos: (" + ofToString(it->abs_val.x,2) + "," + ofToString(it->abs_val.y,2) + ")";
-		 
-	 }
+
+	mDown.set(mD);
+	mDrag.set(mDr);
 	
 	if(s != "")s = name + ": " + s;
 	
@@ -41,5 +38,11 @@ string baseMod::setUserData(ofVec2f pos, float ua, float ub){
 void baseMod::setName(string s){
 	
 	name = s;
+	
+}
+
+string baseMod::getName(){
+	
+	return name;
 	
 }

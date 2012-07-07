@@ -17,14 +17,16 @@ allSearches::allSearches(){
 	searches.push_back((ofPtr<baseSearch>)bfs);
 	ofPtr<quantSearch> qs = ofPtr<quantSearch>(new quantSearch());
 	searches.push_back((ofPtr<baseSearch>)qs);
+	ofPtr<positionSearch> ps = ofPtr<positionSearch>(new positionSearch());
+	searches.push_back((ofPtr<baseSearch>)ps);
 	
 };
 
 
-string allSearches::updateUserValues(int searchType, float ua, float ub){
+string allSearches::updateUserValues(int searchType, ofVec2f mD, ofVec2f mDr, float ua, float ub){
 	
 	string s = "";
-	s = searches[searchType]->setUserData(ua, ub);
+	s = searches[searchType]->setUserData(mD, mDr, ua, ub);
 	return s;
 	
 }
@@ -35,9 +37,9 @@ vector<ofPtr<chime> >allSearches::search(int searchType, vector<ofPtr<chime> > s
 
 }
 
-void allSearches::drawSearch(int searchType, ofVec2f mouseDownPos, ofVec2f mouseDragPos, float dragDist, float dragAngle){
+void allSearches::drawSearch(int searchType, float dragDist, float dragAngle){
 	
-	searches[searchType]->drawPreview(mouseDownPos, mouseDragPos, dragDist, dragAngle);
+	searches[searchType]->drawPreview(dragDist, dragAngle);
 }
 
 
@@ -46,5 +48,8 @@ void allSearches::drawSearch(int searchType, ofVec2f mouseDownPos, ofVec2f mouse
 void allSearches::setSample(ofPtr<chime> s){mSample = s;}
 
 ofPtr<chime> allSearches::getSample(){return mSample;}
+
+
+string allSearches::getSearchName(int i){return searches[i]->getName();}
 
 

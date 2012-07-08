@@ -94,18 +94,45 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 		c->setZpos(chimeUpdater::getFocalPoint() + 1.0); // needs changing
 		
 		
-		chimeFactory::initChime(c);
-		
-		c->setCollisionListener(mListener);
-		
 		mPreviewChimes.push_back(c);
 		
+	}
+	
+	//this may still move to mods ? 
+	//nothing to handle position mapping here
+	
+	for(int j = 0; j < p.mapParams.size(); j++){
 
+		vector<float> inVals;
+		vector<float> outVals;
+		vector<ofPtr<chime> >::iterator it;
+		for(it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
+			
+			inVals.push_back((*it)->getModParam(p.mapParams[j].inMap));
+			
+		}
+		
+		mappingEngine::makeMapping(inVals, outVals, p.mapParams[j]);
+		
+		int counter = 0;
+		for(it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
+			
+			(*it)->setModParam(p.mapParams[j].outMap, outVals[counter]);
+			counter ++;
+		}
+		
+		
+	}
+	
+	//now update changes and init chimes
+	
+	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
+		chimeFactory::initChime(*it);
+		(*it)->setCollisionListener(mListener);
 	}
 	
 	return infoString;
 	
-
 }
 
 void chimeManager::endNewChimes(){
@@ -201,14 +228,23 @@ void chimeManager::nextPrevSelected(){
 void chimeManager::newSearch(){
 
 	clearTmps();
+	mSearchEngine.reset();
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
 	mSelected = mChimes;
+	
+}
+
+
+void chimeManager::beginSearch(){
+
+	mSearchEngine.beginSearch();
 	
 }
 
 string chimeManager::continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, float userA, float userB){
 
 	clearTmps();
+	
 	string s = mSearchEngine.updateUserValues(searchType, mD, mDr, userA, userB);
 	mTmpSelected =  mSearchEngine.search(searchType, mSelected);
 	
@@ -224,31 +260,17 @@ void chimeManager::endSearch(){
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
 	clearTmps();
 	
+	
 }
 
 
 void chimeManager::clearTmps(){
-	
+		
 	for(vector<ofPtr<chime> >::iterator it = mTmpSelected.begin(); it != mTmpSelected.end(); it++)(*it)->setIsTmpSelected(false);
 	mTmpSelected.clear();
 }
 
 
-void chimeManager::selectSample(ofVec2f p){
-	
-	float dist = 100.0f;
-	
-	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
-		
-		float td = p.distance((*it)->getStemDims().cPos);
-		if(td < dist){
-			dist = td;
-			mSearchEngine.setSample(*it);
-		}
-		
-	}	
-
-}
 
 
 string chimeManager::continueMod(int modType, ofVec2f mD, ofVec2f mDr, float userA, float userB){
@@ -310,7 +332,7 @@ void chimeManager::drawTmpSelected(){
 
 void chimeManager::drawSample(){
 	
-	if(mSearchEngine.getSample())chimeRenderer::drawHighlight(mSearchEngine.getSample(), ofColor(0,0,255,50));
+	if(mSearchEngine.getIsSampleSelected() || mSearchEngine.getIsSampleFound())chimeRenderer::drawHighlight(mSearchEngine.getSample(), ofColor(0,0,255,50));
 	
 }
 

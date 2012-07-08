@@ -22,7 +22,7 @@ quantSearch::quantSearch(){
 	intParameters.push_back(pm);
 	
 	name = "quantOffset";
-	
+	isSample = true;
 	
 }
 

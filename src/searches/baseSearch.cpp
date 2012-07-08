@@ -45,3 +45,7 @@ string baseSearch::getName(){
 	return name;
 
 }
+
+bool baseSearch::getIsSample(){
+	return isSample;
+}

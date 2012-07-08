@@ -21,7 +21,6 @@ class chimeUpdater{
 	static void update(ofPtr<chime> c);
 	static void updateSpIndex(ofPtr<chime> c);
 	static void setOscSender(ofxOscSender * s);
-	static void moveView(ofPtr<chime> c, ofVec2f v);
 	static void step();
 	
 	static void setFocalPoint(float f);

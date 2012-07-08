@@ -120,11 +120,6 @@ void chimeUpdater::updateSpIndex(ofPtr<chime> c){
 	
 }
 
-void chimeUpdater::moveView(ofPtr<chime> c, ofVec2f v){
-
-	c->setAnchorPos(c->getAnchorPos() + v);
-	
-}
 
 void chimeUpdater::step(){
 	

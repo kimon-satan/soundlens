@@ -12,6 +12,7 @@
 speedSearch::speedSearch(){
 
 	name = "speed";
+	isSample = true;
 }
 
 vector<ofPtr<chime> > speedSearch::getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup){

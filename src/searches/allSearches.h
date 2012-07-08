@@ -16,7 +16,7 @@ enum e_SearchType {
 	SEARCH_SAMP_SPEED,
 	SEARCH_SAMP_PHASE_FUND,
 	SEARCH_QUANT_PHASE,
-	SEARCH_POSITION_SEARCH,
+	SEARCH_POSITION,
 	SEARCH_COUNT,
 };
 
@@ -27,22 +27,35 @@ class allSearches{
 	
 	allSearches();
 	
+	void beginSearch();
 	vector<ofPtr<chime> > search(int searchType, vector<ofPtr<chime> >  searchGroup);
 	string updateUserValues(int searchType, ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	
 	void drawSearch(int searchType,float dragDist, float dragAngle);
 	
+	
 	//getters and setters
 	
 	void setSample(ofPtr<chime> s);
 	ofPtr<chime> getSample();
+	
+	bool getIsSampleSelected();
+	bool getIsSampleFound();
+	
+	void reset();
+	
 	string getSearchName(int i);
 	
 	private:
 	
+	void pickSample(vector<ofPtr<chime> > searchGroup);
+	
 	ofPtr<chime> mSample;
 	searchData mSearchData;
 	vector<ofPtr<baseSearch> > searches;
+	bool isSampleSelected;
+	bool isSampleFound;
+	ofVec2f mDown;
 
 
 };

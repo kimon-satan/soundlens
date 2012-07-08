@@ -21,12 +21,28 @@ namespace chimeFactory {
 		
 		c->setWorld(world);
 		
-		for(int i = 0; i < 2; i++){
+		vector<float> freqs;
+		vector<float> heights;
 		
-			float h = (float)(c->getModParam(CH_FREQ_A + i) - MIDI_MIN)/MIDI_RANGE;
-			h = pow(h,0.5f);
-			c->setSensorHeight(i,h);
+		mapDef md;
+		md.mapType = MAP_R_TO_EXP;
+		md.inRange[0] = MIDI_MIN;
+		md.inRange[1] = MIDI_MIN + MIDI_RANGE;
+		md.outRange[0] = 0;
+		md.outRange[1] = 1;
+		md.exp = 0.5;
+		
+		for(int i = 0; i < 2; i++)freqs.push_back(c->getModParam(CH_FREQ_A + i));
+		
+		mappingEngine::makeMapping(freqs,heights, md);
+		
+		for(int i = 0; i < 2; i++){
+	
+			c->setSensorHeight(i,heights[i]);
+			
 		}
+		
+		
 		
 		//c->setPivotDims(cd.pivots);
 		

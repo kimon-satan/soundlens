@@ -14,7 +14,7 @@ enum e_setType{
 	
 	SET_FIXED,
 	SET_USER_A,
-	SET_USER_B,
+	SET_USER_B, //could add a randomize here
 	
 };
 

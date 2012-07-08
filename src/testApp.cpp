@@ -30,52 +30,108 @@ void testApp::setup(){
 
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 	
-	setupMenus();
 	setupPresets();
 	
 	mCurrentPreset = 0;
 	currentMode = e_MenuType(0);
-	currentFilter= e_SearchType(1);
-	currentPreFilter = SEARCH_SAMP_SPEED;
+
 	currentMod = MOD_GATHER;
 	
+	searchMacro[0] = SEARCH_POSITION;
+	searchMacro[1] = SEARCH_SAMP_SPEED;
+	searchMacro[2] = SEARCH_SAMP_PHASE_FUND;
+	searchMacro[3] = SEARCH_QUANT_PHASE;
+	
 	isSearching = false;
+	macroStage = 0;
+	
+	menuStrings.push_back("add");
+	menuStrings.push_back("adjust");
+	menuStrings.push_back("select");
 	
 }
 
-void testApp::setupMenus(){
-	
-	menuStrings.push_back("add");
-	menuStrings.push_back("select");
-	menuStrings.push_back("adjust");
-	
-	
-	
-}
 
 void testApp::setupPresets(){
 	
-	groupPreset p;
+	groupPreset preset1;
 	
-	p.name = "single";
-	p.numChimes.initVal.set(1);
+	preset1.name = "single";
+	preset1.numChimes.initVal.set(1);
 	
 	for(int i = 0; i < 2; i ++){
-		p.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
-		p.fParams[CH_FREQ_A + i].dType = DT_NONE;
-		p.fParams[CH_DECAY_A + i].initVal.set(1.8);
+		preset1.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+		preset1.fParams[CH_FREQ_A + i].dType = DT_NONE;
+		preset1.fParams[CH_DECAY_A + i].initVal.set(1.8);
 	}
 	
-	p.fParams[CH_PHASE].initVal.set(0.5);
-	p.fParams[CH_PHASE].dType =  DT_FLAT;
-	p.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
-	p.fParams[CH_PHASE].range.set(10);
-	p.fParams[CH_SPEED].initVal.set(1.0);
-	p.fParams[CH_LENGTH].initVal.set(2.0);
+	preset1.fParams[CH_PHASE].initVal.set(0.5);
+	preset1.fParams[CH_PHASE].dType =  DT_FLAT;
+	preset1.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
+	preset1.fParams[CH_PHASE].range.set(10);
+	preset1.fParams[CH_SPEED].initVal.set(1.0);
+	preset1.fParams[CH_LENGTH].initVal.set(2.0);
 	
-	mPresets.push_back(p);
+	mPresets.push_back(preset1);
 	
-
+	groupPreset preset2;
+	
+	preset2.name = "multiple";
+	preset2.numChimes.initVal.set(10);
+	preset2.numChimes.dType = DT_FLAT;
+	preset2.numChimes.range.set(3);
+	preset2.numChimes.increment.set(1);
+	
+	for(int i = 0; i < 2; i ++){
+		preset2.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+		preset2.fParams[CH_FREQ_A + i].dType = DT_FLAT;
+		preset2.fParams[CH_FREQ_A + i].range.set(12);
+		preset2.fParams[CH_FREQ_A + i].increment.set(3);
+		preset2.fParams[CH_DECAY_A + i].initVal.set(1.8);
+	}
+	
+	preset2.fParams[CH_PHASE].initVal.set(0);
+	preset2.fParams[CH_PHASE].dType =  DT_SLICE;
+	preset2.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
+	preset2.fParams[CH_PHASE].range.set(64);
+	preset2.fParams[CH_SPEED].initVal.set(1.0);
+	preset2.fParams[CH_LENGTH].initVal.set(2.0);
+	
+	mPresets.push_back(preset2);
+	
+	
+	groupPreset preset3;
+	
+	preset3.name = "multipleClimber";
+	preset3.numChimes.initVal.set(10);
+	preset3.numChimes.dType = DT_FLAT;
+	preset3.numChimes.range.set(3);
+	preset3.numChimes.increment.set(1);
+	
+	for(int i = 0; i < 2; i ++){
+		preset3.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+		preset3.fParams[CH_FREQ_A + i].dType = DT_NONE;
+		preset3.fParams[CH_DECAY_A + i].initVal.set(1.8);
+	}
+	
+	preset3.fParams[CH_PHASE].initVal.set(0);
+	preset3.fParams[CH_PHASE].dType =  DT_SLICE;
+	preset3.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
+	preset3.fParams[CH_PHASE].range.set(64);
+	preset3.fParams[CH_SPEED].initVal.set(1.0);
+	preset3.fParams[CH_LENGTH].initVal.set(2.0);
+	
+	mapDef freq;
+	freq.mapType = MAP_1_TO_R;
+	freq.inMap = CH_PHASE;
+	freq.outMap = CH_FREQ_A;
+	freq.outRange[0] = MIDI_MIN;
+	freq.outRange[1] = MIDI_MIN + MIDI_RANGE;
+	preset3.mapParams.push_back(freq);
+	freq.outMap = CH_FREQ_B;
+	preset3.mapParams.push_back(freq);
+	
+	mPresets.push_back(preset3);
 	
 
 }
@@ -90,16 +146,7 @@ void testApp::update(){
 	
 	chimeManager::update();
 	
-	if(currentMode == MT_SELECT){
-		if(isSearching){
-			chimeManager::selectSample(mouseMovePos);
-			chimeManager::newSearch();
-			if(currentPreFilter == SEARCH_SAMP_SPEED){
-				chimeManager::continueSearch(currentPreFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
-			}
-		}
-	}
-	
+
 	
 }
 
@@ -179,20 +226,12 @@ void testApp::draw(){
 	ofEnableBlendMode(OF_BLENDMODE_ALPHA);
 	
 	chimeManager::draw();
-	
-	if(MT_SELECT){
 		
-		if(isSearching){
-			chimeManager::drawSample();
-			chimeManager::drawTmpSelected();
-		}
-		
-
+	if(isSearching){
+		chimeManager::drawSelected();
 	}
 	
 	drawActions();
-	
-	
 	
 	ofDisableBlendMode();
 	
@@ -212,22 +251,36 @@ void testApp::draw(){
 	ofDisableAlphaBlending();
 	ofSetColor(100);
 	
-	ofDrawBitmapString("mode: " + menuStrings[currentMode], 20,20);
+	if(isSearching){
+		ofDrawBitmapString("mode: " + menuStrings[2], 20,20);
+	}else{
+		ofDrawBitmapString("mode: " + menuStrings[currentMode], 20,20);
+	}
 	
-	switch (currentMode) {
-		case MT_ADD:
-			ofDrawBitmapString("preset: " + mPresets[mCurrentPreset].name, 300,20);
-			break;
-		case MT_SELECT:
-			ofDrawBitmapString("preFilter: " + chimeManager::getSearchName(currentPreFilter), 300,20);
-			ofDrawBitmapString("filter: " + chimeManager::getSearchName(currentFilter), 600,20);
-			break;
-		case MT_ADJUST:
-			ofDrawBitmapString("modType: " + chimeManager::getModName(currentMod) , 300,20);
-			break;
-			
-		default:
-			break;
+	
+	if(isSearching){
+		
+		string mString = "macro: ";
+		for(int i = 0; i < 4; i++){
+			mString += chimeManager::getSearchName(searchMacro[i]);
+			if(i < 3)mString += ", ";
+		}
+		ofDrawBitmapString(mString,300,20);
+		
+	}else{
+		
+		switch (currentMode) {
+			case MT_ADD:
+				ofDrawBitmapString("preset: " + mPresets[mCurrentPreset].name, 300,20);
+				break;
+			case MT_ADJUST:
+				ofDrawBitmapString("modType: " + chimeManager::getModName(currentMod) , 300,20);
+				break;
+				
+			default:
+				break;
+		}
+		
 	}
 	
 	
@@ -254,8 +307,9 @@ void testApp::drawActions(){
 	if(currentAction == AT_SELECT){
 		
 		chimeManager::drawTmpSelected();
-		chimeManager::drawSelected();
-		chimeManager::drawSearchEngine(currentFilter,dragDist, dragAngle);
+		chimeManager::drawSample();
+		chimeManager::drawSearchEngine(searchMacro[macroStage],dragDist, dragAngle);
+		
 		ofSetColor(100);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 		
@@ -286,6 +340,7 @@ void testApp::beginAction(){
 			break;
 			
 		case AT_SELECT:
+			chimeManager::beginSearch();
 			break;
 			
 		case AT_ADJUST:
@@ -305,7 +360,7 @@ void testApp::continueAction(){
 			break;
 			
 		case AT_SELECT:
-			mDisplayString = chimeManager::continueSearch(currentFilter, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueSearch(searchMacro[macroStage], mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			break;
 			
 		case AT_ADJUST:
@@ -328,6 +383,7 @@ void testApp::endAction(){
 																				
 		case AT_SELECT:
 			chimeManager::endSearch();
+			macroStage = min(macroStage + 1,3);
 			break;
 		
 
@@ -352,7 +408,6 @@ void testApp::keyPressed(int key){
 	
 		if(key == 49 + i){
 			currentMode = e_MenuType(i);
-			if(currentMode == MT_SELECT)chimeManager::clearTmps();
 			break;
 		}
 	
@@ -363,11 +418,10 @@ void testApp::keyPressed(int key){
 		if(key == OF_KEY_DOWN)mCurrentPreset = max(mCurrentPreset - 1,0);
 	}
 	
-	if(currentMode == MT_SELECT){
+	if(isSearching){
 		
-		if(key == OF_KEY_UP)currentFilter = min(currentFilter + 1, (int)SEARCH_COUNT -1);
-		if(key == OF_KEY_DOWN)currentFilter = max(currentFilter - 1,0);
-		if(key == ' '){isSearching = true;}
+		if(key == OF_KEY_UP)searchMacro[0] = min(searchMacro[0] + 1, (int)SEARCH_COUNT -1);
+		if(key == OF_KEY_DOWN)searchMacro[0] = max(searchMacro[0] - 1,0);
 
 	}
 	
@@ -378,6 +432,17 @@ void testApp::keyPressed(int key){
 		
 	}
 	
+	
+	if(key == ' '){
+		
+		if(!isSearching){
+			macroStage = 0;
+			isSearching = true;
+			chimeManager::newSearch();
+		}
+			
+		
+	}
 	
 	if(key == 'x')chimeManager::shiftFocalPoint(0.0f);
 	if(key == 'z')chimeManager::shiftFocalPoint(1.0f);
@@ -421,10 +486,6 @@ void testApp::keyReleased(int key){
 
 	if(key == ' '){
 		isSearching = false;
-		if(currentPreFilter == SEARCH_SAMP_SPEED){
-			chimeManager::endSearch();
-		}
-		
 	}
 	
 }
@@ -453,14 +514,20 @@ void testApp::mousePressed(int x, int y, int button){
 	
 	mouseDownPos = getZPlaneProjection(ofVec2f(x,y));
 	
-	switch (currentMode) {
-			
-		case MT_ADD:currentAction = AT_ADD;break;
-		case MT_SELECT:currentAction = AT_SELECT; break;
-		case MT_ADJUST:currentAction = AT_ADJUST;break;
-			
-		default:
-			break;
+	if(!isSearching){
+
+		switch (currentMode) {
+				
+			case MT_ADD:currentAction = AT_ADD;break;
+			case MT_ADJUST:currentAction = AT_ADJUST;break;
+				
+			default:
+				break;
+		}
+		
+	}else{
+	
+		currentAction  = AT_SELECT;
 	}
 	
 	beginAction();

@@ -41,14 +41,10 @@ class testApp : public ofBaseApp{
 	
 	enum e_MenuType {
 		MT_ADD,
-		MT_SELECT,
 		MT_ADJUST,
-		MT_COUNT
+		MT_COUNT,
 	};
 	
-
-	
-	void setupMenus();
 	
 	void handleMessages();	
 	void setupPresets();
@@ -85,8 +81,9 @@ class testApp : public ofBaseApp{
 	//search stuff
 	
 	bool isSearching;
-	int currentFilter;
-	int currentPreFilter;
+	
+	int macroStage;
+	int searchMacro[4];
 	
 	int currentMod;
 

@@ -29,6 +29,8 @@ public:
 	string setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	void setName(string s);
 	string getName();
+	bool getIsSample();
+	
 	
 protected:
 
@@ -37,5 +39,6 @@ protected:
 	vector <dataElement<float> > floatParameters;
 	vector <dataElement<int> > intParameters;
 	ofVec2f mDown, mDrag;
+	bool isSample;
 	
 };

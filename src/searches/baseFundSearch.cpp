@@ -22,6 +22,8 @@ baseFundSearch::baseFundSearch(){
 	intParameters.push_back(t);
 	name  = "phaseFundamental";
 	
+	isSample = true;
+	
 }
 
 vector<ofPtr<chime> > baseFundSearch::getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup){

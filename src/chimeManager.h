@@ -18,7 +18,6 @@
 
 
 
-
 struct groupPreset{
 	
 	groupPreset(){
@@ -40,6 +39,7 @@ struct groupPreset{
 	string name;
 	
 	vector<distributionDef<float> >fParams;
+	vector<mapDef> mapParams;
 	
 	distributionDef<int> numChimes;
 	distributionDef<ofVec2f> aPos;
@@ -68,6 +68,8 @@ class chimeManager{
 	static string getSearchName(int i);
 	
 	static void newSearch();
+	
+	static void beginSearch();
 	static string continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
 	static void endSearch();
 	static void clearTmps();

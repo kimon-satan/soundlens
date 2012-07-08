@@ -45,7 +45,7 @@ public:
 		
 	};
 	
-	string setUserValues(float ua, float ub){
+	string setUserValues(float ua, float ub){ //might need ofVec2f specialization
 		
 		if(setType != SET_FIXED){
 			abs_val = ofMap((setType == SET_USER_A)? ua:ub,0,1,min_val, max_val);
@@ -67,6 +67,42 @@ public:
 	T max_val;
 	string name;
 	
+};
+
+
+template <>
+
+class dataElement <ofVec2f> {
+
+public:
+	
+	dataElement(){
+		
+		setType = e_setType(0);
+		
+	}
+	
+	void set(ofVec2f t_ab){
+		
+		abs_val = t_ab;
+		setType = e_setType(0);
+		
+	};
+	
+	
+	string setUserValues(float ua, float ub){ //not used for ofVec2f
+		
+		return ""; 
+		
+	};
+	
+	e_setType setType;
+	ofVec2f abs_val;
+	ofVec2f min_val;
+	ofVec2f max_val;
+	string name;
+
+
 };
 
 

@@ -12,6 +12,16 @@
 
 int chime::cIndex = 1;
 
+string chime::getChParamString(int i){
+	
+	string nameList[CH_COUNT] = {"phase", "speed", "length", "freqA", "freqB", "decayA", "decayB", "emptyCount", 
+		"aPos", "colA", "colB" };
+	
+	return nameList[i];
+	
+}
+
+
 chime::chime(){
 	
 	index = cIndex;

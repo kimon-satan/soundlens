@@ -12,9 +12,11 @@
 #include "chimeFactory.h"
 #include "chimeRenderer.h"
 #include "chimeUpdater.h"
-#include "presetParameter.h"
+#include "distributionEngine.h"
 #include "allSearches.h"
 #include "allMods.h"
+
+
 
 
 struct groupPreset{
@@ -22,21 +24,25 @@ struct groupPreset{
 	groupPreset(){
 		
 		numChimes.name = "numChimes";
-		freq.name = "freq";
-		phase.name = "phase";
-		speed.name = "speed";
-		length.name = "length";
+		numChimes.numVals = 1;
+		aPos.name = "aPos";
+		
+		for(int i  =0; i < CH_FLOAT_COUNT; i++){
+			distributionDef<float> d;
+			d.name = chime::getChParamString(i);
+			fParams.push_back(d);
+			
+		}
+		
 	
 	};
 	
 	string name;
 	
-	presetParameter<int> numChimes;
-	presetParameter<ofVec2f> pos;
-	presetParameter<float> freq;
-	presetParameter<float> phase;
-	presetParameter<float> speed;
-	presetParameter<float> length;
+	vector<distributionDef<float> >fParams;
+	
+	distributionDef<int> numChimes;
+	distributionDef<ofVec2f> aPos;
 	
 };
 

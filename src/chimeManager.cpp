@@ -44,37 +44,57 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 	
 	mPreviewChimes.clear();
 	
-	p.pos.initVal =  pos;
+	p.aPos.initVal.abs_val.set(pos);
 	
 	string infoString = "";
 	
 	infoString = p.numChimes.setUserValues(userA, userB);
-	infoString += p.length.setUserValues(userA, userB);
-	infoString += p.freq.setUserValues(userA, userB);
-	infoString += p.speed.setUserValues(userA, userB);
-	infoString += p.phase.setUserValues(userA, userB);
+	infoString += p.aPos.setUserValues(userA, userB);
 	
-	int nc = p.numChimes.getValue();
+	for(int i = 0; i < p.fParams.size(); i++){
 	
-	for(int i = 0; i < nc; i ++){
+		infoString += p.fParams[i].setUserValues(userA, userB);
 		
-		chimeDef cd;
-		cd.length = p.length.getValue(i,nc);
-		cd.phase = p.phase.getValue(i,nc); 
-		cd.anchorPos =  p.pos.getValue(i,nc);			
-		cd.midi[0] = p.freq.getValue(i,nc);
-		cd.midi[1] = p.freq.getValue(i,nc);
-		cd.decay[0] = 1.8;
-		cd.decay[1] = 1.8;
-		cd.speed = p.speed.getValue(i,nc);
-		cd.colors[0] = ofColor(255,0,0);
-		cd.colors[1] = ofColor(255,0,0);
-		cd.sensOn[0] = true;
-		cd.sensOn[1] = true; 
-		cd.zPos = chimeUpdater::getFocalPoint() + 1.0; //not for now
+	}
+	
+	vector<int> nc;
+	distributionEngine::makeValues(nc, p.numChimes);
+	
+	vector<vector<float> >modParams;
+	
+	//make the distributions
+	
+	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
+		vector<float> fVec;
+		p.fParams[i].numVals = nc[0];
+		distributionEngine::makeValues(fVec, p.fParams[i]);
+		modParams.push_back(fVec);
+	}
+	
+	vector<ofVec2f> aPositions;
+	p.aPos.numVals = nc[0];
+	distributionEngine::makeValues(aPositions, p.aPos);
+	
+	
+	for(int i = 0; i < nc[0]; i ++){
+		
+		ofPtr<chime> c = ofPtr<chime>(new chime());
+		
+		for(int j = 0; j < CH_FLOAT_COUNT; j ++){
+			
+			//set the float count from the distributions just made
+			c->setModParam(j, modParams[j][i]);
+		}
+		
+		c->setAnchorPos(aPositions[i]);
+		
+		c->setSensorColor(0, ofColor(255,0,0)); //needs to change
+		c->setSensorColor(1, ofColor(255,0,0));
+		
+		c->setZpos(chimeUpdater::getFocalPoint() + 1.0); // needs changing
 		
 		
-		ofPtr<chime> c = chimeFactory::createChime(cd);
+		chimeFactory::initChime(c);
 		
 		c->setCollisionListener(mListener);
 		

@@ -57,69 +57,23 @@ void testApp::setupPresets(){
 	
 	groupPreset p;
 	
-	p.name = "singleQuantPhase";
+	p.name = "single";
 	p.numChimes.initVal.set(1);
-	p.pos.initVal.set(ofVec2f(0,0));
-	p.pos.dType = DT_NONE;
-	p.pos.increment.set(ofVec2f(0,0.5));
-	p.pos.range = 5;
-	p.freq.initVal.set(MIDI_MIN + MIDI_RANGE/2);
-	p.freq.dType = DT_NONE;
-	p.freq.range.set(12);
-	p.freq.increment.set(3);
-	p.phase.initVal.set(0.5);
-	p.phase.dType =  DT_FLAT;
-	p.phase.increment.set(b2_pi * 1.0f/64.0f);
-	p.phase.range.set(10);
-	p.speed.initVal.set(1.0);
-	p.length.initVal.set(2.0);
+	
+	for(int i = 0; i < 2; i ++){
+		p.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+		p.fParams[CH_FREQ_A + i].dType = DT_NONE;
+		p.fParams[CH_DECAY_A + i].initVal.set(1.8);
+	}
+	
+	p.fParams[CH_PHASE].initVal.set(0.5);
+	p.fParams[CH_PHASE].dType =  DT_FLAT;
+	p.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
+	p.fParams[CH_PHASE].range.set(10);
+	p.fParams[CH_SPEED].initVal.set(1.0);
+	p.fParams[CH_LENGTH].initVal.set(2.0);
 	
 	mPresets.push_back(p);
-	
-	groupPreset p2;
-	
-	p2.name = "multipleQuantPhase";
-	p2.numChimes.dType = DT_NONE;
-	p2.numChimes.increment.set(1);
-	p2.numChimes.range.set(4);
-	p2.numChimes.initVal.set(12);
-	p2.pos.initVal.set(ofVec2f(0,0));
-	p2.pos.dType = DT_NONE;
-	p2.freq.initVal.set(MIDI_MIN + MIDI_RANGE/2);
-	p2.freq.dType = DT_FLAT;
-	p2.freq.range.set(12);
-	p2.freq.increment.set(3);
-	p2.phase.initVal.set(0);
-	p2.phase.dType =  DT_SLICE;
-	p2.phase.increment.set(b2_pi);
-	p2.phase.range.set(1);
-	p2.speed.initVal.set(1.0);
-	p2.length.initVal.set(2.0);
-	
-	mPresets.push_back(p2);
-	
-	
-	groupPreset p1;
-	
-	p1.name = "singleNormSpeed";
-	p1.numChimes.initVal.set(1);
-	p1.pos.initVal.set(ofVec2f(0,0));
-	p1.pos.dType = DT_NONE;
-	p1.pos.increment.set(ofVec2f(0,0.5));
-	p1.pos.range = 5;
-	p1.freq.initVal.set(MIDI_MIN + MIDI_RANGE/2);
-	p1.freq.dType = DT_FLAT;
-	p1.freq.range.set(12.0f);
-	p1.freq.increment.set(3);
-	p1.phase.initVal.set(0);
-	p1.phase.dType =  DT_FLAT;
-	p1.phase.increment.set(b2_pi * 0.01);
-	p1.phase.range.set(100);
-	p1.speed.dType = DT_NONE;
-	p1.speed.initVal.set(-0.7,0.7,SET_USER_B);
-	p1.length.initVal.set(4.0);
-	
-	mPresets.push_back(p1);
 	
 
 	

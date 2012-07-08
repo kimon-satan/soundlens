@@ -12,21 +12,9 @@
 #include "chime.h"
 
 
-struct chimeDef{
-	
-	vector<pivotDims> pivots; 
-	ofVec2f anchorPos;
-	float zPos; //0-1 val
-	float length, midi[2], decay[2], phase, offset, speed;
-	ofColor colors[2];
-	bool sensOn[2];
-	
-};
-
 namespace chimeFactory{
 
-	ofPtr<chime> createChime(chimeDef cd);
-	
+	void initChime(ofPtr<chime> c);
 	void createStem(ofPtr<chime> c);
 	void createHammer(ofPtr<chime> c);
 	void createSensors(ofPtr<chime> c);

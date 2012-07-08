@@ -12,9 +12,8 @@
 namespace chimeFactory {
 	
 
-	ofPtr<chime> createChime(chimeDef cd){
+	void initChime(ofPtr<chime> c){
 
-		ofPtr<chime> c = ofPtr<chime>(new chime());
 
 		b2Vec2 gravity(0.0f,-10.0f);
 		bool doSleep = true;
@@ -23,28 +22,18 @@ namespace chimeFactory {
 		c->setWorld(world);
 		
 		for(int i = 0; i < 2; i++){
-			c->setModParam(CH_FREQ_A + i, cd.midi[i]);
-			float h = (float)(cd.midi[i] - MIDI_MIN)/MIDI_RANGE;
+		
+			float h = (float)(c->getModParam(CH_FREQ_A + i) - MIDI_MIN)/MIDI_RANGE;
 			h = pow(h,0.5f);
 			c->setSensorHeight(i,h);
-			c->setModParam(CH_DECAY_A +i, cd.decay[i]);
-			c->setSensorColor(i, cd.colors[i]);
-			c->setSensorOn(i, cd.sensOn[i]);
 		}
 		
-		c->setAnchorPos(cd.anchorPos);
-		c->setZpos(cd.zPos);
-		c->setPivotDims(cd.pivots);
+		//c->setPivotDims(cd.pivots);
 		
 		stemDims sd;
 		
-		c->setModParam(CH_LENGTH, cd.length);
-		
-		sd.iAngle = cd.phase;
-		sd.cPos = cd.anchorPos; //mightNeed to think about this one when pivots come back
-		
-		c->setModParam(CH_SPEED, cd.speed);
-		c->setModParam(CH_PHASE, cd.phase);
+		sd.iAngle = c->getModParam(CH_PHASE);
+		sd.cPos = c->getAnchorPos();  //mightNeed to think about this one when pivots come back
 		
 		//might need to think about this when pivots are flexible 
 		//(should be the other way round)
@@ -68,7 +57,6 @@ namespace chimeFactory {
 		createHammer(c);
 		joinStemBodies(c);
 		
-		return c;
 		
 	}
 

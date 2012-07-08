@@ -34,8 +34,11 @@ enum e_chimeParameter {
 	CH_ANCHOR, //non standard types
 	CH_COL_A,
 	CH_COL_B,
+	CH_COUNT,
 	
 };
+
+
 
 struct pivotDims{
 	
@@ -50,6 +53,8 @@ struct stemDims{
 	ofVec2f cPos;
 	
 };
+
+
 
 class chime{
 
@@ -130,6 +135,8 @@ public:
 	
 	int getIndex();
 	
+	static string getChParamString(int i);
+	
 	static int cIndex;
 	
 private:
@@ -162,7 +169,6 @@ private:
 	int spIndex;
 	
 	modifiable<ofVec2f> anchorPos;
-	
 	vector<modifiable<float> >modParams;
 	
 	float zPos;

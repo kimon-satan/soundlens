@@ -61,8 +61,7 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 		chimeDef cd;
 		cd.length = p.length.getValue(i,nc);
 		cd.phase = p.phase.getValue(i,nc); 
-		cd.anchorPos =  p.pos.getValue(i,nc);
-		cd.offset = 0;	//ultimately remove this				
+		cd.anchorPos =  p.pos.getValue(i,nc);			
 		cd.midi[0] = p.freq.getValue(i,nc);
 		cd.midi[1] = p.freq.getValue(i,nc);
 		cd.decay[0] = 1.8;

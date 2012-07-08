@@ -46,7 +46,7 @@ struct pivotDims{
 
 struct stemDims{
 	
-	float offset, rSpeed, iAngle, iHoff;
+	float iAngle, iHoff;
 	ofVec2f cPos;
 	
 };
@@ -97,9 +97,6 @@ public:
 	
 	ofColor getSensorColor(int i);
 	void setSensorColor(int i, ofColor c);
-	
-	void setReactSecs(int i, float f);
-	float getReactSecs(int i);
 	
 	void setReactTotal(int i, int t);
 	int getReactTotal(int i);
@@ -152,7 +149,6 @@ private:
 	
 	vector<pivotDims> mPivotDims;
 
-	float reactSecs[2];
 	int reactCount[2], reactTotal[2];
 	
 	ofColor mSensorColors[2];

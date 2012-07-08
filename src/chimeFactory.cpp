@@ -27,7 +27,7 @@ namespace chimeFactory {
 			float h = (float)(cd.midi[i] - MIDI_MIN)/MIDI_RANGE;
 			h = pow(h,0.5f);
 			c->setSensorHeight(i,h);
-			c->setReactSecs(i, cd.decay[i]);
+			c->setModParam(CH_DECAY_A +i, cd.decay[i]);
 			c->setSensorColor(i, cd.colors[i]);
 			c->setSensorOn(i, cd.sensOn[i]);
 		}
@@ -41,7 +41,6 @@ namespace chimeFactory {
 		c->setModParam(CH_LENGTH, cd.length);
 		
 		sd.iAngle = cd.phase;
-		sd.rSpeed = cd.speed; //cd.rSpeed should be the cumulative one
 		sd.cPos = cd.anchorPos; //mightNeed to think about this one when pivots come back
 		
 		c->setModParam(CH_SPEED, cd.speed);

@@ -30,7 +30,6 @@ chime::chime(){
 		reactCount[i] = 0;
 		mSensorAlphas[i] = 0;
 		mSensorHeights[i] = 0.5;
-		reactSecs[i] = 0.5;
 		mSensorColors[i] = ofColor(255,0,0);
 		mSensorOn[i] = true;
 	}
@@ -111,8 +110,6 @@ void chime::setSensorAlpha(int i, float a){mSensorAlphas[i] = a;}
 ofColor chime::getSensorColor(int i){return mSensorColors[i];}
 void chime::setSensorColor(int i, ofColor c){mSensorColors[i] = c;}
 
-void chime::setReactSecs(int i, float f){reactSecs[i] = f;}
-float chime::getReactSecs(int i){return reactSecs[i];}
 
 void chime::setReactTotal(int i, int t){reactTotal[i]  = t;}
 int chime::getReactTotal(int i){return reactTotal[i];}

@@ -7,16 +7,29 @@
  *
  */
 
-#include "speedSearch.h"
+#include "matchSearch.h"
 #include "baseFundSearch.h"
 #include "quantSearch.h"
 #include "positionSearch.h"
+#include "predefMatchSearch.h"
 
 enum e_SearchType {
-	SEARCH_SAMP_SPEED,
+	
+	SEARCH_MATCH_MULTI,
+	SEARCH_MATCH_PHASE,
+	SEARCH_MATCH_SPEED,
+	SEARCH_MATCH_LENGTH,
+	
+	SEARCH_MATCH_FREQ_OR,
+	SEARCH_MATCH_FREQ_AND,
+	SEARCH_MATCH_DECAY_OR,
+	SEARCH_MATCH_DECAY_AND,
+	
 	SEARCH_SAMP_PHASE_FUND,
 	SEARCH_QUANT_PHASE,
 	SEARCH_POSITION,
+	
+	
 	SEARCH_COUNT,
 };
 
@@ -48,7 +61,7 @@ class allSearches{
 	
 	private:
 	
-	void pickSample(vector<ofPtr<chime> > searchGroup);
+	void pickSample(vector<ofPtr<chime> > searchGroup, bool isMDrag);
 	
 	ofPtr<chime> mSample;
 	searchData mSearchData;

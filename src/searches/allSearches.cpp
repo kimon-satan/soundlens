@@ -9,10 +9,19 @@
 
 #include "allSearches.h"
 
+
+
 allSearches::allSearches(){
 	
-	ofPtr<speedSearch> ss = ofPtr<speedSearch>(new speedSearch());
-	searches.push_back((ofPtr<baseSearch>)ss);
+	ofPtr<matchSearch> mm = ofPtr<matchSearch>(new matchSearch());
+	searches.push_back((ofPtr<baseSearch>)mm);
+
+	
+	for(int i = 0; i < 7; i++){
+		ofPtr<predefMatchSearch> pm = ofPtr<predefMatchSearch>(new predefMatchSearch(i));
+		searches.push_back((ofPtr<baseSearch>)pm);
+	}
+	
 	ofPtr<baseFundSearch> bfs = ofPtr<baseFundSearch>(new baseFundSearch());
 	searches.push_back((ofPtr<baseSearch>)bfs);
 	ofPtr<quantSearch> qs = ofPtr<quantSearch>(new quantSearch());
@@ -46,7 +55,7 @@ vector<ofPtr<chime> >allSearches::search(int searchType, vector<ofPtr<chime> > s
 	
 	if(searches[searchType]->getIsSample() && !isSampleSelected){
 		
-		pickSample(searchGroup);
+		pickSample(searchGroup, searches[searchType]->getIsMDrag());
 		
 		if(!isSampleFound)return searchGroup;
 		
@@ -63,7 +72,7 @@ void allSearches::drawSearch(int searchType, float dragDist, float dragAngle){
 }
 
 
-void allSearches::pickSample(vector<ofPtr<chime> > searchGroup){
+void allSearches::pickSample(vector<ofPtr<chime> > searchGroup, bool isMDrag){
 	
 	float dist = 100.0f;
 	
@@ -71,7 +80,7 @@ void allSearches::pickSample(vector<ofPtr<chime> > searchGroup){
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		float td = mDrag.distance((*it)->getStemDims().cPos);
+		float td = (isMDrag)? mDrag.distance((*it)->getStemDims().cPos) : mDown.distance((*it)->getStemDims().cPos);
 		
 		if(td < dist){
 			dist = td;

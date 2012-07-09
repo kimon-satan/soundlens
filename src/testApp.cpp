@@ -38,7 +38,7 @@ void testApp::setup(){
 	currentMod = MOD_GATHER;
 	
 	searchMacro[0] = SEARCH_POSITION;
-	searchMacro[1] = SEARCH_SAMP_SPEED;
+	searchMacro[1] = SEARCH_MATCH_SPEED;
 	searchMacro[2] = SEARCH_SAMP_PHASE_FUND;
 	searchMacro[3] = SEARCH_QUANT_PHASE;
 	

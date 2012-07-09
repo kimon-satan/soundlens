@@ -26,10 +26,11 @@ public:
 	virtual vector<ofPtr<chime> >getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup) = 0;
 	virtual void drawPreview(float dragDist, float dragAngle) = 0;
 	
-	string setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub);
+	virtual string setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	void setName(string s);
 	string getName();
 	bool getIsSample();
+	bool getIsMDrag();
 	
 	
 protected:
@@ -39,6 +40,6 @@ protected:
 	vector <dataElement<float> > floatParameters;
 	vector <dataElement<int> > intParameters;
 	ofVec2f mDown, mDrag;
-	bool isSample;
+	bool isSample, isMDrag;
 	
 };

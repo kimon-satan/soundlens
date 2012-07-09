@@ -27,7 +27,8 @@ public:
 	dataElement(){
 		
 		setType = e_setType(0);
-		
+		incr = 0;
+		isActive = true;
 	}
 	
 	void set(T t_ab){
@@ -48,11 +49,25 @@ public:
 	string setUserValues(float ua, float ub){ //might need ofVec2f specialization
 		
 		if(setType != SET_FIXED){
+			
 			abs_val = ofMap((setType == SET_USER_A)? ua:ub,0,1,min_val, max_val);
-			if(name != ""){
-				return name + " " + ofToString(abs_val,2) + ", ";
+			if(incr > 0)abs_val -= fmod((float)abs_val, incr);
+			
+			if(displayNames.size() > 0){
+				
+				if(name != ""){
+					return name + ": " + displayNames[abs_val] + ", ";
+				}else{
+					return displayNames[abs_val];
+				}
+				
 			}else{
-				return ofToString(abs_val,2);
+				
+				if(name != ""){
+					return name + " " + ofToString(abs_val,2) + ", ";
+				}else{
+					return ofToString(abs_val,2);
+				}
 			}
 			
 		}else{
@@ -66,6 +81,9 @@ public:
 	T min_val;
 	T max_val;
 	string name;
+	float incr;
+	bool isActive;
+	vector<string> displayNames;
 	
 };
 

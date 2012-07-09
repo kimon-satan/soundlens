@@ -22,6 +22,7 @@ string chime::getChParamString(int i){
 }
 
 
+
 chime::chime(){
 	
 	index = cIndex;

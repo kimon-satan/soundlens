@@ -11,26 +11,37 @@
 
 string baseSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 
-	string s = "";
-	
-	for(vector<dataElement<float> >::iterator it = floatParameters.begin(); it != floatParameters.end(); it++){
-		
-		s += it->setUserValues(ua,ub);
-	}
+	userDataString  = "";
 	
 	for(vector<dataElement<int> >::iterator it = intParameters.begin(); it != intParameters.end(); it++){
 		
-		s += it->setUserValues(ua,ub);
+		if(it->isActive){
+			string s = it->setUserValues(ua,ub);
+			if(s != ""){
+				s += "\n";
+				userDataString += s;
+			}
+		}
+	}
+	
+	for(vector<dataElement<float> >::iterator it = floatParameters.begin(); it != floatParameters.end(); it++){
+		
+		if(it->isActive){
+			string s = it->setUserValues(ua,ub);
+			if(s != ""){
+				s += "\n";
+				userDataString += s;
+			}
+		}
 	}
 	
 	mDown.set(mD);
 	mDrag.set(mDr);
 	
-	if(s != "")s = name + ": " + s;
+	if(userDataString  != "")userDataString  = name + ": \n" + userDataString;
 	
-	userDataString = s;
 	
-	return s;
+	return userDataString ;
 	
 }
 
@@ -48,4 +59,8 @@ string baseSearch::getName(){
 
 bool baseSearch::getIsSample(){
 	return isSample;
+}
+
+bool baseSearch::getIsMDrag(){
+	return isMDrag;
 }

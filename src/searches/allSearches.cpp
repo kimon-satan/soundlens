@@ -16,14 +16,16 @@ allSearches::allSearches(){
 	ofPtr<matchSearch> mm = ofPtr<matchSearch>(new matchSearch());
 	searches.push_back((ofPtr<baseSearch>)mm);
 
-	
 	for(int i = 0; i < 7; i++){
 		ofPtr<predefMatchSearch> pm = ofPtr<predefMatchSearch>(new predefMatchSearch(i));
 		searches.push_back((ofPtr<baseSearch>)pm);
 	}
 	
-	ofPtr<baseFundSearch> bfs = ofPtr<baseFundSearch>(new baseFundSearch());
-	searches.push_back((ofPtr<baseSearch>)bfs);
+	for(int i = 0; i < 3; i++){
+		ofPtr<fundSearch> bfs = ofPtr<fundSearch>(new fundSearch(i));
+		searches.push_back((ofPtr<baseSearch>)bfs);
+	}
+	
 	ofPtr<quantSearch> qs = ofPtr<quantSearch>(new quantSearch());
 	searches.push_back((ofPtr<baseSearch>)qs);
 	ofPtr<positionSearch> ps = ofPtr<positionSearch>(new positionSearch());

@@ -39,7 +39,7 @@ void testApp::setup(){
 	
 	searchMacro[0] = SEARCH_POSITION;
 	searchMacro[1] = SEARCH_MATCH_SPEED;
-	searchMacro[2] = SEARCH_SAMP_PHASE_FUND;
+	searchMacro[2] = SEARCH_FUND_SPEED;
 	searchMacro[3] = SEARCH_QUANT_PHASE;
 	
 	isSearching = false;
@@ -132,6 +132,43 @@ void testApp::setupPresets(){
 	preset3.mapParams.push_back(freq);
 	
 	mPresets.push_back(preset3);
+	
+	groupPreset preset4;
+	
+	preset4.name = "multipleSpeeds";
+	preset4.numChimes.initVal.set(10);
+	preset4.numChimes.dType = DT_FLAT;
+	preset4.numChimes.range.set(3);
+	preset4.numChimes.increment.set(1);
+	
+	for(int i = 0; i < 2; i ++){
+		preset4.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+		preset4.fParams[CH_FREQ_A + i].dType = DT_NONE;
+		preset4.fParams[CH_DECAY_A + i].initVal.set(1.8);
+	}
+	
+	preset4.fParams[CH_FREQ_A].initVal.set(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B);
+	preset4.fParams[CH_FREQ_B].initVal.set(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B);
+	preset4.fParams[CH_FREQ_A].increment.set(0.25);
+	preset4.fParams[CH_FREQ_B].increment.set(0.25);
+	preset4.fParams[CH_FREQ_A].range.set(6,12,SET_USER_A);
+	preset4.fParams[CH_FREQ_B].range.set(6,12,SET_USER_A);
+	preset4.fParams[CH_FREQ_A].dType = DT_NORMAL;
+	preset4.fParams[CH_FREQ_B].dType = DT_NORMAL;
+	
+	preset4.fParams[CH_PHASE].initVal.set(0);
+	preset4.fParams[CH_PHASE].dType =  DT_SLICE;
+	preset4.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
+	preset4.fParams[CH_PHASE].range.set(64);
+	preset4.fParams[CH_SPEED].initVal.set(0.75);
+	preset4.fParams[CH_SPEED].dType = DT_FLAT;
+	preset4.fParams[CH_SPEED].range.set(5);
+	preset4.fParams[CH_SPEED].increment.set(0.05);
+	preset4.fParams[CH_LENGTH].initVal.set(2.0);
+	
+
+	
+	mPresets.push_back(preset4);
 	
 
 }

@@ -12,8 +12,7 @@
 namespace chimeFactory {
 	
 
-	void initChime(ofPtr<chime> c){
-
+	void initBodies(ofPtr<chime> c){
 
 		b2Vec2 gravity(0.0f,-10.0f);
 		bool doSleep = true;
@@ -21,6 +20,16 @@ namespace chimeFactory {
 		
 		c->setWorld(world);
 		
+		createStem(c);
+		createSensors(c);
+		createHammer(c);
+		joinStemBodies(c);
+		
+		
+	}
+	
+	void mapFreqToSensors(ofPtr<chime> c){
+	
 		vector<float> freqs;
 		vector<float> heights;
 		
@@ -37,43 +46,39 @@ namespace chimeFactory {
 		mappingEngine::makeMapping(freqs,heights, md);
 		
 		for(int i = 0; i < 2; i++){
-	
+			
 			c->setSensorHeight(i,heights[i]);
 			
 		}
+	
+	}
+	
+	void conformPhase(ofPtr<chime> c){
 		
-		
-		
-		//c->setPivotDims(cd.pivots);
-		
-		stemDims sd;
-		
+		stemDims sd = c->getStemDims();
+		sd.cPos = c->getAnchorPos(); 
 		sd.iAngle = c->getModParam(CH_PHASE);
-		sd.cPos = c->getAnchorPos();  //mightNeed to think about this one when pivots come back
+		sd.iAngle += fmod(c->getModParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
+		c->setStemDims(sd);
+		
+		b2Body * b = c->getStemBody();
+		
+		if(b){
+			b->SetTransform(b->GetPosition(), sd.iAngle);
+		}
+		
+		//will need all pivot adjustments too
+		//c->setPivotDims(cd.pivots);
 		
 		//might need to think about this when pivots are flexible 
 		//(should be the other way round)
 		
 		/*
-		for(int i = 0; i < cd.pivots.size(); i++){
-			sd.cum_rSpeed += cd.pivots[i].rSpeed; 
-												
-			sd.iAngle += cd.pivots[i].iAngle;
-		}*/
-		
-		
-		//normalize so phases can be compared
-		sd.iAngle += fmod(c->getModParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
-		
-		c->setStemDims(sd);
-		c->setSpIndex(100);
-		
-		createStem(c);
-		createSensors(c);
-		createHammer(c);
-		joinStemBodies(c);
-		
-		
+		 for(int i = 0; i < cd.pivots.size(); i++){
+		 sd.cum_rSpeed += cd.pivots[i].rSpeed; 
+		 
+		 sd.iAngle += cd.pivots[i].iAngle;
+		 }*/
 	}
 
 

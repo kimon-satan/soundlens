@@ -255,12 +255,17 @@ void chimeRenderer::drawOutline(ofPtr<chime> c, ofColor col){
 	stemDims sd = c->getStemDims();
 	b2Body ** sens = c->getSensors();
 	
+	ofVec2f sens_pos[2];
+	float sens_ang[2];
+	
+	float st_ang = (stem)? stem->GetAngle() : sd.iAngle;
+		
+	
 	ofPushMatrix();
 	ofTranslate(sd.cPos.x,sd.cPos.y,0);
 	
 		glPushMatrix();
-		glTranslatef(stem->GetPosition().x, stem->GetPosition().y, 0);
-		glRotatef(ofRadToDeg(stem->GetAngle()), 0, 0, 1);
+		glRotatef(ofRadToDeg(st_ang), 0, 0, 1);
 		
 
 	ofSetColor(col);
@@ -273,9 +278,21 @@ void chimeRenderer::drawOutline(ofPtr<chime> c, ofColor col){
 			
 			if(c->getSensorOn(i)){
 				
+				if(sens[i]){
+					sens_pos[i].set(sens[i]->GetPosition().x, sens[i]->GetPosition().y);
+					sens_ang[i] = sens[0]->GetAngle();
+				}else{
+					
+					sens_pos[i].set(0, 0); 
+					sens_pos[i].y += (i == 0)? c->getModParam(CH_LENGTH)/2 : -c->getModParam(CH_LENGTH)/2;
+					sens_pos[i].rotateRad(st_ang); 
+					sens_ang[i] = st_ang;
+				
+				}
+				
 				glPushMatrix();
-				glTranslatef(sens[i]->GetPosition().x, sens[i]->GetPosition().y, 0);
-				glRotatef(ofRadToDeg(sens[i]->GetAngle()), 0, 0, 1);
+				glTranslatef(sens_pos[i].x,sens_pos[i].y, 0);
+				glRotatef(ofRadToDeg(sens_ang[i]), 0, 0, 1);
 				
 				float frq =  0.5 + (1 - c->getSensorHeight(i)) * 3.0;
 				

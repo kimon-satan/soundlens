@@ -68,7 +68,7 @@ void testApp::setupPresets(){
 	preset1.fParams[CH_PHASE].initVal.set(0.5);
 	preset1.fParams[CH_PHASE].dType =  DT_FLAT;
 	preset1.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
-	preset1.fParams[CH_PHASE].range.set(10);
+	preset1.fParams[CH_PHASE].range.set(32);
 	preset1.fParams[CH_SPEED].initVal.set(1.0);
 	preset1.fParams[CH_LENGTH].initVal.set(2.0);
 	

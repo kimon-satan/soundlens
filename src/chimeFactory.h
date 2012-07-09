@@ -14,7 +14,11 @@
 
 namespace chimeFactory{
 
-	void initChime(ofPtr<chime> c);
+	void initBodies(ofPtr<chime> c);
+	
+	void conformPhase(ofPtr<chime> c);
+	void mapFreqToSensors(ofPtr<chime> c); //this probably should be elsewhere
+	
 	void createStem(ofPtr<chime> c);
 	void createHammer(ofPtr<chime> c);
 	void createSensors(ofPtr<chime> c);

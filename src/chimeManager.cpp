@@ -89,12 +89,12 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 		}
 		
 		c->setAnchorPos(aPositions[i]);
-		
+		c->setSpIndex(100);
 		c->setSensorColor(0, ofColor(255,0,0)); //needs to change
 		c->setSensorColor(1, ofColor(255,0,0));
 		
 		c->setZpos(chimeUpdater::getFocalPoint() + 1.0); // needs changing
-		
+	
 		
 		mPreviewChimes.push_back(c);
 		
@@ -129,8 +129,9 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 	//now update changes and init chimes
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
-		chimeFactory::initChime(*it);
-		(*it)->setCollisionListener(mListener);
+		chimeFactory::conformPhase(*it);
+		chimeFactory::mapFreqToSensors(*it);
+		
 	}
 	
 	return infoString;
@@ -144,6 +145,9 @@ void chimeManager::endNewChimes(){
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++){
 		(*it)->setIsSelected(true);
+		chimeFactory::conformPhase(*it);
+		chimeFactory::initBodies(*it);
+		(*it)->setCollisionListener(mListener);
 		mChimes.push_back(*it);
 	}
 	mPreviewChimes.clear();

@@ -31,6 +31,7 @@ string allSearches::updateUserValues(int searchType, ofVec2f mD, ofVec2f mDr, fl
 	string s = "";
 	s = searches[searchType]->setUserData(mD, mDr, ua, ub);
 	mDown.set(mD);
+	mDrag.set(mDr);
 	return s;
 	
 }
@@ -70,7 +71,8 @@ void allSearches::pickSample(vector<ofPtr<chime> > searchGroup){
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		float td = mDown.distance((*it)->getStemDims().cPos);
+		float td = mDrag.distance((*it)->getStemDims().cPos);
+		
 		if(td < dist){
 			dist = td;
 			mSample = *it;

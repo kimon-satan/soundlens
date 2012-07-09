@@ -58,7 +58,7 @@ class chimeManager{
 	
 	static void shiftFocalPoint(float direction);
 	static void shiftZPos(float direction);
-	static void nextPrevSelected();
+	
 	
 	static string createChimes(groupPreset p, ofVec2f pos, float userA, float userB);
 	static void endNewChimes();
@@ -73,7 +73,12 @@ class chimeManager{
 	static string continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
 	static void endSearch();
 	static void clearTmps();
-	static void selectSample(ofVec2f p);
+	
+	//
+	static void switchSelBank(int i);
+	static void saveSelBank();
+	static void clearSelBanks();
+	static void deleteSelBank();
 	
 	//mod methods
 	
@@ -89,6 +94,7 @@ class chimeManager{
 	//rendering 
 	
 	static void drawSample();
+	static void flashSelected();
 	static void drawSelected();
 	static void drawTmpSelected();
 	static void drawPreviewChimes();
@@ -102,12 +108,16 @@ class chimeManager{
 	static vector<ofPtr<chime> > mPreviewChimes;
 	static vector<ofPtr<chime> > mSelected;
 	static vector<ofPtr<chime> > mTmpSelected;
-	
-	static vector<vector<ofPtr<chime> > >mPrevSelected;
 	static vector<vector<ofPtr<chime> > > renderList;
 	
-	static int prevSelIndex;
+	static vector<vector<ofPtr<chime> > >mSelectionBank;
+	
+	static int sbIndex;
 	static float mMaxZ;
+	
+	static float flashAlpha;
+	static bool isNewSelection;
+	
 	static customListener mListener;
 	static ofxOscSender * iSender;
 	

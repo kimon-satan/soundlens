@@ -14,15 +14,17 @@ vector<ofPtr<chime> > chimeManager::mPreviewChimes;
 
 vector<ofPtr<chime> > chimeManager::mSelected;
 vector<ofPtr<chime> > chimeManager::mTmpSelected;
-vector<vector<ofPtr<chime> > > chimeManager::mPrevSelected;
+vector<vector<ofPtr<chime> > > chimeManager::mSelectionBank;
 vector<vector<ofPtr<chime> > > chimeManager::renderList;
 
 allSearches chimeManager::mSearchEngine;
 allMods chimeManager::mModEngine;
 ofxOscSender * chimeManager::iSender = NULL;
 
-int chimeManager::prevSelIndex = 0;
+int chimeManager::sbIndex = 0;
 float chimeManager::mMaxZ = 0.0f;
+bool chimeManager::isNewSelection = false;
+float chimeManager::flashAlpha = 0;
 customListener chimeManager::mListener;
 
 void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
@@ -137,11 +139,21 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 
 void chimeManager::endNewChimes(){
 
+	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
 	mSelected = mPreviewChimes;
+	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++){
+		(*it)->setIsSelected(true);
 		mChimes.push_back(*it);
 	}
 	mPreviewChimes.clear();
+	
+	isNewSelection = true;
+	
+	if(mSelected.size() > 1){
+		mSelectionBank.push_back(mSelected);
+		isNewSelection = false;
+	}
 	
 	rePopulateRenderList();
 
@@ -215,13 +227,48 @@ void chimeManager::shiftZPos(float direction){
 }
 
 
-void chimeManager::nextPrevSelected(){
+void chimeManager::switchSelBank(int i){
 	
-	prevSelIndex = (prevSelIndex +1)%mPrevSelected.size();
-	mSelected.clear();
-	mSelected = mPrevSelected[prevSelIndex];
+	if(mSelectionBank.size() > 0){
+		sbIndex = min((int)mSelectionBank.size() - 1, max(sbIndex + i, 0));
+		for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
+		mSelected.clear();
+		mSelected = mSelectionBank[sbIndex];
+		for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
+		flashAlpha = 255;
+		isNewSelection = false;
+	}
 	
 }
+
+
+void chimeManager::saveSelBank(){
+
+	if(isNewSelection){
+		mSelectionBank.push_back(mSelected);
+		flashAlpha = 255;
+		isNewSelection = false;
+	}
+	
+}
+
+void chimeManager::clearSelBanks(){
+
+	mSelectionBank.clear();
+	sbIndex = 0;
+
+}
+
+void chimeManager::deleteSelBank(){
+	
+	if(!isNewSelection){
+		mSelectionBank.erase(mSelectionBank.begin() + sbIndex);
+		sbIndex = 0;
+		isNewSelection = true;
+	}
+	
+}
+
 
 //selection methods
 
@@ -259,6 +306,8 @@ void chimeManager::endSearch(){
 	mSelected = mTmpSelected;
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
 	clearTmps();
+	
+	if(mSelected.size() > 0)isNewSelection = true;
 	
 	
 }
@@ -309,14 +358,29 @@ void chimeManager::draw(){
 		
 	}
 	
+	flashSelected();
 
 }
 
 
+void chimeManager::flashSelected(){
+	
+	if(flashAlpha > 0){
+	
+		for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
+			chimeRenderer::drawOutline(*it, ofColor(205,50,120,flashAlpha));
+		}
+		
+		flashAlpha -= 5;
+		
+	}
+
+}
+
 void chimeManager::drawSelected(){
 	
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
-		if(!(*it)->getIsTmpSelected() && (*it)->getIsSelected())chimeRenderer::drawOutline(*it, ofColor(255,0,0,255));
+		if(!(*it)->getIsTmpSelected() && (*it)->getIsSelected())chimeRenderer::drawOutline(*it, ofColor(0,206,209,255));
 	}
 
 
@@ -325,21 +389,22 @@ void chimeManager::drawSelected(){
 void chimeManager::drawTmpSelected(){
 	
 	for(vector<ofPtr<chime> >::iterator it = mTmpSelected.begin(); it != mTmpSelected.end(); it++){
-		if((*it)->getIsTmpSelected())chimeRenderer::drawHighlight(*it, ofColor(255,0,0,50));
+		if((*it)->getIsTmpSelected())chimeRenderer::drawOutline(*it, ofColor(205,50,120,255));
 	}
 		
 }
 
 void chimeManager::drawSample(){
 	
-	if(mSearchEngine.getIsSampleSelected() || mSearchEngine.getIsSampleFound())chimeRenderer::drawHighlight(mSearchEngine.getSample(), ofColor(0,0,255,50));
+	if(mSearchEngine.getIsSampleSelected() || mSearchEngine.getIsSampleFound())
+		chimeRenderer::drawHighlight(mSearchEngine.getSample(), ofColor(0,229,238,100));
 	
 }
 
 void chimeManager::drawPreviewChimes(){
 
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++){
-		chimeRenderer::drawOutline(*it, ofColor(150,0,0,150));
+		chimeRenderer::drawOutline(*it, ofColor(96,123,139));
 	}
 	
 

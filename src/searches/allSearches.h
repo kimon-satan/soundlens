@@ -55,7 +55,7 @@ class allSearches{
 	vector<ofPtr<baseSearch> > searches;
 	bool isSampleSelected;
 	bool isSampleFound;
-	ofVec2f mDown;
+	ofVec2f mDown, mDrag;
 
 
 };

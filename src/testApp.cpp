@@ -452,7 +452,13 @@ void testApp::keyPressed(int key){
 	
 	if(key == 'n')chimeManager::incrementMod(-1);
 	if(key == 'm')chimeManager::incrementMod(1);
-
+	
+	
+	if(key == 'i')chimeManager::clearSelBanks();
+	if(key == 'o')chimeManager::deleteSelBank();
+	if(key == 'p')chimeManager::saveSelBank();
+	if(key == '[')chimeManager::switchSelBank(-1);
+	if(key == ']')chimeManager::switchSelBank(1);
 	
 	/*if(key == 'n'){
 	 

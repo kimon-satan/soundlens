@@ -9,19 +9,35 @@
 
 #include "quantSearch.h"
 
-quantSearch::quantSearch(){
+quantSearch::quantSearch(int fType){
 	
-	dataElement <int> po;
-	po.name = "offset";
-	po.set(0,20,SET_USER_B);
-	intParameters.push_back(po);
-
-	dataElement <int> pm;
-	pm.name = "mul";
-	pm.set(1,20,SET_USER_A);
-	intParameters.push_back(pm);
+	dataElement <int> offset;
+	dataElement <int> mul;
+	offset.name = "offset";
+	mul.name = "mul";
+	offset.set(0,20,SET_USER_B);
+	mul.set(1,20,SET_USER_A);
 	
-	name = "quantOffset";
+	fundType = fType;
+	
+	switch(fundType){
+	
+		case FT_FREQ:
+			name = "Quant_freq";
+			break;
+		case FT_PHASE:
+			name = "Quant_phase";
+			break;
+		case FT_SPEED:
+			name = "Quant_speed";
+			break;
+			
+	}
+	
+	intParameters.push_back(offset);
+	intParameters.push_back(mul);
+	
+	isMDrag = false;
 	isSample = true;
 	
 }
@@ -30,15 +46,48 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 	
 	vector<ofPtr<chime> > tmp;
 	
-	float tol = sd.phaseTol;
-	float angle = 2 * b2_pi/sd.phaseFund;
-	float offset = sample->getModParam(CH_PHASE) + (float)intParameters[0].abs_val * angle;
-	angle *= intParameters[1].abs_val;
+	float tol, div;
+	int param;
+	
+	switch(fundType){
+			
+		case FT_FREQ:
+			tol = sd.freqTol;
+			div = sd.freqFund;
+			param = CH_FREQ_A;
+			break;
+		case FT_PHASE:
+			tol = sd.phaseTol;
+			div = 2 * b2_pi/sd.phaseFund;
+			param = CH_PHASE;
+			break;
+		case FT_SPEED:
+			tol = sd.speedTol;
+			div = sd.speedFund;
+			param = CH_SPEED;
+			break;
+	}
+	
+	float offset = sample->getModParam(param) + (float)intParameters[0].abs_val * div;
+	div *= intParameters[1].abs_val;
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		float rmdr = abs(fmod((*it)->getModParam(CH_PHASE) - offset,angle));
-		if(rmdr <= tol || angle - rmdr <= tol){
+		bool isQuant = false;
+		
+		int numTests = (fundType != FT_FREQ)? 1 : 2;
+			
+		isQuant = true;
+		
+		for(int i = 0; i < numTests; i++){
+		
+			float rmdr = abs(fmod((*it)->getModParam(param + i) - offset,div));
+			rmdr = min(rmdr, div - rmdr);
+			if(rmdr > tol){isQuant = false; break;}
+		}
+		
+		
+		if(isQuant){
 			tmp.push_back(*it);
 			(*it)->setIsTmpSelected(true);
 		}else{

@@ -83,24 +83,24 @@ vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample,
 			//for freq
 			
 			int param = CH_FREQ_A;
-			float rmdr[2]; 
+			float rmdr[4]; 
 			
-			for(int i = 0; i < 2; i++){ //not quite right /needs to use one or both sample freqs
-				
+			for(int i = 0; i < 2; i++){
 				rmdr[i] = (*it)->getModParam(param + i) - sample->getModParam(param + i);
-				rmdr[i] = fmod(abs(rmdr[i]),div);
-				
+				rmdr[i+2] = (*it)->getModParam(param + i) - sample->getModParam(param + 1 - i);
 			}
+			
+			isFund = true;
+			
+			//AND gate based on relations btwn all freqs
+			
+			for(int i = 0; i < 4; i++){
 				
-				if((rmdr[0] <= tol_r || div - rmdr[0] <= tol_r) && (rmdr[1] <= tol_r || div - rmdr[1] <= tol_r)){
-					
-					isFund = true;
-					cout << "pass "<< rmdr[0] << ":" << rmdr[1] << ":" << tol_r << endl;
-					
-				}else{
-					
-					cout  << "fail" << rmdr[0] << ":" << rmdr[1] << ":" << tol_r << endl;
-				}
+				rmdr[i] = fmod(abs(rmdr[i]),div);
+				rmdr[i] = min(rmdr[i], div - rmdr[i]);
+				
+				if(rmdr[i] > tol_r){isFund = false; break;}
+			}
 			
 		}
 			

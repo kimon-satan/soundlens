@@ -39,8 +39,8 @@ void testApp::setup(){
 	
 	searchMacro[0] = SEARCH_POSITION;
 	searchMacro[1] = SEARCH_MATCH_SPEED;
-	searchMacro[2] = SEARCH_FUND_SPEED;
-	searchMacro[3] = SEARCH_QUANT_PHASE;
+	searchMacro[2] = SEARCH_FUND_FREQ;
+	searchMacro[3] = SEARCH_QUANT_FREQ;
 	
 	isSearching = false;
 	macroStage = 0;
@@ -136,8 +136,8 @@ void testApp::setupPresets(){
 	groupPreset preset4;
 	
 	preset4.name = "multipleSpeeds";
-	preset4.numChimes.initVal.set(10);
-	preset4.numChimes.dType = DT_FLAT;
+	preset4.numChimes.initVal.set(4);
+	preset4.numChimes.dType = DT_NONE;
 	preset4.numChimes.range.set(3);
 	preset4.numChimes.increment.set(1);
 	
@@ -148,25 +148,28 @@ void testApp::setupPresets(){
 	}
 	
 	preset4.fParams[CH_FREQ_A].initVal.set(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B);
-	preset4.fParams[CH_FREQ_B].initVal.set(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B);
-	preset4.fParams[CH_FREQ_A].increment.set(0.25);
-	preset4.fParams[CH_FREQ_B].increment.set(0.25);
+	preset4.fParams[CH_FREQ_A].initVal.incr = 1;
+	preset4.fParams[CH_FREQ_A].increment.set(1);
 	preset4.fParams[CH_FREQ_A].range.set(6,12,SET_USER_A);
-	preset4.fParams[CH_FREQ_B].range.set(6,12,SET_USER_A);
-	preset4.fParams[CH_FREQ_A].dType = DT_NORMAL;
-	preset4.fParams[CH_FREQ_B].dType = DT_NORMAL;
+	preset4.fParams[CH_FREQ_A].dType = DT_SLICE;
+
 	
-	preset4.fParams[CH_PHASE].initVal.set(0);
-	preset4.fParams[CH_PHASE].dType =  DT_SLICE;
-	preset4.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
-	preset4.fParams[CH_PHASE].range.set(64);
-	preset4.fParams[CH_SPEED].initVal.set(0.75);
-	preset4.fParams[CH_SPEED].dType = DT_FLAT;
-	preset4.fParams[CH_SPEED].range.set(5);
-	preset4.fParams[CH_SPEED].increment.set(0.05);
+	preset4.fParams[CH_PHASE].initVal.set(0,b2_pi/2,SET_USER_B);
+	preset4.fParams[CH_PHASE].dType =  DT_NONE;
+	preset4.fParams[CH_SPEED].initVal.set(0.5);
+	preset4.fParams[CH_SPEED].dType = DT_SLICE;
+	preset4.fParams[CH_SPEED].range.set(2);
+	preset4.fParams[CH_SPEED].increment.set(0.15);
 	preset4.fParams[CH_LENGTH].initVal.set(2.0);
 	
-
+	freq.mapType = MAP_R_TO_R;
+	freq.inMap = CH_FREQ_A;
+	freq.outMap = CH_FREQ_B;
+	freq.outRange[0] = MIDI_MIN;
+	freq.outRange[1] = MIDI_MIN + MIDI_RANGE;
+	freq.inRange[0] = MIDI_MIN;
+	freq.inRange[1] = MIDI_MIN + MIDI_RANGE;
+	preset4.mapParams.push_back(freq);
 	
 	mPresets.push_back(preset4);
 	

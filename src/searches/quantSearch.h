@@ -14,13 +14,13 @@ class quantSearch : public baseSearch{
 	
 public:
 	
-	quantSearch();
+	quantSearch(int fType);
 	vector<ofPtr<chime> >getChimes(searchData& sd,ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup);
 	void drawPreview(float dragDist, float dragAngle);
 	
 	
 private:
 	
-	
+	int fundType;
 	
 };

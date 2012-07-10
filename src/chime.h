@@ -34,6 +34,7 @@ enum e_chimeParameter {
 	CH_ANCHOR, //non standard types
 	CH_COL_A,
 	CH_COL_B,
+	CH_BLUR,
 	CH_COUNT,
 	
 };

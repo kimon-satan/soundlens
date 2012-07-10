@@ -11,6 +11,8 @@
 #include "predefMatchSearch.h"
 #include "fundSearch.h"
 #include "quantSearch.h"
+#include "filterSearch.h"
+#include "multiFilterSearch.h"
 #include "positionSearch.h"
 
 
@@ -31,6 +33,19 @@ enum e_SearchType {
 	SEARCH_FUND_FREQ,
 	
 	SEARCH_QUANT_PHASE,
+	SEARCH_QUANT_SPEED,
+	SEARCH_QUANT_FREQ,
+	
+	SEARCH_BPF_PHASE,
+	SEARCH_BPF_SPEED,
+	SEARCH_BPF_LENGTH,
+	SEARCH_BPF_FDIST,
+	SEARCH_BPF_FREQ,
+	SEARCH_BPF_DECAY,
+	
+	SEARCH_MULTI_LPF,
+	SEARCH_MULTI_HPF,
+
 	SEARCH_POSITION,
 	
 	SEARCH_COUNT,

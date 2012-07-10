@@ -21,13 +21,7 @@ public:
 	
 private:
 	
-	enum e_fundType{
-		FT_PHASE,
-		FT_SPEED,
-		FT_FREQ,
-		FT_COUNT
-	};
-	
+
 	int fundType;
 	
 };

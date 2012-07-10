@@ -9,8 +9,6 @@
 
 #include "allSearches.h"
 
-
-
 allSearches::allSearches(){
 	
 	ofPtr<matchSearch> mm = ofPtr<matchSearch>(new matchSearch());
@@ -26,8 +24,21 @@ allSearches::allSearches(){
 		searches.push_back((ofPtr<baseSearch>)bfs);
 	}
 	
-	ofPtr<quantSearch> qs = ofPtr<quantSearch>(new quantSearch());
-	searches.push_back((ofPtr<baseSearch>)qs);
+	for(int i = 0; i < 3; i++){
+		ofPtr<quantSearch> qs = ofPtr<quantSearch>(new quantSearch(i));
+		searches.push_back((ofPtr<baseSearch>)qs);
+	}
+	
+	for(int i = 0; i < 6; i++){
+		ofPtr<filterSearch> qs = ofPtr<filterSearch>(new filterSearch(i));
+		searches.push_back((ofPtr<baseSearch>)qs);
+	}
+	
+	for(int i = 0; i < 2; i++){
+		ofPtr<multiFilterSearch> mfs = ofPtr<multiFilterSearch>(new multiFilterSearch(i));
+		searches.push_back((ofPtr<baseSearch>)mfs);
+	}
+	
 	ofPtr<positionSearch> ps = ofPtr<positionSearch>(new positionSearch());
 	searches.push_back((ofPtr<baseSearch>)ps);
 	

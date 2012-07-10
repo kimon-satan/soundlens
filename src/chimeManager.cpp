@@ -297,7 +297,10 @@ string chimeManager::continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, flo
 	clearTmps();
 	
 	string s = mSearchEngine.updateUserValues(searchType, mD, mDr, userA, userB);
-	mTmpSelected =  mSearchEngine.search(searchType, mSelected);
+	
+	if(mSelected.size() > 0){
+		mTmpSelected =  mSearchEngine.search(searchType, mSelected);
+	}
 	
 	return s;
 	

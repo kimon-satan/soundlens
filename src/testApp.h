@@ -9,6 +9,15 @@
 #define I_HOST "192.168.1.3"
 #define I_PORT 9000
 
+struct searchPreset{
+
+	string name;
+	vector<int> autoMacro;
+	vector<ofVec2f>autoSettings;
+	
+	vector<int> manualMacro;
+
+};
 
 
 class testApp : public ofBaseApp{
@@ -47,7 +56,10 @@ class testApp : public ofBaseApp{
 	
 	
 	void handleMessages();	
+
 	void setupPresets();
+	void setupSearchPresets();
+	
 	ofVec2f getZPlaneProjection(ofVec2f screenPoint);
 	
 	void beginAction();
@@ -55,6 +67,8 @@ class testApp : public ofBaseApp{
 	void endAction();
 	
 	void drawActions();
+	
+	void newSearch(bool useResults);
 
 	ofCamera mCam;
 	float scale;
@@ -82,8 +96,8 @@ class testApp : public ofBaseApp{
 	
 	bool isSearching;
 	
-	int macroStage;
-	int searchMacro[4];
+	int cSearchPreset, cMacroStage;
+	vector<searchPreset> searchPresets;
 	
 	int currentMod;
 

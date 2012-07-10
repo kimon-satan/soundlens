@@ -117,15 +117,15 @@ vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample,
 		
 		case FT_PHASE:
 			sd.phaseTol = tol_r;
-			sd.phaseFund = floatParameters[0].abs_val;
+			sd.phaseFund = div;
 			break;
 		case FT_SPEED:
 			sd.speedTol = tol_r;
-			sd.speedFund = floatParameters[0].abs_val;
+			sd.speedFund = div;
 			break;
 		case FT_FREQ:
 			sd.freqTol = tol_r;
-			sd.freqFund = floatParameters[0].abs_val;
+			sd.freqFund = div;
 			break;
 
 	};

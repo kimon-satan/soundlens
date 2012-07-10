@@ -14,8 +14,8 @@
 
 struct searchData{
 	
-	int phaseFund;
-	int phaseTol;
+	float phaseFund;
+	float phaseTol;
 	float speedFund;
 	float speedTol;
 	float freqFund;

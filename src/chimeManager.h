@@ -67,7 +67,7 @@ class chimeManager{
 	
 	static string getSearchName(int i);
 	
-	static void newSearch();
+	static void newSearch(bool useResults);
 	
 	static void beginSearch();
 	static string continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, float userA, float userB);

@@ -1,8 +1,6 @@
 #include "testApp.h"
 
 
-bool compareZpos(ofPtr<chime> a, ofPtr<chime> b){return (a->getZpos() < b->getZpos());}
-
 //--------------------------------------------------------------
 void testApp::setup(){
 
@@ -37,13 +35,11 @@ void testApp::setup(){
 
 	currentMod = MOD_GATHER;
 	
-	searchMacro[0] = SEARCH_POSITION;
-	searchMacro[1] = SEARCH_MATCH_SPEED;
-	searchMacro[2] = SEARCH_FUND_FREQ;
-	searchMacro[3] = SEARCH_QUANT_FREQ;
-	
 	isSearching = false;
-	macroStage = 0;
+	cSearchPreset = 0;
+	cMacroStage = 0;
+	
+	setupSearchPresets();
 	
 	menuStrings.push_back("add");
 	menuStrings.push_back("adjust");
@@ -176,18 +172,40 @@ void testApp::setupPresets(){
 
 }
 
+void testApp::setupSearchPresets(){
+
+	searchPreset sp1;
+	
+	sp1.name = "surfaceSearch";
+	sp1.autoMacro.push_back(SEARCH_BPF_FDIST);
+	sp1.autoSettings.push_back(ofVec2f(0.2,0.1));
+	sp1.manualMacro.push_back(SEARCH_POSITION);
+	
+	searchPresets.push_back(sp1);
+	
+	searchPreset sp2;
+	
+	sp2.name = "pulseSearch";
+	sp2.autoMacro.push_back(SEARCH_MATCH_SPEED);
+	sp2.autoSettings.push_back(ofVec2f(0,0));
+	sp2.manualMacro.push_back(SEARCH_FUND_PHASE);
+	sp2.manualMacro.push_back(SEARCH_QUANT_PHASE);
+	
+	searchPresets.push_back(sp2);
+
+}
+
 
 //--------------------------------------------------------------
 void testApp::update(){
 	
 	ofBackground(255);
 	
-	handleMessages();
+	//handleMessages();
 	
 	chimeManager::update();
 	
 
-	
 }
 
 void testApp::handleMessages(){
@@ -269,6 +287,7 @@ void testApp::draw(){
 		
 	if(isSearching){
 		chimeManager::drawSelected();
+		chimeManager::drawSample();
 	}
 	
 	drawActions();
@@ -300,11 +319,23 @@ void testApp::draw(){
 	
 	if(isSearching){
 		
-		string mString = "macro: ";
-		for(int i = 0; i < 4; i++){
-			mString += chimeManager::getSearchName(searchMacro[i]);
-			if(i < 3)mString += ", ";
+		string mString = "preset: ";
+		
+		mString += searchPresets[cSearchPreset].name + " | ";
+		
+		for(int i = 0; i < searchPresets[cSearchPreset].autoMacro.size(); i++){
+			mString += chimeManager::getSearchName(searchPresets[cSearchPreset].autoMacro[i]);
+			mString += ", ";
 		}
+		
+		mString += " / ";
+		
+		for(int i = 0; i < searchPresets[cSearchPreset].manualMacro.size(); i++){
+			mString += chimeManager::getSearchName(searchPresets[cSearchPreset].manualMacro[i]);
+			mString += ", ";
+		}
+		
+		
 		ofDrawBitmapString(mString,300,20);
 		
 	}else{
@@ -335,7 +366,7 @@ void testApp::drawActions(){
 	
 	ofEnableSmoothing();
 	
-	if(currentAction  == AT_ADD){
+	if(currentAction == AT_ADD){
 	
 		chimeManager::drawPreviewChimes();
 		ofSetColor(100);
@@ -347,8 +378,7 @@ void testApp::drawActions(){
 	if(currentAction == AT_SELECT){
 		
 		chimeManager::drawTmpSelected();
-		chimeManager::drawSample();
-		chimeManager::drawSearchEngine(searchMacro[macroStage],dragDist, dragAngle);
+		chimeManager::drawSearchEngine(searchPresets[cSearchPreset].manualMacro[cMacroStage],dragDist, dragAngle);
 		
 		ofSetColor(100);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
@@ -400,7 +430,8 @@ void testApp::continueAction(){
 			break;
 			
 		case AT_SELECT:
-			mDisplayString = chimeManager::continueSearch(searchMacro[macroStage], mouseDownPos, mouseDragPos, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueSearch(searchPresets[cSearchPreset].manualMacro[cMacroStage],
+														  mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			break;
 			
 		case AT_ADJUST:
@@ -423,7 +454,7 @@ void testApp::endAction(){
 																				
 		case AT_SELECT:
 			chimeManager::endSearch();
-			macroStage = min(macroStage + 1,3);
+			cMacroStage = min(cMacroStage + 1,(int)searchPresets[cSearchPreset].manualMacro.size()-1);
 			break;
 		
 
@@ -439,6 +470,29 @@ void testApp::endAction(){
 	
 	
 	
+}
+
+void testApp::newSearch(bool useResults){
+
+	if(!isSearching){
+		cMacroStage = 0;
+		isSearching = true;
+		chimeManager::newSearch(false);
+		
+		for(int i = 0; i < searchPresets[cSearchPreset].autoMacro.size(); i++){
+			chimeManager::beginSearch();
+			chimeManager::continueSearch(searchPresets[cSearchPreset].autoMacro[i],
+										 mouseMovePos,
+										 mouseMovePos,
+										 searchPresets[cSearchPreset].autoSettings[i].x, 
+										 searchPresets[cSearchPreset].autoSettings[i].y 
+										 );
+			chimeManager::endSearch();
+			
+			
+		}
+	}
+
 }
 
 //--------------------------------------------------------------
@@ -460,8 +514,8 @@ void testApp::keyPressed(int key){
 	
 	if(isSearching){
 		
-		if(key == OF_KEY_UP)searchMacro[0] = min(searchMacro[0] + 1, (int)SEARCH_COUNT -1);
-		if(key == OF_KEY_DOWN)searchMacro[0] = max(searchMacro[0] - 1,0);
+		if(key == OF_KEY_UP)cSearchPreset = min(cSearchPreset + 1, (int)searchPresets.size() - 1);
+		if(key == OF_KEY_DOWN)cSearchPreset = max(cSearchPreset - 1,0);
 
 	}
 	
@@ -473,16 +527,8 @@ void testApp::keyPressed(int key){
 	}
 	
 	
-	if(key == ' '){
-		
-		if(!isSearching){
-			macroStage = 0;
-			isSearching = true;
-			chimeManager::newSearch();
-		}
-			
-		
-	}
+	if(key == ' ')newSearch(false);
+	if(key == OF_KEY_RETURN)newSearch(true);
 	
 	if(key == 'x')chimeManager::shiftFocalPoint(0.0f);
 	if(key == 'z')chimeManager::shiftFocalPoint(1.0f);

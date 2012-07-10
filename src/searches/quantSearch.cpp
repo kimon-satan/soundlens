@@ -58,7 +58,7 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 			break;
 		case FT_PHASE:
 			tol = sd.phaseTol;
-			div = 2 * b2_pi/sd.phaseFund;
+			div = sd.phaseFund;
 			param = CH_PHASE;
 			break;
 		case FT_SPEED:
@@ -73,11 +73,9 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
-		bool isQuant = false;
+		bool isQuant = true;
 		
 		int numTests = (fundType != FT_FREQ)? 1 : 2;
-			
-		isQuant = true;
 		
 		for(int i = 0; i < numTests; i++){
 		

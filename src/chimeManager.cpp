@@ -276,12 +276,15 @@ void chimeManager::deleteSelBank(){
 
 //selection methods
 
-void chimeManager::newSearch(){
+void chimeManager::newSearch(bool useResults){
 
 	clearTmps();
 	mSearchEngine.reset();
-	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
-	mSelected = mChimes;
+	
+	if(!useResults){
+		for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
+		mSelected = mChimes;
+	}
 	
 }
 

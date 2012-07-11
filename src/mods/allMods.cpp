@@ -12,7 +12,10 @@
 allMods::allMods(){
 
 	ofPtr<gatherMod> gm = ofPtr<gatherMod>(new gatherMod());
-	mods.push_back((ofPtr<gatherMod>)gm);
+	mods.push_back((ofPtr<baseMod>)gm);
+	
+	ofPtr<spreadMod> sm = ofPtr<spreadMod>(new spreadMod());
+	mods.push_back((ofPtr<baseMod>)sm);
 
 }
 

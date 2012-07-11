@@ -9,26 +9,32 @@
 
 #include "distributionEngine.h"
 
-float distributionEngine::getStep(int step, float initVal, float inc){
-
+float distributionEngine::getStep(int step, float initVal, float inc, float rng){
+	
+	if(rng > 0) step = fmod((float)step ,rng);
 	return initVal + step * inc;
 
 }
 
 
-float distributionEngine::getSlice(int step, int numVals, float initVal, float inc, int rng){
 
-	return initVal + (float)step/numVals * inc * (float)rng;
+float distributionEngine::getSlice(int step, int numVals, float initVal, float inc, float rng){
+	
+	//float f = (float)step/(float)numVals;
+	//return fmod(initVal + f * inc * (float)rng, inc);
+	
+	float f = fmod((float)step * rng/(float)numVals,1.0f);
+	return initVal + f * inc;
 	
 }
 
-float distributionEngine::getFlat(float initVal, float inc, int rng){
+float distributionEngine::getFlat(float initVal, float inc, float rng){
 
 	return initVal + (int)ofRandom(-rng,rng) * inc;
 	
 }
 
-float distributionEngine::getNorm(float initVal, float inc, int rng, float dev){
+float distributionEngine::getNorm(float initVal, float inc, float rng, float dev){
 
 	static boost::mt19937 randGen;
 	boost::normal_distribution<float> normDist(0,dev);
@@ -39,25 +45,27 @@ float distributionEngine::getNorm(float initVal, float inc, int rng, float dev){
 	
 }
 
-ofVec2f distributionEngine::getStep(int step, ofVec2f initVal, ofVec2f inc){
+ofVec2f distributionEngine::getStep(int step, ofVec2f initVal, ofVec2f inc, float rng){
 	
+	if(rng > 0) step = fmod((float)step ,rng);
 	return initVal + step * inc;
 	
 }
 
-ofVec2f distributionEngine::getSlice(int step, int numVals, ofVec2f initVal, ofVec2f inc, int rng){
+ofVec2f distributionEngine::getSlice(int step, int numVals, ofVec2f initVal, ofVec2f inc, float rng){
 	
-	return initVal + ((float)step/(float)numVals) * inc * rng;
+	float f = fmod((float)step * rng/(float)numVals,1.0f);
+	return initVal + f * inc;
 	
 }
 
-ofVec2f distributionEngine::getFlat(ofVec2f initVal, ofVec2f inc, int rng){
+ofVec2f distributionEngine::getFlat(ofVec2f initVal, ofVec2f inc, float rng){
 	
 	ofVec2f v =  initVal + (int)ofRandom(-rng,rng) * inc;
 	return v.rotate(ofRandom(0,360),initVal);
 }
 
-ofVec2f distributionEngine::getNorm(ofVec2f initVal, ofVec2f inc, int rng, float dev){
+ofVec2f distributionEngine::getNorm(ofVec2f initVal, ofVec2f inc, float rng, float dev){
 	
 	float f = getNorm(0,0.01,1,dev);
 	ofVec2f v = initVal + (int)f * inc * rng;
@@ -75,9 +83,10 @@ void distributionEngine::makeValues(vector<int> & vals, distributionDef<int> dDe
 		switch(dDef.dType){
 				
 			case DT_STEP:
-				f = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val);break;
+				f = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);break;
 			case DT_SLICE:
 				f = getSlice(i, dDef.numVals, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				
 				break;
 			case DT_FLAT:
 				f = getFlat(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
@@ -97,7 +106,10 @@ void distributionEngine::makeValues(vector<int> & vals, distributionDef<int> dDe
 		}
 		
 		vals.push_back(f);
+		
+		
 	}
+	
 	
 	
 }
@@ -112,7 +124,7 @@ void distributionEngine::makeValues(vector<float> & vals, distributionDef<float>
 		switch(dDef.dType){
 				
 			case DT_STEP:
-				f = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val);break;
+				f = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);break;
 			case DT_SLICE:
 				f = getSlice(i, dDef.numVals, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
 				break;
@@ -153,9 +165,11 @@ void distributionEngine::makeValues(vector<ofVec2f> & vals, distributionDef<ofVe
 		switch(dDef.dType){
 				
 			case DT_STEP:
-				vec = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val);
+				vec = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				break;
 			case DT_SLICE:
 				vec = getSlice(i, dDef.numVals, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				break;
 			case DT_FLAT:
 				vec = getFlat(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
 				break;

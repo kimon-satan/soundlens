@@ -23,11 +23,28 @@ gatherMod::gatherMod(){
 
 void gatherMod::makeMod( vector<ofPtr<chime> > chimes){
 	
-	for(vector<ofPtr<chime> >::iterator it = chimes.begin(); it != chimes.end(); it++){
+	vector<ofPtr<chime> >::iterator it;
 	
-		(*it)->setAnchorTarget(mDown, 0.05f,false);
+	float longDist = 0;
+	vector<float> distances;
+	
+	for(it = chimes.begin(); it != chimes.end(); it++){
+	
+		float d = (*it)->getAnchorPos().distance(mDown);
+		if(d > longDist)longDist = d;
+		distances.push_back(d);
 	
 	}
+	
+	int count = 0;
+	
+	for(it = chimes.begin(); it != chimes.end(); it++){
+		float inc = floatParameters[0].abs_val * distances[count]/longDist;
+		(*it)->setAnchorTarget(mDown, inc, false);
+		count ++;
+	}
+
+	
 	
 
 }

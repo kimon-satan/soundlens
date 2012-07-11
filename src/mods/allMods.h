@@ -9,10 +9,12 @@
 
 #include "baseMod.h"
 #include "gatherMod.h"
+#include "spreadMod.h"
 
 enum e_modType{
 	
 	MOD_GATHER,
+	MOD_SPREAD,
 	MOD_COUNT
 
 };

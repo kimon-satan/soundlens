@@ -24,15 +24,15 @@ class distributionEngine{
 	
 	private:
 	
-	static float getStep(int step, float initVal, float inc);
-	static float getSlice(int step, int numVals, float initVal, float inc, int rng);
-	static float getFlat(float initVal, float inc, int rng);
-	static float getNorm(float initVal, float inc, int rng, float dev);
+	static float getStep(int step, float initVal, float inc, float rng = 0);
+	static float getSlice(int step, int numVals, float initVal, float inc, float rng);
+	static float getFlat(float initVal, float inc, float rng);
+	static float getNorm(float initVal, float inc, float rng, float dev);
 	
-	static ofVec2f getStep(int step, ofVec2f initVal, ofVec2f inc);
-	static ofVec2f getSlice(int step, int numVals, ofVec2f initVal, ofVec2f inc, int rng);
-	static ofVec2f getFlat(ofVec2f initVal, ofVec2f inc, int rng);
-	static ofVec2f getNorm(ofVec2f initVal, ofVec2f inc, int rng, float dev);
+	static ofVec2f getStep(int step, ofVec2f initVal, ofVec2f inc, float rng);
+	static ofVec2f getSlice(int step, int numVals, ofVec2f initVal, ofVec2f inc, float rng);
+	static ofVec2f getFlat(ofVec2f initVal, ofVec2f inc, float rng);
+	static ofVec2f getNorm(ofVec2f initVal, ofVec2f inc, float rng, float dev);
 
 
 };

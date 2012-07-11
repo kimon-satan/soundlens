@@ -40,11 +40,12 @@ public:
 		deviation.name = "dev";
 		range.abs_val = 100;
 		range.name = "rng";
-		increment.abs_val = 0.01;
 		increment.name = "inc";
 		dType = DT_NONE;
 		name = "";
 		numVals = 1;
+		overlap.name = "ovrlp";
+		overlap.abs_val = 1;
 		
 	};	
 	
@@ -66,10 +67,12 @@ public:
 	int numVals;
 	dataElement<T> initVal;
 	dataElement<T> increment; 
-	dataElement<int>  range; 
+	dataElement<float>  range; 
+	dataElement<float>  overlap; 
 	dataElement<float> deviation;
 	dataElement<float> radius;
 	dataElement<float> rot;
+	
 	string name;
 	vector<T> localVals;
 	e_distributionType dType;

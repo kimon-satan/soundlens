@@ -14,7 +14,9 @@ int chime::cIndex = 1;
 
 string chime::getChParamString(int i){
 	
-	string nameList[CH_COUNT] = {"phase", "speed", "length", "freqA", "freqB", "decayA", "decayB", "emptyCount", 
+	string nameList[CH_COUNT] = {"phase", "speed", "length", "freqA", "freqB", "decayA", "decayB", 
+		"numPivots", "pivotPhaseMul", "pivotLngth", "pivotSpdSkew",
+		"emptyCount", 
 		"aPos", "colA", "colB" };
 	
 	return nameList[i];

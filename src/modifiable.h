@@ -20,6 +20,7 @@ class modifiable{
 		
 		isAuto = false;
 		increment  = 0;
+	
 	};
 	
 	void set(T t){

@@ -11,23 +11,6 @@
 
 namespace chimeFactory {
 	
-
-	void initBodies(ofPtr<chime> c){
-
-		b2Vec2 gravity(0.0f,-10.0f);
-		bool doSleep = true;
-		b2World * world  = new b2World(gravity, doSleep);
-		
-		c->setWorld(world);
-		
-		createStem(c);
-		createSensors(c);
-		createHammer(c);
-		joinStemBodies(c);
-		
-		
-	}
-	
 	void mapFreqToSensors(ofPtr<chime> c){
 	
 		vector<float> freqs;
@@ -67,20 +50,24 @@ namespace chimeFactory {
 			b->SetTransform(b->GetPosition(), sd.iAngle);
 		}
 		
-		//will need all pivot adjustments too
-		//c->setPivotDims(cd.pivots);
 		
-		//might need to think about this when pivots are flexible 
-		//(should be the other way round)
-		
-		/*
-		 for(int i = 0; i < cd.pivots.size(); i++){
-		 sd.cum_rSpeed += cd.pivots[i].rSpeed; 
-		 
-		 sd.iAngle += cd.pivots[i].iAngle;
-		 }*/
 	}
-
+	
+	void initBodies(ofPtr<chime> c){
+		
+		b2Vec2 gravity(0.0f,-10.0f);
+		bool doSleep = true;
+		b2World * world  = new b2World(gravity, doSleep);
+		
+		c->setWorld(world);
+		
+		createStem(c);
+		createSensors(c);
+		createHammer(c);
+		joinStemBodies(c);
+		
+		
+	}
 
 	void createStem(ofPtr<chime> c){
 		
@@ -142,7 +129,7 @@ namespace chimeFactory {
 		
 		b2BodyDef hd;
 		hd.type = b2_dynamicBody;
-		hd.position.Set(o.x,o.y); // needs to include offset and angle
+		hd.position.Set(o.x,o.y);
 		hd.angle = sd.iAngle;
 		hd.fixedRotation = false;
 		

@@ -100,8 +100,8 @@ b2Body * chime::getStemBody(){return mStemBody;}
 void chime::setStemDims(stemDims sd){mStemDims = sd;}
 stemDims chime::getStemDims(){return mStemDims;}
 
-void chime::setPivotDims(vector<pivotDims> pd){mPivotDims = pd;}
-vector<pivotDims> chime::getPivotDims(){return mPivotDims;}
+void chime::setPivotRots(vector<float> vf){pivotRots = vf;}
+vector<float> chime::getPivotRots(){return pivotRots;}
 
 void chime::setSensorData(collisionData ** cd){
 	mSensorData[0] = cd[0];

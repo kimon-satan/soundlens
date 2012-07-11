@@ -68,14 +68,19 @@ void testApp::setupPresets(){
 	preset1.fParams[CH_SPEED].initVal.set(1.0);
 	preset1.fParams[CH_LENGTH].initVal.set(2.0);
 	
+	preset1.fParams[CH_PIV_LGTH].initVal.set(4.0);
+	preset1.fParams[CH_PIV_NUM].initVal.set(3);
+	preset1.fParams[CH_PIV_PH_MUL].initVal.set(1);
+	preset1.fParams[CH_PIV_SPD_SKEW].initVal.set(0);
+	
 	mPresets.push_back(preset1);
 	
 	groupPreset preset2;
 	
 	preset2.name = "multiple";
-	preset2.numChimes.initVal.set(10);
-	preset2.numChimes.dType = DT_FLAT;
-	preset2.numChimes.range.set(3);
+	preset2.numChimes.initVal.set(30);
+	preset2.numChimes.dType = DT_NONE;
+	preset2.numChimes.range.set(5);
 	preset2.numChimes.increment.set(1);
 	
 	for(int i = 0; i < 2; i ++){
@@ -89,9 +94,13 @@ void testApp::setupPresets(){
 	preset2.fParams[CH_PHASE].initVal.set(0);
 	preset2.fParams[CH_PHASE].dType =  DT_SLICE;
 	preset2.fParams[CH_PHASE].increment.set(b2_pi * 1.0f/64.0f);
-	preset2.fParams[CH_PHASE].range.set(64);
+	preset2.fParams[CH_PHASE].range.set(192);
 	preset2.fParams[CH_SPEED].initVal.set(1.0);
 	preset2.fParams[CH_LENGTH].initVal.set(2.0);
+	preset2.fParams[CH_PIV_NUM].initVal.set(2);
+	preset2.fParams[CH_PIV_LGTH].initVal.set(4);
+	preset2.fParams[CH_PIV_SPD_SKEW].initVal.set(-0.5);
+	preset2.fParams[CH_PIV_PH_MUL].initVal.set(2.0/3.0);
 	
 	mPresets.push_back(preset2);
 	
@@ -157,6 +166,11 @@ void testApp::setupPresets(){
 	preset4.fParams[CH_SPEED].range.set(2);
 	preset4.fParams[CH_SPEED].increment.set(0.15);
 	preset4.fParams[CH_LENGTH].initVal.set(2.0);
+	
+	preset4.fParams[CH_PIV_LGTH].initVal.set(2.0);
+	preset4.fParams[CH_PIV_NUM].initVal.set(1);
+	preset4.fParams[CH_PIV_PH_MUL].initVal.set(0.25);
+	preset4.fParams[CH_PIV_SPD_SKEW].initVal.set(0);
 	
 	freq.mapType = MAP_R_TO_R;
 	freq.inMap = CH_FREQ_A;
@@ -477,7 +491,7 @@ void testApp::newSearch(bool useResults){
 	if(!isSearching){
 		cMacroStage = 0;
 		isSearching = true;
-		chimeManager::newSearch(false);
+		chimeManager::newSearch(useResults);
 		
 		for(int i = 0; i < searchPresets[cSearchPreset].autoMacro.size(); i++){
 			chimeManager::beginSearch();
@@ -576,7 +590,7 @@ void testApp::keyPressed(int key){
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
 
-	if(key == ' '){
+	if(key == ' ' || key == OF_KEY_RETURN){
 		isSearching = false;
 	}
 	

@@ -30,6 +30,10 @@ enum e_chimeParameter {
 	CH_FREQ_B,
 	CH_DECAY_A,
 	CH_DECAY_B,
+	CH_PIV_NUM,
+	CH_PIV_PH_MUL,
+	CH_PIV_LGTH,
+	CH_PIV_SPD_SKEW,
 	CH_FLOAT_COUNT,
 	CH_ANCHOR, //non standard types
 	CH_COL_A,
@@ -40,13 +44,6 @@ enum e_chimeParameter {
 };
 
 
-
-struct pivotDims{
-	
-	float d, iAngle, rSpeed, cRot; //might not need i angle or Rspeed after redefinition
-	ofVec2f cPos;
-	
-};
 
 struct stemDims{
 	
@@ -84,8 +81,8 @@ public:
 	void setStemDims(stemDims sd);
 	stemDims getStemDims();
 	
-	void setPivotDims(vector<pivotDims> pd);
-	vector<pivotDims> getPivotDims();
+	void setPivotRots(vector<float> vf);
+	vector<float> getPivotRots();
 	
 	void setSensorData(collisionData ** cd);
 	collisionData ** getSensorData();
@@ -154,8 +151,6 @@ private:
 	
 	collisionData * mSensorData[2];
 	customListener mListener;
-	
-	vector<pivotDims> mPivotDims;
 
 	int reactCount[2], reactTotal[2];
 	
@@ -168,6 +163,8 @@ private:
 	
 	float mBlur;
 	int spIndex;
+	
+	vector<float> pivotRots;
 	
 	modifiable<ofVec2f> anchorPos;
 	vector<modifiable<float> >modParams;

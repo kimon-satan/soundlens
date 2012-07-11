@@ -23,6 +23,7 @@ namespace chimeFactory{
 	void createHammer(ofPtr<chime> c);
 	void createSensors(ofPtr<chime> c);
 	void joinStemBodies(ofPtr<chime> c);
+	void makePivots(ofPtr<chime> c);
 
 
 };

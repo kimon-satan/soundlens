@@ -130,6 +130,7 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
 		chimeFactory::conformPhase(*it);
+		chimeUpdater::updateDims(*it);
 		chimeFactory::mapFreqToSensors(*it);
 		
 	}

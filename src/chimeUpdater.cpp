@@ -35,28 +35,47 @@ void chimeUpdater::update(ofPtr<chime> c){
 
 void chimeUpdater::updateDims(ofPtr<chime> c){
 
-	float tPassed = (float)(mTimeStamp2 - mTimeStamp1)/1000.0f;
-	
 	stemDims sd = c->getStemDims();
 	
 	sd.cPos.set(c->getAnchorPos()); 
+	
+	b2Body * b = c->getStemBody();
+	
 	float cumRot = 0;
 	
-	vector<pivotDims> pds(c->getPivotDims());
+	vector<float> pRots;
+	vector<float> sp_props;
 	
-	for(int i = 0; i < pds.size(); i++){
-		pds[i].cRot += pds[i].rSpeed * tPassed * ofGetFrameRate()/TARGET_FRAME;
-		fmod(pds[i].cRot,360.0f);
+	float nTot = 0;
+	
+	for(int i = 0; i < c->getModParam(CH_PIV_NUM) + 1; i++){
+		float prop = max(1 - i * abs(pow(c->getModParam(CH_PIV_SPD_SKEW),2)), 0.0f);
+		nTot +=  prop;
+		sp_props.push_back(prop);
+	}
+	
+	if(c->getModParam(CH_PIV_SPD_SKEW) < 0)reverse(sp_props.begin(), sp_props.end());
+	for(int i = 0; i < c->getModParam(CH_PIV_NUM); i++)sp_props[i] /= nTot; //normalisedSum
+	
+	
+	for(int i = 0; i < c->getModParam(CH_PIV_NUM); i++){
 		
-		ofVec2f t(0,pds[i].d);
+		//need a better formula here
+		float speed = c->getModParam(CH_SPEED) * sp_props[i]; 
+		float rot = c->getModParam(CH_PHASE) * c->getModParam(CH_PIV_PH_MUL);
 		
-		cumRot += pds[i].cRot;
+		rot += fmod(speed * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
+		
+		ofVec2f t(0,c->getModParam(CH_PIV_LGTH)/c->getModParam(CH_PIV_NUM));
+		
+		pRots.push_back(rot);
+		cumRot += rot;
 		t.rotateRad(cumRot);
 		sd.cPos += t;
 		
 	}
 	
-	c->setPivotDims(pds);
+	c->setPivotRots(pRots); // just for drawing
 	c->setStemDims(sd);
 	
 }

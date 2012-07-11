@@ -26,9 +26,11 @@ class chimeUpdater{
 	static void setFocalPoint(float f);
 	static float getFocalPoint();
 	
+	static void updateDims(ofPtr<chime> c);
+	
 	private:
 	
-	static void updateDims(ofPtr<chime> c);
+	
 	static void updateSensors(ofPtr<chime> c);
 	
 	static unsigned long mTimeStamp1;

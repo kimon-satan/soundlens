@@ -88,8 +88,10 @@ void chimeRenderer::drawAnchor(ofPtr<chime> c){
 
 void chimeRenderer::drawPivots(ofPtr<chime> c){
 	
-	vector<pivotDims> pds(c->getPivotDims());
+	vector<float> pivRots(c->getPivotRots());
 	ofVec2f ap(c->getAnchorPos());
+	
+	float l = c->getModParam(CH_PIV_LGTH)/c->getModParam(CH_PIV_NUM);
 	
 	ofSetColor(150);
 	
@@ -97,12 +99,12 @@ void chimeRenderer::drawPivots(ofPtr<chime> c){
 	
 	ofTranslate(ap.x, ap.y, 0);
 	
-	for(int i = 0; i < pds.size(); i++){
+	for(int i = 0; i < c->getModParam(CH_PIV_NUM); i++){
 		
-		ofRotate(ofRadToDeg(pds[i].cRot),0,0,1);
-		ofTranslate(0, pds[i].d/2, -3);
-		mPivotSprite[c->getSpIndex()]->draw(0,0,mPivotSprite[c->getSpIndex()]->getWidth()/80, pds[i].d * 1.25);
-		ofTranslate(0, pds[i].d/2, 0);
+		ofRotate(ofRadToDeg(pivRots[i]),0,0,1);
+		ofTranslate(0, l/2, 0);
+		mPivotSprite[c->getSpIndex()]->draw(0,0,mPivotSprite[c->getSpIndex()]->getWidth()/80, l * 1.25);
+		ofTranslate(0, l/2, 0);
 		
 	}
 	

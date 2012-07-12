@@ -41,7 +41,6 @@ multiFilterSearch::multiFilterSearch(bool isHpass){
 		
 	}
 	
-	paramType = 0;
 	isSample = false;
 	
 }
@@ -49,29 +48,22 @@ multiFilterSearch::multiFilterSearch(bool isHpass){
 
 vector<ofPtr<chime> > multiFilterSearch::getChimes(searchData& sd,ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup){
 
-	float fp = floatParameters[paramType].abs_val;
+	float fp = floatParameters[intParameters[0].abs_val].abs_val;
 	
 	vector<ofPtr<chime> > tmp;
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
 		bool isPassed = true;
-		
-		int pIndexes[] = {CH_PHASE, CH_SPEED, CH_LENGTH, CH_BLUR, CH_FREQ_A, CH_DECAY_A};
-		int p_index = pIndexes[paramType];
-		
-		int numTests = (paramType != PT_FREQ || paramType != PT_DECAY)? 1 : 2;
-		
-		for(int i = 0; i < numTests; i ++){
 			
-			float val = (p_index != CH_BLUR)?(*it)->getModParam(p_index + i) : (*it)->getBlur();
-			
-			if(mIsHighPass){
-				if(val <  fp)isPassed = false;
-			}else{
-				if(val > fp)isPassed = false;
-			}
+		float val = (paramType != CH_BLUR)?(*it)->getModParam(paramType) : (*it)->getBlur();
+		
+		if(mIsHighPass){
+			if(val <  fp)isPassed = false;
+		}else{
+			if(val > fp)isPassed = false;
 		}
+		
 		
 		if(isPassed){
 			tmp.push_back(*it);
@@ -89,9 +81,10 @@ string multiFilterSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float u
 	
 	baseSearch::setUserData(mD,mDr,ua,ub);
 	
-	paramType = intParameters[0].abs_val;
+	int pIndexes[] = {CH_PHASE, CH_SPEED, CH_LENGTH, CH_BLUR, CH_FREQ, CH_DECAY};
+	paramType = pIndexes[intParameters[0].abs_val];
 	
-	for(int i = 0; i < 6; i ++)floatParameters[i].isActive = (i == paramType);
+	for(int i = 0; i < 6; i ++)floatParameters[i].isActive = (i == intParameters[0].abs_val);
 	
 	return baseSearch::setUserData(mD,mDr,ua,ub);
 	
@@ -100,7 +93,7 @@ string multiFilterSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float u
 
 void multiFilterSearch::drawPreview(float dragDist, float dragAngle){
 
-	float d = 0.5 + floatParameters[paramType].abs_val * 3.0f/(float)floatParameters[paramType].max_val;
+	float d = 0.5 + floatParameters[intParameters[0].abs_val].abs_val * 3.0f/(float)floatParameters[intParameters[0].abs_val].max_val;
 	
 	ofNoFill();
 	ofSetColor(150);

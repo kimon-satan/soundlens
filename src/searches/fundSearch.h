@@ -21,7 +21,6 @@ public:
 	
 private:
 	
-
 	int fundType;
 	
 };

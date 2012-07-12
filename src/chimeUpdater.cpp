@@ -87,23 +87,26 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 	
 	int sIndex = -1;
 	
-	for(int i = 0; i < 2; i ++)if(c->getSensorOn(i))if(cd[i]->initContact)sIndex = i;
+	for(int i = 0; i < 2; i ++){
+		if(cd[i]->initContact)
+			sIndex = i;
+	}
 		
 	
 	if(sIndex > -1 ){
 		
 		cd[sIndex]->initContact = false;
 		
-		c->setReactTotal(sIndex, ofGetFrameRate() * c->getModParam(CH_DECAY_A + sIndex));
-		c->setReactCount(sIndex, c->getReactTotal(sIndex));
+		c->setReactTotal(ofGetFrameRate() * c->getModParam(CH_DECAY));
+		c->setReactCount(sIndex, c->getReactTotal());
 		
 		if(mSender && c->getBlur() < 0.99){
 			
 			ofxOscMessage m;
 			m.setAddress("/chime");
 			m.addIntArg(c->getIndex());
-			m.addFloatArg(c->getModParam(CH_FREQ_A + sIndex));
-			m.addFloatArg(c->getModParam(CH_DECAY_A + sIndex));
+			m.addFloatArg(c->getModParam(CH_FREQ));
+			m.addFloatArg(c->getModParam(CH_DECAY));
 			m.addFloatArg(c->getBlur());
 			float p = c->getHammer()->GetPosition().x;
 			p += c->getStemDims().cPos.x;
@@ -119,7 +122,7 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 		if(c->getReactCount(i) > 0){
 			
 			c->setReactCount(i, c->getReactCount(i) - 1);
-			c->setSensorAlpha(i , 255.0f * (float)c->getReactCount(i)/c->getReactTotal(i));
+			c->setSensorAlpha(i , 255.0f * (float)c->getReactCount(i)/c->getReactTotal());
 			
 		}else{
 			

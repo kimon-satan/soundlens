@@ -14,7 +14,7 @@ allSearches::allSearches(){
 	ofPtr<matchSearch> mm = ofPtr<matchSearch>(new matchSearch());
 	searches.push_back((ofPtr<baseSearch>)mm);
 
-	for(int i = 0; i < 7; i++){
+	for(int i = 0; i < 5; i++){
 		ofPtr<predefMatchSearch> pm = ofPtr<predefMatchSearch>(new predefMatchSearch(i));
 		searches.push_back((ofPtr<baseSearch>)pm);
 	}

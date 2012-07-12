@@ -10,7 +10,6 @@
 #pragma once
 
 #include "baseSearch.h"
-#include "filterSearch.h"
 
 
 class multiFilterSearch : public baseSearch{
@@ -26,6 +25,7 @@ class multiFilterSearch : public baseSearch{
 	private:
 	
 	bool mIsHighPass;
+	int paramIndexes[];
 	int paramType;
 	
 };

@@ -18,17 +18,20 @@ quantSearch::quantSearch(int fType){
 	offset.set(0,20,SET_USER_B);
 	mul.set(1,20,SET_USER_A);
 	
-	fundType = fType;
+	int params[] = {CH_PHASE, CH_SPEED, CH_FREQ};
 	
+	fundType = params[fType];
+	
+
 	switch(fundType){
 	
-		case FT_FREQ:
+		case CH_FREQ:
 			name = "Quant_freq";
 			break;
-		case FT_PHASE:
+		case CH_PHASE:
 			name = "Quant_phase";
 			break;
-		case FT_SPEED:
+		case CH_SPEED:
 			name = "Quant_speed";
 			break;
 			
@@ -47,43 +50,34 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 	vector<ofPtr<chime> > tmp;
 	
 	float tol, div;
-	int param;
 	
 	switch(fundType){
 			
-		case FT_FREQ:
+		case CH_FREQ:
 			tol = sd.freqTol;
 			div = sd.freqFund;
-			param = CH_FREQ_A;
 			break;
-		case FT_PHASE:
+		case CH_PHASE:
 			tol = sd.phaseTol;
 			div = sd.phaseFund;
-			param = CH_PHASE;
 			break;
-		case FT_SPEED:
+		case CH_SPEED:
 			tol = sd.speedTol;
 			div = sd.speedFund;
-			param = CH_SPEED;
 			break;
 	}
 	
-	float offset = sample->getModParam(param) + (float)intParameters[0].abs_val * div;
+	
+	float offset = sample->getModParam(fundType) + (float)intParameters[0].abs_val * div;
 	div *= intParameters[1].abs_val;
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
 		bool isQuant = true;
 		
-		int numTests = (fundType != FT_FREQ)? 1 : 2;
-		
-		for(int i = 0; i < numTests; i++){
-		
-			float rmdr = abs(fmod((*it)->getModParam(param + i) - offset,div));
-			rmdr = min(rmdr, div - rmdr);
-			if(rmdr > tol){isQuant = false; break;}
-		}
-		
+		float rmdr = abs(fmod((*it)->getModParam(fundType) - offset,div));
+		rmdr = min(rmdr, div - rmdr);
+		if(rmdr > tol)isQuant = false;
 		
 		if(isQuant){
 			tmp.push_back(*it);

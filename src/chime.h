@@ -26,18 +26,15 @@ enum e_chimeParameter {
 	CH_PHASE,
 	CH_SPEED,
 	CH_LENGTH,
-	CH_FREQ_A,
-	CH_FREQ_B,
-	CH_DECAY_A,
-	CH_DECAY_B,
+	CH_FREQ,
+	CH_DECAY,
 	CH_PIV_NUM,
 	CH_PIV_PH_MUL,
 	CH_PIV_LGTH,
 	CH_PIV_SPD_SKEW,
 	CH_FLOAT_COUNT,
 	CH_ANCHOR, //non standard types
-	CH_COL_A,
-	CH_COL_B,
+	CH_COLOR,
 	CH_BLUR,
 	CH_COUNT,
 	
@@ -88,21 +85,18 @@ public:
 	collisionData ** getSensorData();
 	
 	void setCollisionListener(customListener & l);
-
-	bool getSensorOn(int i);
-	void setSensorOn(int i, bool b);
 	
-	void setSensorHeight(int i, float tf);
-	float getSensorHeight(int i);
+	void setSensorHeight(float tf);
+	float getSensorHeight();
 	
 	float getSensorAlpha(int i);
 	void setSensorAlpha(int i, float a);
 	
-	ofColor getSensorColor(int i);
-	void setSensorColor(int i, ofColor c);
+	ofColor getSensorColor();
+	void setSensorColor(ofColor c);
 	
-	void setReactTotal(int i, int t);
-	int getReactTotal(int i);
+	void setReactTotal(int t);
+	int getReactTotal();
 	
 	void setReactCount(int i, int c);
 	int getReactCount(int i);
@@ -152,14 +146,12 @@ private:
 	collisionData * mSensorData[2];
 	customListener mListener;
 
-	int reactCount[2], reactTotal[2];
+	int reactCount[2], reactTotal;
 	
-	ofColor mSensorColors[2];
+	ofColor mSensorColor;
 	
 	float mSensorAlphas[2];
-	float mSensorHeights[2];
-	
-	bool mSensorOn[2];
+	float mSensorHeight;
 	
 	float mBlur;
 	int spIndex;

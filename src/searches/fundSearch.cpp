@@ -13,7 +13,10 @@ fundSearch::fundSearch(int fType){
 	
 	isSample = true;
 	isMDrag = false;
-	fundType = fType;
+	
+	int params[] = {CH_PHASE, CH_SPEED, CH_FREQ};
+	
+	fundType = params[fType];
 	
 	dataElement <float> fundParam;
 	fundParam.name = "fund";
@@ -21,7 +24,7 @@ fundSearch::fundSearch(int fType){
 	dataElement <float> tolParam;
 	tolParam.name = "toll";
 	
-	if(fundType == FT_PHASE){
+	if(fundType == CH_PHASE){
 	
 		name  = "phaseFund";
 		fundParam.incr = 1.0;
@@ -30,7 +33,7 @@ fundSearch::fundSearch(int fType){
 		tolParam.set(0,20,SET_USER_A);
 		
 		
-	}else if(fundType == FT_SPEED){
+	}else if(fundType == CH_SPEED){
 		
 		name  = "speedFund";
 		fundParam.incr = 0.01;
@@ -39,7 +42,7 @@ fundSearch::fundSearch(int fType){
 		tolParam.set(0,1.0,SET_USER_A);
 	
 	
-	}else if(fundType == FT_FREQ){
+	}else if(fundType == CH_FREQ){
 		
 		name  = "freqFund";
 		fundParam.incr = 0.01;
@@ -57,10 +60,10 @@ fundSearch::fundSearch(int fType){
 
 vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup){
 	
-	float tol_r = (fundType == FT_PHASE) ? floatParameters[1].abs_val * b2_pi/180.0f : floatParameters[1].abs_val;
+	float tol_r = (fundType == CH_PHASE) ? floatParameters[1].abs_val * b2_pi/180.0f : floatParameters[1].abs_val;
 	tol_r = max(tol_r, 0.0001f);
 	
-	float div = (fundType == FT_PHASE) ? 2.0f * b2_pi/floatParameters[0].abs_val : floatParameters[0].abs_val;
+	float div = (fundType == CH_PHASE) ? 2.0f * b2_pi/floatParameters[0].abs_val : floatParameters[0].abs_val;
 	
 	
 	vector<ofPtr<chime> > tmp;
@@ -68,41 +71,12 @@ vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample,
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
 		bool isFund = false;
-		
-		if(fundType < 2){
 			
-			int param = (fundType == FT_PHASE)? CH_PHASE : CH_SPEED;
-			
-			float rmdr = (*it)->getModParam(param) - sample->getModParam(param);
+			float rmdr = (*it)->getModParam(fundType) - sample->getModParam(fundType);
 			rmdr = fmod(abs(rmdr),div);
 			
 			if(rmdr <= tol_r || div - rmdr <= tol_r)isFund = true;
 			
-		}else{
-		
-			//for freq
-			
-			int param = CH_FREQ_A;
-			float rmdr[4]; 
-			
-			for(int i = 0; i < 2; i++){
-				rmdr[i] = (*it)->getModParam(param + i) - sample->getModParam(param + i);
-				rmdr[i+2] = (*it)->getModParam(param + i) - sample->getModParam(param + 1 - i);
-			}
-			
-			isFund = true;
-			
-			//AND gate based on relations btwn all freqs
-			
-			for(int i = 0; i < 4; i++){
-				
-				rmdr[i] = fmod(abs(rmdr[i]),div);
-				rmdr[i] = min(rmdr[i], div - rmdr[i]);
-				
-				if(rmdr[i] > tol_r){isFund = false; break;}
-			}
-			
-		}
 			
 		if(isFund){
 			tmp.push_back(*it);
@@ -115,15 +89,15 @@ vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample,
 	
 	switch (fundType) {
 		
-		case FT_PHASE:
+		case CH_PHASE:
 			sd.phaseTol = tol_r;
 			sd.phaseFund = div;
 			break;
-		case FT_SPEED:
+		case CH_SPEED:
 			sd.speedTol = tol_r;
 			sd.speedFund = div;
 			break;
-		case FT_FREQ:
+		case CH_FREQ:
 			sd.freqTol = tol_r;
 			sd.freqFund = div;
 			break;

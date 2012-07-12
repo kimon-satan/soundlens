@@ -14,10 +14,10 @@ int chime::cIndex = 1;
 
 string chime::getChParamString(int i){
 	
-	string nameList[CH_COUNT] = {"phase", "speed", "length", "freqA", "freqB", "decayA", "decayB", 
+	string nameList[CH_COUNT] = {"phase", "speed", "length", "freq", "decay", 
 		"numPivots", "pivotPhaseMul", "pivotLngth", "pivotSpdSkew",
 		"emptyCount", 
-		"aPos", "colA", "colB" };
+		"aPos", "col" };
 	
 	return nameList[i];
 	
@@ -42,10 +42,10 @@ chime::chime(){
 	for(int i = 0; i < 2; i ++){
 		reactCount[i] = 0;
 		mSensorAlphas[i] = 0;
-		mSensorHeights[i] = 0.5;
-		mSensorColors[i] = ofColor(255,0,0);
-		mSensorOn[i] = true;
 	}
+	
+	mSensorHeight = 0.5;
+	mSensorColor = ofColor(255,0,0);
 	
 	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
 		
@@ -111,21 +111,18 @@ void chime::setSensorData(collisionData ** cd){
 }
 collisionData ** chime::getSensorData(){return &mSensorData[0];}
 
-bool chime::getSensorOn(int i){return mSensorOn[i];}
-void chime::setSensorOn(int i, bool b){mSensorOn[i] = b;}
 
-void chime::setSensorHeight(int i, float tf){mSensorHeights[i] = tf;}
-float chime::getSensorHeight(int i){return mSensorHeights[i];}
+void chime::setSensorHeight(float tf){mSensorHeight = tf;}
+float chime::getSensorHeight(){return mSensorHeight;}
 
 float chime::getSensorAlpha(int i){return mSensorAlphas[i];}
 void chime::setSensorAlpha(int i, float a){mSensorAlphas[i] = a;}
 
-ofColor chime::getSensorColor(int i){return mSensorColors[i];}
-void chime::setSensorColor(int i, ofColor c){mSensorColors[i] = c;}
+ofColor chime::getSensorColor(){return mSensorColor;}
+void chime::setSensorColor(ofColor c){mSensorColor = c;}
 
-
-void chime::setReactTotal(int i, int t){reactTotal[i]  = t;}
-int chime::getReactTotal(int i){return reactTotal[i];}
+void chime::setReactTotal(int t){reactTotal = t;}
+int chime::getReactTotal(){return reactTotal;}
 
 void chime::setReactCount(int i, int c){reactCount[i] = c;}
 int chime::getReactCount(int i){return reactCount[i];}

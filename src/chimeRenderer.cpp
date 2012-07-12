@@ -179,49 +179,48 @@ void chimeRenderer::drawSensors(ofPtr<chime> c){
 	
 	for(int i = 0; i < 2; i++){
 		
-		 if(c->getSensorOn(i)){
-			 
-			 float sAlpha = c->getSensorAlpha(i);	
-		 	 glPushMatrix();
-			 glTranslatef(b[i]->GetPosition().x, b[i]->GetPosition().y, zt);
-			 glRotatef(ofRadToDeg(b[i]->GetAngle()), 0, 0, 1);
-			
-			 ofColor col = c->getSensorColor(i);
-			 
-			 float frq =  0.5 + (1 - c->getSensorHeight(i)) * 3.0;
-			 
-			 int imgIndex = (frq < 0.75) ? 0 : (frq > 1.5) ? 2 : 1;
-			 
-			 float y_off = 0.1 * frq - 0.1;
-			 y_off *= (i == 0)? 1 : -1;
-			 
-			 frq *= (imgIndex == 0) ? 2.0 : (imgIndex == 2) ? 0.5 : 1;
-			 
-			 ofVec2f dim_f(mFilledSensorSprite[imgIndex][c->getSpIndex()]->getWidth()/80.0f,
-						   mFilledSensorSprite[imgIndex][c->getSpIndex()]->getHeight()/80.0f);
-			 
-			 ofVec2f dim_e(mAlphaSensorSprite[imgIndex][c->getSpIndex()]->getWidth()/80.0f,
-						   mAlphaSensorSprite[imgIndex][c->getSpIndex()]->getHeight()/80.0f);
-			 
-			 dim_f.y *= frq;
-			 dim_e.y *= frq;
-			 
-	
-			 
-			 ofFill();
-
-			 
-			 if(sAlpha > 0){
-			 ofSetColor(col.r,col.g,col.b,sAlpha);
-			 mFilledSensorSprite[imgIndex][c->getSpIndex()]->draw(0,y_off,dim_f.x,dim_f.y);
-			 }
-			 
-			 
-			 ofSetColor(255);
-			 mAlphaSensorSprite[imgIndex][c->getSpIndex()]->draw(0,y_off,dim_e.x,dim_e.y);
-			 glPopMatrix();
+		
+		 float sAlpha = c->getSensorAlpha(i);	
+		 glPushMatrix();
+		 glTranslatef(b[i]->GetPosition().x, b[i]->GetPosition().y, zt);
+		 glRotatef(ofRadToDeg(b[i]->GetAngle()), 0, 0, 1);
+		
+		 ofColor col = c->getSensorColor();
 		 
+		 float frq =  0.5 + (1 - c->getSensorHeight()) * 3.0;
+		 
+		 int imgIndex = (frq < 0.75) ? 0 : (frq > 1.5) ? 2 : 1;
+		 
+		 float y_off = 0.1 * frq - 0.1;
+		 y_off *= (i == 0)? 1 : -1;
+		 
+		 frq *= (imgIndex == 0) ? 2.0 : (imgIndex == 2) ? 0.5 : 1;
+		 
+		 ofVec2f dim_f(mFilledSensorSprite[imgIndex][c->getSpIndex()]->getWidth()/80.0f,
+					   mFilledSensorSprite[imgIndex][c->getSpIndex()]->getHeight()/80.0f);
+		 
+		 ofVec2f dim_e(mAlphaSensorSprite[imgIndex][c->getSpIndex()]->getWidth()/80.0f,
+					   mAlphaSensorSprite[imgIndex][c->getSpIndex()]->getHeight()/80.0f);
+		 
+		 dim_f.y *= frq;
+		 dim_e.y *= frq;
+		 
+
+		 
+		 ofFill();
+
+		 
+		 if(sAlpha > 0){
+		 ofSetColor(col.r,col.g,col.b,sAlpha);
+		 mFilledSensorSprite[imgIndex][c->getSpIndex()]->draw(0,y_off,dim_f.x,dim_f.y);
 		 }
+		 
+		 
+		 ofSetColor(255);
+		 mAlphaSensorSprite[imgIndex][c->getSpIndex()]->draw(0,y_off,dim_e.x,dim_e.y);
+		 glPopMatrix();
+		 
+		 
 		
 	}
 	ofPopMatrix();
@@ -278,7 +277,7 @@ void chimeRenderer::drawOutline(ofPtr<chime> c, ofColor col){
 	
 		for(int i = 0; i < 2; i++){
 			
-			if(c->getSensorOn(i)){
+			
 				
 				if(sens[i]){
 					sens_pos[i].set(sens[i]->GetPosition().x, sens[i]->GetPosition().y);
@@ -296,7 +295,7 @@ void chimeRenderer::drawOutline(ofPtr<chime> c, ofColor col){
 				glTranslatef(sens_pos[i].x,sens_pos[i].y, 0);
 				glRotatef(ofRadToDeg(sens_ang[i]), 0, 0, 1);
 				
-				float frq =  0.5 + (1 - c->getSensorHeight(i)) * 3.0;
+				float frq =  0.5 + (1 - c->getSensorHeight()) * 3.0;
 				
 				int imgIndex = (frq < 0.75) ? 0 : (frq > 1.5) ? 2 : 1;
 				
@@ -315,7 +314,7 @@ void chimeRenderer::drawOutline(ofPtr<chime> c, ofColor col){
 				mEmptySensorSprite[imgIndex][0]->draw(0,y_off,dim_e.x,dim_e.y);
 				glPopMatrix();
 				
-			}
+			
 			
 		}
 	ofPopMatrix();

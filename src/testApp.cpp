@@ -55,11 +55,11 @@ void testApp::setupPresets(){
 	preset1.name = "single";
 	preset1.numChimes.initVal.set(1);
 	
-	for(int i = 0; i < 2; i ++){
-		preset1.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
-		preset1.fParams[CH_FREQ_A + i].dType = DT_NONE;
-		preset1.fParams[CH_DECAY_A + i].initVal.set(1.8);
-	}
+
+	preset1.fParams[CH_FREQ].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+	preset1.fParams[CH_FREQ].dType = DT_NONE;
+	preset1.fParams[CH_DECAY].initVal.set(1.8);
+	
 	
 	preset1.fParams[CH_PHASE].initVal.set(0.5);
 	preset1.fParams[CH_PHASE].dType =  DT_FLAT;
@@ -80,23 +80,23 @@ void testApp::setupPresets(){
 	groupPreset preset2;
 	
 	preset2.name = "multiple";
-	preset2.numChimes.initVal.set(20);
+	preset2.numChimes.initVal.set(21);
 	preset2.numChimes.dType = DT_NONE;
 	preset2.numChimes.range.set(5);
 	preset2.numChimes.increment.set(1);
 	
-	for(int i = 0; i < 2; i ++){
-		preset2.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
-		preset2.fParams[CH_FREQ_A + i].dType = DT_FLAT;
-		preset2.fParams[CH_FREQ_A + i].range.set(12);
-		preset2.fParams[CH_FREQ_A + i].increment.set(3);
-		preset2.fParams[CH_DECAY_A + i].initVal.set(1.8);
-	}
+
+	preset2.fParams[CH_FREQ].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+	preset2.fParams[CH_FREQ].dType = DT_FLAT;
+	preset2.fParams[CH_FREQ].range.set(12);
+	preset2.fParams[CH_FREQ].increment.set(3);
+	preset2.fParams[CH_DECAY].initVal.set(1.8);
+	
 	
 	preset2.fParams[CH_PHASE].initVal.set(0);
-	preset2.fParams[CH_PHASE].dType =  DT_SLICE;
-	preset2.fParams[CH_PHASE].increment.set(b2_pi * 3);
-	preset2.fParams[CH_PHASE].range.set(1);
+	preset2.fParams[CH_PHASE].dType =  DT_STEP;
+	preset2.fParams[CH_PHASE].increment.set(b2_pi/7.0);
+	preset2.fParams[CH_PHASE].range.set(b2_pi * 3);
 	preset2.fParams[CH_SPEED].initVal.set(0.5);
 	preset2.fParams[CH_LENGTH].initVal.set(2.0);
 	//preset2.fParams[CH_PIV_NUM].initVal.set(0);
@@ -104,7 +104,7 @@ void testApp::setupPresets(){
 	preset2.fParams[CH_PIV_NUM].initVal.set(1);
 	preset2.fParams[CH_PIV_LGTH].initVal.set(4);
 	preset2.fParams[CH_PIV_SPD_SKEW].initVal.set(0.5);
-	preset2.fParams[CH_PIV_PH_MUL].initVal.set(-2.0/3.0);
+	preset2.fParams[CH_PIV_PH_MUL].initVal.set(2.0/3.0);
 	
 	mPresets.push_back(preset2);
 	
@@ -117,16 +117,13 @@ void testApp::setupPresets(){
 	preset3.numChimes.range.set(3);
 	preset3.numChimes.increment.set(1);
 	
-	for(int i = 0; i < 2; i ++){
-		preset3.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
-		preset3.fParams[CH_FREQ_A + i].dType = DT_NONE;
-		preset3.fParams[CH_DECAY_A + i].initVal.set(1.8);
-	}
+	preset3.fParams[CH_FREQ].initVal.set(MIDI_MIN + MIDI_RANGE/2);
+	preset3.fParams[CH_FREQ].dType = DT_NONE;
+	preset3.fParams[CH_DECAY].initVal.set(1.8);
 	
 	preset3.fParams[CH_PHASE].initVal.set(0);
 	preset3.fParams[CH_PHASE].dType =  DT_SLICE;
-	preset3.fParams[CH_PHASE].increment.set(b2_pi);
-	preset3.fParams[CH_PHASE].range.set(1);
+	preset3.fParams[CH_PHASE].range.set(b2_pi);
 	preset3.fParams[CH_SPEED].initVal.set(1.0);
 	preset3.fParams[CH_LENGTH].initVal.set(2.0);
 	preset3.fParams[CH_PIV_NUM].initVal.set(0);
@@ -134,11 +131,9 @@ void testApp::setupPresets(){
 	mapDef freq;
 	freq.mapType = MAP_1_TO_R;
 	freq.inMap = CH_PHASE;
-	freq.outMap = CH_FREQ_A;
+	freq.outMap = CH_FREQ;
 	freq.outRange[0] = MIDI_MIN;
 	freq.outRange[1] = MIDI_MIN + MIDI_RANGE;
-	preset3.mapParams.push_back(freq);
-	freq.outMap = CH_FREQ_B;
 	preset3.mapParams.push_back(freq);
 	
 	mPresets.push_back(preset3);
@@ -151,17 +146,12 @@ void testApp::setupPresets(){
 	preset4.numChimes.range.set(3);
 	preset4.numChimes.increment.set(1);
 	
-	for(int i = 0; i < 2; i ++){
-		preset4.fParams[CH_FREQ_A + i].initVal.set(MIDI_MIN + MIDI_RANGE/2);
-		preset4.fParams[CH_FREQ_A + i].dType = DT_NONE;
-		preset4.fParams[CH_DECAY_A + i].initVal.set(1.8);
-	}
-	
-	preset4.fParams[CH_FREQ_A].initVal.set(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B);
-	preset4.fParams[CH_FREQ_A].initVal.incr = 1;
-	preset4.fParams[CH_FREQ_A].increment.set(6,12,SET_USER_A);
-	preset4.fParams[CH_FREQ_A].range.set(1);
-	preset4.fParams[CH_FREQ_A].dType = DT_SLICE;
+
+	preset4.fParams[CH_FREQ].initVal.set(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B);
+	preset4.fParams[CH_FREQ].initVal.incr = 1;
+	preset4.fParams[CH_FREQ].increment.set(6,12,SET_USER_A);
+	preset4.fParams[CH_FREQ].range.set(1);
+	preset4.fParams[CH_FREQ].dType = DT_SLICE;
 
 	
 	preset4.fParams[CH_PHASE].initVal.set(0,b2_pi/2,SET_USER_B);
@@ -178,18 +168,8 @@ void testApp::setupPresets(){
 	preset4.fParams[CH_PIV_PH_MUL].initVal.set(0.25);
 	preset4.fParams[CH_PIV_SPD_SKEW].initVal.set(0);*/
 	
-	freq.mapType = MAP_R_TO_R;
-	freq.inMap = CH_FREQ_A;
-	freq.outMap = CH_FREQ_B;
-	freq.outRange[0] = MIDI_MIN;
-	freq.outRange[1] = MIDI_MIN + MIDI_RANGE;
-	freq.inRange[0] = MIDI_MIN;
-	freq.inRange[1] = MIDI_MIN + MIDI_RANGE;
-	preset4.mapParams.push_back(freq);
-	
 	mPresets.push_back(preset4);
 	
-
 }
 
 void testApp::setupSearchPresets(){

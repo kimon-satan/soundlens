@@ -52,8 +52,8 @@ redistributeMod::redistributeMod(int pt, int dt){
 					
 				case CH_PHASE:break;
 				case CH_SPEED:break;
-				case CH_FREQ_A: case CH_FREQ_B: break;
-				case CH_DECAY_A: case CH_DECAY_B:break;
+				case CH_FREQ: break;
+				case CH_DECAY: break;
 			
 			}
 			

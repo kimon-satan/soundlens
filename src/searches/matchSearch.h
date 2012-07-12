@@ -21,16 +21,8 @@ public:
 	
 protected:
 	
-	enum e_matchMode{
-		
-		MATCH_SIMPLE,
-		MATCH_OR,
-		MATCH_AND
-	
-	};
-	
+
 	int mTolIndex;
-	int matchType;
 	float mTol;
 	
 	

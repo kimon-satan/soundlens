@@ -11,20 +11,6 @@
 
 #include "baseSearch.h"
 
-enum e_paramType {
-	
-	PT_PHASE,
-	PT_SPEED,
-	PT_LENGTH,
-	PT_BLUR,
-	PT_FREQ,
-	PT_DECAY,
-	PT_COUNT
-	
-	//SEARCH_LPF_MULTI, /maybe in a different class
-	//SEARCH_HPF_MULTI
-};
-
 
 class filterSearch : public baseSearch{
 

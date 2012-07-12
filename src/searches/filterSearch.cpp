@@ -14,7 +14,8 @@ filterSearch::filterSearch(int pType){
 	dataElement<float> band;
 	dataElement<float> q;
 	
-	paramType =  pType;
+	int pIndexes[] = {CH_PHASE, CH_SPEED, CH_LENGTH, CH_BLUR, CH_FREQ, CH_DECAY};
+	paramType = pIndexes[pType];
 	
 	string names[] = {"phase", "speed", "length", "blur", "freq", "decay"};
 	float bands[][2] = {{0, b2_pi}, {0, 1.0}, {0.5, 5.0}, {0,1.0}, {MIDI_MIN, MIDI_MIN + MIDI_RANGE}, {0.1,3.0}};
@@ -47,18 +48,11 @@ vector<ofPtr<chime> >filterSearch::getChimes(searchData& sd,ofPtr<chime> sample,
 		float ub = floatParameters[0].abs_val + floatParameters[1].abs_val/2;
 		ub = min(ub, floatParameters[0].max_val);
 		
-		int pIndexes[] = {CH_PHASE, CH_SPEED, CH_LENGTH, CH_BLUR, CH_FREQ_A, CH_DECAY_A};
-		int p_index = pIndexes[paramType];
+
+		float val = (paramType != CH_BLUR)?(*it)->getModParam(paramType) : (*it)->getBlur();
 		
+		if(val < lb || val > ub)isPassed = false;
 		
-		int numTests = (paramType != PT_FREQ || paramType != PT_DECAY)? 1 : 2;
-			
-		for(int i = 0; i < numTests; i ++){
-			
-			float val = (p_index != CH_BLUR)?(*it)->getModParam(p_index + i) : (*it)->getBlur();
-			
-			if(val < lb || val > ub)isPassed = false;
-		}
 		
 		if(isPassed){
 			tmp.push_back(*it);

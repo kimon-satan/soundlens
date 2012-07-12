@@ -24,15 +24,10 @@ namespace chimeFactory {
 		md.outRange[1] = 1;
 		md.exp = 0.5;
 		
-		for(int i = 0; i < 2; i++)freqs.push_back(c->getModParam(CH_FREQ_A + i));
+		freqs.push_back(c->getModParam(CH_FREQ));
 		
 		mappingEngine::makeMapping(freqs,heights, md);
-		
-		for(int i = 0; i < 2; i++){
-			
-			c->setSensorHeight(i,heights[i]);
-			
-		}
+		c->setSensorHeight(heights[0]);
 	
 	}
 	
@@ -161,36 +156,35 @@ namespace chimeFactory {
 		
 		for(int i = 0; i < 2; i ++){
 			
-			if(c->getSensorOn(i)){
 			
-				ofVec2f tmp(0, 0); //will need to be set to offset
-				tmp.y += (i == 0)? c->getModParam(CH_LENGTH)/2 : -c->getModParam(CH_LENGTH)/2;
-				tmp.rotateRad(sd.iAngle); //will need to pivot around offsetPoint
-				
-				b2BodyDef sdef;
-				sdef.type = b2_dynamicBody;
-				sdef.position.Set(tmp.x,tmp.y);
-				sdef.angle = sd.iAngle;
-				sdef.fixedRotation = false;
-				
-				sensors[i] = c->getWorld()->CreateBody(&sdef);
-				sensors[i]->SetSleepingAllowed(true);
-				
-				b2PolygonShape sShape;
-				sShape.SetAsBox(0.1,0.1);
-				b2FixtureDef sfd;
-				sfd.shape = &sShape;
-				sfd.density = 1.0;
-				sfd.restitution = 0.3;
-				//sfd.isSensor = true;
-				
-				b2Fixture * b  = sensors[i]->CreateFixture(&sfd);
-				
-				sensorData[i] = new collisionData();
-				sensorData[i]->mIndex = i;
-				sensorData[i]->cIndex = c->getIndex();
-				b->SetUserData(sensorData[i]);
-			}
+			ofVec2f tmp(0, 0); //will need to be set to offset
+			tmp.y += (i == 0)? c->getModParam(CH_LENGTH)/2 : -c->getModParam(CH_LENGTH)/2;
+			tmp.rotateRad(sd.iAngle); //will need to pivot around offsetPoint
+			
+			b2BodyDef sdef;
+			sdef.type = b2_dynamicBody;
+			sdef.position.Set(tmp.x,tmp.y);
+			sdef.angle = sd.iAngle;
+			sdef.fixedRotation = false;
+			
+			sensors[i] = c->getWorld()->CreateBody(&sdef);
+			sensors[i]->SetSleepingAllowed(true);
+			
+			b2PolygonShape sShape;
+			sShape.SetAsBox(0.1,0.1);
+			b2FixtureDef sfd;
+			sfd.shape = &sShape;
+			sfd.density = 1.0;
+			sfd.restitution = 0.3;
+			//sfd.isSensor = true;
+			
+			b2Fixture * b  = sensors[i]->CreateFixture(&sfd);
+			
+			sensorData[i] = new collisionData();
+			sensorData[i]->mIndex = i;
+			sensorData[i]->cIndex = c->getIndex();
+			b->SetUserData(sensorData[i]);
+			
 			
 		}
 		
@@ -198,7 +192,6 @@ namespace chimeFactory {
 		c->setSensorData(&sensorData[0]);
 		
 	}
-
 
 
 

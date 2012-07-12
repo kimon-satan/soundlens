@@ -19,12 +19,7 @@ matchSearch::matchSearch(){
 	t_para.name = "parameter";
 	t_para.set(0,7,SET_USER_B);
 	
-	for(int i = 0; i < 3; i ++)t_para.displayNames.push_back(chime::getChParamString(i));
-	
-	t_para.displayNames.push_back("freq(OR)");
-	t_para.displayNames.push_back("decay(OR)");
-	t_para.displayNames.push_back("freq(AND)");
-	t_para.displayNames.push_back("decay(AND)");
+	for(int i = 0; i < 5; i ++)t_para.displayNames.push_back(chime::getChParamString(i));
 	
 	t_para.abs_val = 0;
 	
@@ -59,55 +54,21 @@ vector<ofPtr<chime> > matchSearch::getChimes(searchData& sd, ofPtr<chime> sample
 		
 		bool isMatches = false;
 		
-		float sVal[2];
-		float itVal[2]; 
+		float sVal;
+		float itVal; 
 		
 		if(mTolIndex < 3){
 		
-			sVal[0] = sample->getModParam(mTolIndex);
-			itVal[0] = (*it)->getModParam(mTolIndex);
-			
-		}else{
-		
-			int para = (mTolIndex == 3) ? CH_FREQ_A: CH_DECAY_A;
-				
-			for(int i = 0; i < 2; i++){
-				sVal[i] = sample->getModParam(para + i);
-				itVal[i] = (*it)->getModParam(para + i);
-			}
+			sVal = sample->getModParam(mTolIndex);
+			itVal = (*it)->getModParam(mTolIndex);
 			
 		}
 		
 		//the tests
-		
-		if(matchType == MATCH_SIMPLE){
 	
-			if(itVal[0] >= sVal[0] - mTol && itVal[0] <= sVal[0] + mTol)isMatches = true;
+		if(itVal >= sVal - mTol && itVal <= sVal + mTol)isMatches = true;
 			
-		}else if(matchType == MATCH_OR){
-		
 				
-			for(int i = 0;i < 2; i++){
-				if((itVal[i] >= sVal[0] -mTol && itVal[i] <= sVal[0] + mTol)||
-				    (itVal[i] >= sVal[1] - mTol && itVal[i] <= sVal[1] + mTol)
-				){
-					isMatches = true;break;
-				}
-			}
-	
-		}else{
-			
-			for(int i = 0;i < 2; i++){
-				if((itVal[0] >=  sVal[i] - mTol && itVal[0] <=  sVal[i] + mTol) && 
-				   (itVal[1] >=  sVal[(i+1)%2] - mTol && itVal[1] <=  sVal[(i+1)%2] + mTol)
-				   ){
-					isMatches = true;
-					break;
-				}
-			}
-			
-		}
-		
 		//now push it back
 		
 		if(isMatches){
@@ -130,16 +91,6 @@ string matchSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 	mTolIndex = intParameters[0].abs_val;
 	mTol = floatParameters[mTolIndex].abs_val;
 	if(mTolIndex == 0)mTol *= b2_pi;
-	
-	if(mTolIndex < 3)
-		matchType = MATCH_SIMPLE;
-	else if(mTolIndex < 5)
-		matchType = MATCH_OR;
-	else
-		matchType = MATCH_AND;
-	
-	if(mTolIndex  == 3 || mTolIndex  == 5)mTolIndex = 3; 
-	if(mTolIndex  == 4 || mTolIndex  == 6)mTolIndex = 4; 
 	
 	for(int i = 0; i < 5; i ++)floatParameters[i].isActive = (i == mTolIndex);
 	

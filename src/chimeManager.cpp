@@ -46,7 +46,7 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 	
 	mPreviewChimes.clear();
 	
-	p.aPos.initVal.abs_val.set(pos);
+	p.aPos.setInitVal(pos);
 	
 	string infoString = "";
 	
@@ -59,7 +59,7 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 		
 	}
 	
-	vector<int> nc;
+	vector<float> nc;
 	distributionEngine::makeValues(nc, p.numChimes);
 	
 	vector<vector<float> >modParams;
@@ -68,13 +68,13 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 	
 	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
 		vector<float> fVec;
-		p.fParams[i].numVals = nc[0];
+		p.fParams[i].setNumVals(nc[0]);
 		distributionEngine::makeValues(fVec, p.fParams[i]);
 		modParams.push_back(fVec);
 	}
 	
 	vector<ofVec2f> aPositions;
-	p.aPos.numVals = nc[0];
+	p.aPos.setNumVals(nc[0]);
 	distributionEngine::makeValues(aPositions, p.aPos);
 	
 	

@@ -9,183 +9,181 @@
 
 #include "distributionEngine.h"
 
-float distributionEngine::getStep(int step, float initVal, float inc, float rng){
+//floats -----------------------------
+
+float distributionEngine::getStep(int step, float initVal, float rng, float unit, float dev){
 	
-	float f = initVal + step * inc;
-	if(rng > 0)f = fmod((float)f ,rng);
+	float f = initVal + step * unit + (unit * ofRandom(-dev,dev));
+	if(rng > 0)f = fmod((float)f ,rng); //for when overlaps the rng
 	return f;
 
 }
 
 
-
-float distributionEngine::getSlice(int step, int numVals, float initVal, float inc, float rng){
+float distributionEngine::getSlice(int step, int numVals, float initVal, float rng, float unit, float dev){
 	
-	float f = (float)step/(float)numVals;
-	return initVal + f * rng;
-	
-}
-
-float distributionEngine::getFlat(float initVal, float inc, float rng){
-
-	return initVal + (int)ofRandom(-rng,rng) * inc;
+	float f = (float)step/(float)numVals * rng;
+	if(unit > 0)f -= fmod(f, unit);
+	f += f * ofRandom(-dev, dev);
+	return initVal + f;	
 	
 }
 
-float distributionEngine::getNorm(float initVal, float inc, float rng, float dev){
+float distributionEngine::getFlat(float initVal, float rng, float unit){
+
+	float f = ofRandom(-rng/2.0f,rng/2.0f); 
+	if(unit > 0) f -= fmod(f, unit);
+	return initVal + f;
+	
+}
+
+float distributionEngine::getNorm(float initVal, float rng, float unit, float dev){
 
 	static boost::mt19937 randGen;
 	boost::normal_distribution<float> normDist(0,dev);
 	boost::variate_generator<boost::mt19937&,boost::normal_distribution<float> > normGen(randGen, normDist);
 	
 	float f = max(min(1.0f,normGen()),-1.0f) * rng;
-	return initVal + (int)f * inc;
+	if(unit > 0)f -= fmod(f,unit);
+	return initVal + f;
 	
 }
 
-ofVec2f distributionEngine::getStep(int step, ofVec2f initVal, ofVec2f inc, float rng){
-	
-	if(rng > 0) step = fmod((float)step ,rng);
-	return initVal + step * inc;
-	
-}
-
-ofVec2f distributionEngine::getSlice(int step, int numVals, ofVec2f initVal, ofVec2f inc, float rng){
-	
-	float f = fmod((float)step * rng/(float)numVals,1.0f);
-	return initVal + f * inc;
-	
-}
-
-ofVec2f distributionEngine::getFlat(ofVec2f initVal, ofVec2f inc, float rng){
-	
-	ofVec2f v =  initVal + (int)ofRandom(-rng,rng) * inc;
-	return v.rotate(ofRandom(0,360),initVal);
-}
-
-ofVec2f distributionEngine::getNorm(ofVec2f initVal, ofVec2f inc, float rng, float dev){
-	
-	float f = getNorm(0,0.01,1,dev);
-	ofVec2f v = initVal + (int)f * inc * rng;
-	return v.rotate(ofRandom(0,360),initVal);
-	
-}
-
-void distributionEngine::makeValues(vector<int> & vals, distributionDef<int> dDef){
-	
-	
-	for(int i = 0; i < dDef.numVals; i ++){
-		
-		float f;
-		
-		switch(dDef.dType){
-				
-			case DT_STEP:
-				f = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);break;
-			case DT_SLICE:
-				f = getSlice(i, dDef.numVals, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
-				
-				break;
-			case DT_FLAT:
-				f = getFlat(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
-				break;
-			case DT_NORMAL:
-				f = getNorm(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val, dDef.deviation.abs_val);
-				break;
-			case DT_CHOOSE:
-				f = dDef.initVal.abs_val + dDef.localVals[(int)(ofRandomf() * dDef.localVals.size())];
-				break;
-			case DT_SEQ:
-				f = dDef.initVal.abs_val + dDef.localVals[i%(int)dDef.localVals.size()];
-				break;
-			default:
-				f = dDef.initVal.abs_val; break;
-				
-		}
-		
-		vals.push_back(f);
-		
-		
-	}
-	
-	
-	
-}
 
 void distributionEngine::makeValues(vector<float> & vals, distributionDef<float> dDef){
-
 	
-	for(int i = 0; i < dDef.numVals; i ++){
 	
+	for(int i = 0; i < dDef.getNumVals(); i ++){
+		
 		float f;
-	
-		switch(dDef.dType){
+		
+		switch(dDef.getDType()){
 				
 			case DT_STEP:
-				f = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);break;
+				f = getStep(i, dDef.getInitVal(), dDef.getVal(DD_RNG), dDef.getVal(DD_UNIT), dDef.getVal(DD_DEV));
+				break;
 			case DT_SLICE:
-				f = getSlice(i, dDef.numVals, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				f = getSlice(i,  dDef.getNumVals(), dDef.getInitVal(), dDef.getVal(DD_RNG), dDef.getVal(DD_UNIT), dDef.getVal(DD_DEV));
 				break;
 			case DT_FLAT:
-				f = getFlat(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				f = getFlat(dDef.getInitVal(), dDef.getVal(DD_RNG), dDef.getVal(DD_UNIT));
 				break;
 			case DT_NORMAL:
-				f = getNorm(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val, dDef.deviation.abs_val);
+				f = getNorm(dDef.getInitVal(), dDef.getVal(DD_RNG), dDef.getVal(DD_UNIT), dDef.getVal(DD_DEV));
 				break;
 			case DT_CHOOSE:
-				f = dDef.initVal.abs_val + dDef.localVals[(int)(ofRandomf() * dDef.localVals.size())];
+				f = dDef.getInitVal() + dDef.getLocalVals().at((int)(ofRandomf() * dDef.getLocalVals().size()));
 				break;
 			case DT_SEQ:
-				f = dDef.initVal.abs_val + dDef.localVals[i%(int)dDef.localVals.size()];
+				f = dDef.getInitVal() + dDef.getLocalVals().at(i%(int)dDef.getLocalVals().size());
 				break;
 			default:
-				f = dDef.initVal.abs_val; break;
+				f = dDef.getInitVal(); 
+				break;
 				
-		
 		}
-	
+		
 		vals.push_back(f);
 	}
 	
 	
-
+	
 	
 }
+
+
+
+//vecs ------------------------------------------------------------------------------------
+
+ofVec2f distributionEngine::getStep(int step, ofVec2f initVal, ofVec2f rngVec, float unit, float dev){
+	
+	//the equivalent of the float method
+	
+	ofVec2f v(rngVec);
+	v.normalize();
+	v *= unit * (float)step;
+	if(v.length() > rngVec.length())v -= rngVec;
+	
+	return initVal + v;
+	
+}
+
+ofVec2f distributionEngine::getSlice(int step, int numVals, ofVec2f initVal, ofVec2f rngVec, float unit, float dev){
+	
+	ofVec2f v(rngVec);
+	v.normalize();
+	
+	float f = (float)step/(float)numVals * rngVec.length();
+	if(unit > 0)f -= fmod(f, unit);
+	f += f * ofRandom(-dev, dev);
+	
+	v *= f;
+	
+	return initVal + v;	
+	
+}
+
+ofVec2f distributionEngine::getFlat(ofVec2f initVal, ofVec2f rngVec, float unit){
+		
+	ofVec2f v(rngVec);
+	v.normalize();
+	
+	float f = ofRandom(0,rngVec.length()); 
+	if(unit > 0) f -= fmod(f, unit);
+	
+	v *= f;
+	
+	return initVal -(rngVec/2) + v;
+
+}
+
+ofVec2f distributionEngine::getNorm(ofVec2f initVal, ofVec2f rngVec, float unit, float dev){
+	
+	ofVec2f v(rngVec);
+	v.normalize();
+	
+	float f = getNorm(0,rngVec.length(),unit, dev);
+	
+	v *= f; 
+	
+	return initVal -(rngVec/2) + v;
+	
+}
+
+
+
 
 
 void distributionEngine::makeValues(vector<ofVec2f> & vals, distributionDef<ofVec2f> dDef){
 	
 	
-	for(int i = 0; i < dDef.numVals; i ++){
+	for(int i = 0; i < dDef.getNumVals(); i ++){
 	
 		ofVec2f vec;
 		
-		switch(dDef.dType){
+		switch(dDef.getDType()){
 				
 			case DT_STEP:
-				vec = getStep(i, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				vec = getStep(i, dDef.getInitVal(), dDef.getRngVec(), dDef.getVal(DD_UNIT), dDef.getVal(DD_DEV));
 				break;
 			case DT_SLICE:
-				vec = getSlice(i, dDef.numVals, dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				vec = getSlice(i, dDef.getNumVals(),dDef.getInitVal(), dDef.getRngVec(), dDef.getVal(DD_UNIT), dDef.getVal(DD_DEV));
 				break;
 			case DT_FLAT:
-				vec = getFlat(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val);
+				vec = getFlat(dDef.getInitVal(), dDef.getRngVec(), dDef.getVal(DD_UNIT));
 				break;
 			case DT_NORMAL:
-				vec = getNorm(dDef.initVal.abs_val, dDef.increment.abs_val, dDef.range.abs_val, dDef.deviation.abs_val);
-				break;
-			case DT_RADIAL:
-				vec = (dDef.initVal.abs_val + ofVec2f(0,dDef.radius.abs_val)).rotateRad((float)i * dDef.rot.abs_val, dDef.initVal.abs_val);
+				vec = getNorm(dDef.getInitVal(), dDef.getRngVec(), dDef.getVal(DD_UNIT), dDef.getVal(DD_DEV));
 				break;
 			case DT_CHOOSE:
-				vec = dDef.initVal.abs_val + dDef.localVals[(int)(ofRandomf() * dDef.localVals.size())];
+				vec = dDef.getInitVal() + dDef.getLocalVals().at((int)(ofRandomf() * dDef.getLocalVals().size()));
 				break;
 			case DT_SEQ:
-				vec = dDef.initVal.abs_val + dDef.localVals[i%(int)dDef.localVals.size()];
+				vec = dDef.getInitVal() + dDef.getLocalVals().at(i%(int)dDef.getLocalVals().size());
 				break;
 			default:
-				vec = dDef.initVal.abs_val; break;
-				
+				vec = dDef.getInitVal(); 
+				break;				
 				
 		}
 		

@@ -33,7 +33,6 @@ redistributeMod::redistributeMod(int pt, int dt){
 	};
 	
 	
-	
 	dataElement<float> dataA;
 	dataElement<float> dataB;
 	
@@ -50,10 +49,19 @@ redistributeMod::redistributeMod(int pt, int dt){
 			//choose suitable unit ranges and increments
 			switch(paramType){
 					
-				case CH_PHASE:break;
-				case CH_SPEED:break;
-				case CH_FREQ: break;
-				case CH_DECAY: break;
+				case CH_PHASE:
+					dataB.set(1,64, SET_USER_B); 
+					dataB.incr = 1;
+					 break;
+				case CH_SPEED:
+					dataB.set(0,1,SET_USER_B); 
+					 break;
+				case CH_FREQ:
+					dataB.set(0.25,6,SET_USER_B); 
+					 break;
+				case CH_DECAY:
+					dataB.set(0.01,0.2, SET_USER_B); 
+					 break;
 			
 			}
 			
@@ -117,39 +125,39 @@ void redistributeMod::makeMod(vector<ofPtr<chime> > chimes){
 	
 	//get the new values
 	
-	distributionDef <float>dDef;
-	dDef.dType = e_distributionType(distType);
-	dDef.numVals = numVals;
+	distributionDef <float> dDef;
+	dDef.setDType(distType);
+	dDef.setNumVals(numVals);
 	
 	switch (distType) {
 		case DT_NONE:
-			dDef.initVal.abs_val = lb + rng * floatParameters[1].abs_val; 
+			dDef.setInitVal(lb + rng * floatParameters[1].abs_val); 
 			break;
 		case DT_STEP:
-			dDef.initVal.abs_val = lb;
-			dDef.increment.abs_val = (rng/chimes.size()) * floatParameters[1].abs_val; //determines amount of overlap
-			dDef.range.abs_val = rng;
+			dDef.setInitVal( lb);
+			dDef.setVal(DD_UNIT, rng/chimes.size() * floatParameters[1].abs_val); //determines amount of overlap
+			dDef.setVal(DD_RNG,rng);
 			break;
 		case DT_SLICE:
-			dDef.initVal.abs_val = lb;
-			dDef.deviation.abs_val = floatParameters[1].abs_val; //implement this
-			dDef.range.abs_val = rng;
+			dDef.setInitVal( lb);
+			dDef.setVal(DD_DEV, floatParameters[1].abs_val);
+			dDef.setVal( DD_RNG, rng);
 			break;
 		case DT_FLAT:
-			dDef.initVal.abs_val = median;
-			dDef.increment.abs_val = floatParameters[1].abs_val; //min val
-			dDef.range.abs_val = rng; //nb meaning of rng has changed
+			dDef.setInitVal( median);
+			dDef.setVal( DD_UNIT,floatParameters[1].abs_val); //min val
+			dDef.setVal( DD_RNG, rng); //nb meaning of rng has changed
 			break;
 		case DT_NORMAL:
-			dDef.initVal.abs_val = median;
-			dDef.increment.abs_val = floatParameters[1].abs_val;
-			dDef.range.abs_val = rng;
+			dDef.setInitVal(median);
+			dDef.setVal( DD_UNIT,floatParameters[1].abs_val);
+			dDef.setVal( DD_RNG, rng);
 			break;
 		case DT_CHOOSE:
-			dDef.localVals = oldVals;
+			dDef.setLocalVals(oldVals);
 			break;
 		case DT_SEQ:
-			dDef.localVals = seqVals;
+			dDef.setLocalVals(seqVals);
 			break;
 		default:
 			break;

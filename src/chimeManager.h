@@ -22,13 +22,15 @@ struct groupPreset{
 	
 	groupPreset(){
 		
-		numChimes.name = "numChimes";
-		numChimes.numVals = 1;
-		aPos.name = "aPos";
+		numChimes.setName("numChimes");
+		numChimes.setNumVals(1);
+		numChimes.setVal(DD_UNIT, 1);
+		
+		aPos.setName("aPos");
 		
 		for(int i  =0; i < CH_FLOAT_COUNT; i++){
 			distributionDef<float> d;
-			d.name = chime::getChParamString(i);
+			d.setName(chime::getChParamString(i));
 			fParams.push_back(d);
 			
 		}
@@ -41,7 +43,7 @@ struct groupPreset{
 	vector<distributionDef<float> >fParams;
 	vector<mapDef> mapParams;
 	
-	distributionDef<int> numChimes;
+	distributionDef<float> numChimes;
 	distributionDef<ofVec2f> aPos;
 	
 };

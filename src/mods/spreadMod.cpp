@@ -61,11 +61,10 @@ void spreadMod::makeMod(vector<ofPtr<chime> > chimes){
 	vec.rotate(floatParameters[1].abs_val);
 	
 	distributionDef <ofVec2f>dDef;
-	dDef.numVals = (int)chimes.size();
-	dDef.dType = DT_SLICE;
-	dDef.range.abs_val = 1;
-	dDef.increment.abs_val = vec;
-	dDef.initVal.abs_val = mDown - vec/2;
+	dDef.setNumVals((int)chimes.size());
+	dDef.setDType(DT_SLICE);
+	dDef.setRngVec(vec);
+	dDef.setInitVal(mDown - vec/2);
 	
 	distributionEngine::makeValues(nPos, dDef);
 	

@@ -14,8 +14,10 @@ allMods::allMods(){
 	ofPtr<gatherMod> gm = ofPtr<gatherMod>(new gatherMod());
 	mods.push_back((ofPtr<baseMod>)gm);
 	
-	ofPtr<spreadMod> sm = ofPtr<spreadMod>(new spreadMod());
-	mods.push_back((ofPtr<baseMod>)sm);
+	for(int i = -2; i < 6; i++){
+		ofPtr<spreadMod> spm = ofPtr<spreadMod>(new spreadMod(i));
+		mods.push_back((ofPtr<baseMod>)spm);
+	}
 
 }
 

@@ -11,8 +11,9 @@
 
 float distributionEngine::getStep(int step, float initVal, float inc, float rng){
 	
-	if(rng > 0) step = fmod((float)step ,rng);
-	return initVal + step * inc;
+	float f = initVal + step * inc;
+	if(rng > 0)f = fmod((float)f ,rng);
+	return f;
 
 }
 
@@ -20,11 +21,8 @@ float distributionEngine::getStep(int step, float initVal, float inc, float rng)
 
 float distributionEngine::getSlice(int step, int numVals, float initVal, float inc, float rng){
 	
-	//float f = (float)step/(float)numVals;
-	//return fmod(initVal + f * inc * (float)rng, inc);
-	
-	float f = fmod((float)step * rng/(float)numVals,1.0f);
-	return initVal + f * inc;
+	float f = (float)step/(float)numVals;
+	return initVal + f * rng;
 	
 }
 

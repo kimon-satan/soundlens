@@ -30,7 +30,46 @@ void chimeUpdater::update(ofPtr<chime> c){
 	
 	updateDims(c);
 	updateSensors(c);
+	updateModifiables(c);
 
+}
+
+
+void chimeUpdater::updateModifiables(ofPtr<chime> c){
+
+	
+	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
+	
+		if(c->getModParamChanged(i)){
+			
+			switch(i){
+			
+				case CH_FREQ:
+					chimeFactory::mapFreqToSensors(c);
+					break;
+				
+				case CH_PHASE:
+					// chimeFactory::conformPhase(c); 
+					//need a different method through adjusting speed
+					break;
+				
+				case CH_SPEED:
+					//potential for conflict when phase is changing too
+					break;
+				
+				case CH_LENGTH:
+					//should be fine
+					break;
+					
+				//decay is fine
+			
+			}
+		
+			c->resetModParam(i);
+		}
+	
+	}
+	
 }
 
 void chimeUpdater::updateDims(ofPtr<chime> c){

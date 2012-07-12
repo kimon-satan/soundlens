@@ -540,29 +540,6 @@ void testApp::keyPressed(int key){
 	if(key == '[')chimeManager::switchSelBank(-1);
 	if(key == ']')chimeManager::switchSelBank(1);
 	
-	/*if(key == 'n'){
-	 
-	 int count = 0;
-	 for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
-	 ofVec2f v(0.005,0); 
-	 v *= count;
-	 v += ofVec2f(-0.005,0) * NUM_CHIMES/2;
-	 chimeUpdater::moveView(*it, v);
-	 count += 1;
-	 }
-	 }
-	 
-	 if(key == 'm'){
-	 
-	 int count = 0;
-	 for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
-	 ofVec2f v(-0.005,0); 
-	 v *= count;
-	 v += ofVec2f(0.005,0) * NUM_CHIMES/2;
-	 chimeUpdater::moveView(*it, v);
-	 count += 1;
-	 }
-	 }*/
 		
 
 }

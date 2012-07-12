@@ -20,7 +20,8 @@ class modifiable{
 		
 		isAuto = false;
 		increment  = 0;
-	
+		isChanged = false;
+		
 	};
 	
 	void set(T t){
@@ -33,6 +34,7 @@ class modifiable{
 		tVal = t;
 		increment = i;
 		isAuto = b;
+
 	};
 	
 	T getCVal(){return cVal;}
@@ -40,21 +42,27 @@ class modifiable{
 	void shiftValue(int direction){
 	
 		if(abs(increment) > 0){
+			
 			if(cVal <= tVal - increment || cVal >= tVal + increment){
 			
-				T vec = cVal - tVal;
+				T vec = tVal - cVal;
 				vec /= abs(vec);
 				vec *= increment * direction;
 				cVal += vec;
+				isChanged = true;
 				
 			}else{
 				
-				increment  = 0;
+				increment = 0;
+				cVal = tVal;
 			}
 		}
 	
 	};
 	
+	
+	bool getIsChanged(){return isChanged;};
+	void setIsChanged(bool b){isChanged = b;};
 	
 	private:
 	
@@ -62,7 +70,7 @@ class modifiable{
 	T tVal;
 	float increment;
 	bool isAuto;
-	
+	bool isChanged;
 
 
 };
@@ -109,6 +117,11 @@ public:
 				vec *= increment * direction;
 				cVal += vec;
 				
+			}else{
+				
+				increment = 0;
+				cVal = tVal;
+			
 			}
 			
 		}

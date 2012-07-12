@@ -46,7 +46,7 @@ redistributeMod::redistributeMod(int pt, int dt){
 		
 		if(distType == DT_FLAT || distType == DT_NORMAL){
 		
-			//choose suitable unit ranges and increments
+			//choose suitable unit ranges
 			switch(paramType){
 					
 				case CH_PHASE:
@@ -62,6 +62,9 @@ redistributeMod::redistributeMod(int pt, int dt){
 				case CH_DECAY:
 					dataB.set(0.01,0.2, SET_USER_B); 
 					 break;
+				case CH_LENGTH:
+					dataB.set(0.01,0.2, SET_USER_B); 
+					break;
 			
 			}
 			
@@ -152,6 +155,7 @@ void redistributeMod::makeMod(vector<ofPtr<chime> > chimes){
 			dDef.setInitVal(median);
 			dDef.setVal( DD_UNIT,floatParameters[1].abs_val);
 			dDef.setVal( DD_RNG, rng);
+			dDef.setVal( DD_DEV, 0.25);
 			break;
 		case DT_CHOOSE:
 			dDef.setLocalVals(oldVals);
@@ -167,11 +171,33 @@ void redistributeMod::makeMod(vector<ofPtr<chime> > chimes){
 	
 	distributionEngine::makeValues(nVals, dDef);
 	
+	float longDist = 0;
+	vector<float> distances;
 	
-	//work out the incMuls
+	//calculate the distances
+	
+	int count = 0;
+	
+	for(it = chimes.begin(); it != chimes.end(); it++){
+		
+		float d = abs((*it)->getModParam(paramType) - nVals[count]);
+		if(d > longDist)longDist = d;
+		distances.push_back(d);
+		count++;
+		
+	}
 	
 	
-	//assign the new targets
+	//set the targets
+	
+	count = 0;
+	
+	for(it = chimes.begin(); it != chimes.end(); it++){
+		float inc = floatParameters[0].abs_val * distances[count]/longDist;
+		(*it)->setModParamTarget(paramType, nVals[count], inc, false);
+		count ++;
+	}
+	
 
 
 

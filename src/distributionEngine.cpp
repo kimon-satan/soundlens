@@ -43,7 +43,7 @@ float distributionEngine::getNorm(float initVal, float rng, float unit, float de
 	boost::normal_distribution<float> normDist(0,dev);
 	boost::variate_generator<boost::mt19937&,boost::normal_distribution<float> > normGen(randGen, normDist);
 	
-	float f = max(min(1.0f,normGen()),-1.0f) * rng;
+	float f = max(min(1.0f,normGen()),-1.0f) * rng/2.0f;
 	if(unit > 0)f -= fmod(f,unit);
 	return initVal + f;
 	
@@ -72,7 +72,7 @@ void distributionEngine::makeValues(vector<float> & vals, distributionDef<float>
 				f = getNorm(dDef.getInitVal(), dDef.getVal(DD_RNG), dDef.getVal(DD_UNIT), dDef.getVal(DD_DEV));
 				break;
 			case DT_CHOOSE:
-				f = dDef.getInitVal() + dDef.getLocalVals().at((int)(ofRandomf() * dDef.getLocalVals().size()));
+				f = dDef.getInitVal() + dDef.getLocalVals().at(ofRandom(0,dDef.getLocalVals().size()-1));
 				break;
 			case DT_SEQ:
 				f = dDef.getInitVal() + dDef.getLocalVals().at(i%(int)dDef.getLocalVals().size());

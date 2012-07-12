@@ -141,6 +141,9 @@ void chime::setModParamTarget(int p, float val, float increment, bool isAuto){
 	modParams[p].setTarget(val, increment, isAuto);
 }
 
+bool chime::getModParamChanged(int i){return modParams[i].getIsChanged();}
+void chime::resetModParam(int i){return modParams[i].setIsChanged(false);}
+
 void chime::setBlur(float f){mBlur = f;}
 float chime::getBlur(){return mBlur;}
 

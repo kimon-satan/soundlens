@@ -9,8 +9,10 @@
 
 #pragma once
 
-#include "chime.h"
+
 #include "ofxOsc.h"
+#include "chimeFactory.h"
+
 #define TARGET_FRAME 60
 
 class chimeUpdater{
@@ -30,8 +32,8 @@ class chimeUpdater{
 	
 	private:
 	
-	
 	static void updateSensors(ofPtr<chime> c);
+	static void updateModifiables(ofPtr<chime> c);
 	
 	static unsigned long mTimeStamp1;
 	static unsigned long mTimeStamp2;

@@ -13,14 +13,20 @@ string baseMod::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 	
 	string s = "";
 	
-	for(vector<dataElement<float> >::iterator it = floatParameters.begin(); it != floatParameters.end(); it++){
-		
-		s += it->setUserValues(ua,ub);
-	}
-	
 	for(vector<dataElement<int> >::iterator it = intParameters.begin(); it != intParameters.end(); it++){
 		
-		s += it->setUserValues(ua,ub);
+		if(it->isActive){
+			s += it->setUserValues(ua,ub);
+		}else{
+			
+		}
+	}
+	
+	for(vector<dataElement<float> >::iterator it = floatParameters.begin(); it != floatParameters.end(); it++){
+		
+		if(it->isActive){
+			s += it->setUserValues(ua,ub);
+		}
 	}
 	
 

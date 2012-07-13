@@ -22,7 +22,7 @@ class baseMod{
 	
 	void setName(string s);
 	string getName();
-	string setUserData(ofVec2f mouseDownPos, ofVec2f mouseDragPos, float ua, float ub);
+	virtual string setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	
 	
 	

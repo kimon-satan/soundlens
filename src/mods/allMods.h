@@ -11,8 +11,12 @@
 #include "gatherMod.h"
 #include "spreadMod.h"
 #include "redistributeMod.h"
+#include "setMod.h"
+
 
 enum e_modType{
+	
+	MOD_SET_MULTI,
 	
 	MOD_GATHER,
 	

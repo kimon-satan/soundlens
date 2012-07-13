@@ -19,12 +19,12 @@ redistributeMod::redistributeMod(int pt, int dt){
 	
 	name += "rd_"  + dNames[distType] + "_"+ chime::getChParamString(paramType);
 	
-	string paramBNames[7] = {"rngMul", "ovrlp", "dev", "unit", "unit", "", "seqSize"};
+	string paramBNames[7] = {"rngMul", "unit", "dev", "unit", "unit", "", "seqSize"};
 	
 	float paramBRanges[7][2] ={
 		{0,1},
 		{1,3},
-		{0,1},
+		{0,0.2},
 		{0,0}, //unit will need to change according to parameter type
 		{0,0},
 		{0,0},
@@ -36,15 +36,17 @@ redistributeMod::redistributeMod(int pt, int dt){
 	dataElement<float> dataA;
 	dataElement<float> dataB;
 	
+	float maxIncs[] = {0.02,0.1,0.1,1.0,1.0};
+	
 	dataA.name = "inc";
-	dataA.set(0.01,1.0, SET_USER_A); //might need to be set per param type
+	dataA.set(0.0,maxIncs[paramType], SET_USER_A); //might need to be set per param type
 	floatParameters.push_back(dataA);
 	
 	dataB.name = paramBNames[distType];
 		
 	if(dataB.name != ""){
 		
-		if(distType == DT_FLAT || distType == DT_NORMAL){
+		if(distType == DT_FLAT || distType == DT_NORMAL || distType == DT_STEP){
 		
 			//choose suitable unit ranges
 			switch(paramType){
@@ -147,11 +149,13 @@ void redistributeMod::makeMod(vector<ofPtr<chime> > chimes){
 			dDef.setVal( DD_RNG, rng);
 			break;
 		case DT_FLAT:
+			if(paramType == CH_PHASE)floatParameters[1].abs_val = b2_pi * 2/floatParameters[1].abs_val;
 			dDef.setInitVal( median);
 			dDef.setVal( DD_UNIT,floatParameters[1].abs_val); //min val
 			dDef.setVal( DD_RNG, rng); //nb meaning of rng has changed
 			break;
 		case DT_NORMAL:
+			if(paramType == CH_PHASE)floatParameters[1].abs_val = b2_pi * 2/floatParameters[1].abs_val;
 			dDef.setInitVal(median);
 			dDef.setVal( DD_UNIT,floatParameters[1].abs_val);
 			dDef.setVal( DD_RNG, rng);

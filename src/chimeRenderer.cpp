@@ -17,6 +17,8 @@ vector<ofPtr<ofImage> > chimeRenderer::mEmptyHammerSprite;
 vector<ofPtr<ofImage> > chimeRenderer::mFilledHammerSprite;
 vector<ofPtr<ofImage> > chimeRenderer::mPivotSprite;
 
+bool chimeRenderer::isDrawPivots = false;
+
 void chimeRenderer::loadSprites(){
 
 	string filePath = "images/";
@@ -68,7 +70,7 @@ void chimeRenderer::loadSprites(){
 void chimeRenderer::draw(ofPtr<chime> c){
 	
 	//drawAnchor(c);
-	//drawPivots(c);
+	if(isDrawPivots)drawPivots(c);
 	drawStem(c);
 	drawSensors(c);
 	drawHammer(c);

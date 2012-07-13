@@ -25,6 +25,8 @@ class chimeRenderer{
 	static void drawHighlight(ofPtr<chime> c, ofColor c);
 	static void drawOutline(ofPtr<chime> c, ofColor c);
 	
+	static bool isDrawPivots;
+	
 	private:
 	
 	static vector<ofPtr<ofImage> >  mStemSprite;

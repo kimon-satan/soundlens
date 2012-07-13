@@ -61,26 +61,26 @@ void testApp::setupPresets(){
 	preset1.fParams[CH_DECAY].setInitVal(1.8);
 	
 	
-	preset1.fParams[CH_PHASE].setInitVal(0.5);
+	preset1.fParams[CH_PHASE].setInitVal(b2_pi);
 	preset1.fParams[CH_PHASE].setDType( DT_FLAT);
 	preset1.fParams[CH_PHASE].setVal(DD_UNIT, b2_pi * 1.0f/64.0f);
-	preset1.fParams[CH_PHASE].setVal(DD_RNG, b2_pi);
+	preset1.fParams[CH_PHASE].setVal(DD_RNG, b2_pi * 2);
 	preset1.fParams[CH_SPEED].setInitVal(1.0);
 	preset1.fParams[CH_LENGTH].setInitVal(2.0);
 	
-	preset1.fParams[CH_PIV_NUM].setInitVal(0);
+	preset1.fParams[CH_PIV_NUM].setInitVal(1);
 	
-	/*preset1.fParams[CH_PIV_LGTH].setInitVal(4.0);
+	preset1.fParams[CH_PIV_LGTH].setInitVal(4.0);
 	
 	preset1.fParams[CH_PIV_PH_MUL].setInitVal(1);
-	preset1.fParams[CH_PIV_SPD_SKEW].setInitVal(0);*/
+	preset1.fParams[CH_PIV_SPD_SKEW].setInitVal(0);
 	
 	mPresets.push_back(preset1);
 	
 	groupPreset preset2;
 	
 	preset2.name = "multiple";
-	preset2.numChimes.setInitVal(21);
+	preset2.numChimes.setInitVal(20);
 	preset2.numChimes.setDType(DT_NONE);
 
 	preset2.fParams[CH_FREQ].setInitVal(MIDI_MIN + MIDI_RANGE/2);
@@ -91,16 +91,16 @@ void testApp::setupPresets(){
 	
 	
 	preset2.fParams[CH_PHASE].setInitVal(0);
-	preset2.fParams[CH_PHASE].setDType(DT_STEP);
-	preset2.fParams[CH_PHASE].setVal(DD_UNIT, b2_pi/7.0);
-	preset2.fParams[CH_PHASE].setVal(DD_RNG, b2_pi * 3);
+	preset2.fParams[CH_PHASE].setDType(DT_SLICE);
+	preset2.fParams[CH_PHASE].setVal(DD_UNIT, 0);
+	preset2.fParams[CH_PHASE].setVal(DD_RNG, b2_pi);
 	preset2.fParams[CH_SPEED].setInitVal(0.5);
 	preset2.fParams[CH_LENGTH].setInitVal(2.0);
 	
-	preset2.fParams[CH_PIV_NUM].setInitVal(1);
+	preset2.fParams[CH_PIV_NUM].setInitVal(2);
 	preset2.fParams[CH_PIV_LGTH].setInitVal(4);
-	preset2.fParams[CH_PIV_SPD_SKEW].setInitVal(0.5);
-	preset2.fParams[CH_PIV_PH_MUL].setInitVal(2.0/3.0);
+	preset2.fParams[CH_PIV_SPD_SKEW].setInitVal(0);
+	preset2.fParams[CH_PIV_PH_MUL].setInitVal(1);
 	
 	mPresets.push_back(preset2);
 	
@@ -143,10 +143,10 @@ void testApp::setupPresets(){
 	
 
 	preset4.fParams[CH_FREQ].setInitVal(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B); //need a method to set increment
-	preset4.fParams[CH_FREQ].setVal(DD_UNIT, 6,12,SET_USER_A);
-	preset4.fParams[CH_FREQ].setVal(DD_RNG, 1);
+	preset4.fParams[CH_FREQ].setVal(DD_UNIT, 1);
+	preset4.fParams[CH_FREQ].setVal(DD_RNG, 6,12,SET_USER_A);
 	preset4.fParams[CH_FREQ].setDType(DT_SLICE);
-
+	preset4.fParams[CH_DECAY].setInitVal(0.5);
 	
 	preset4.fParams[CH_PHASE].setInitVal(0,b2_pi/2,SET_USER_B);
 	preset4.fParams[CH_PHASE].setDType( DT_NONE);
@@ -157,10 +157,10 @@ void testApp::setupPresets(){
 	preset4.fParams[CH_LENGTH].setInitVal(2.0);
 	preset4.fParams[CH_PIV_NUM].setInitVal(0);
 	
-	/*preset4.fParams[CH_PIV_LGTH].setInitVal(2.0);
+	preset4.fParams[CH_PIV_LGTH].setInitVal(2.0);
 	preset4.fParams[CH_PIV_NUM].setInitVal(1);
 	preset4.fParams[CH_PIV_PH_MUL].setInitVal(0.25);
-	preset4.fParams[CH_PIV_SPD_SKEW].setInitVal(0);*/
+	preset4.fParams[CH_PIV_SPD_SKEW].setInitVal(0);
 	
 	mPresets.push_back(preset4);
 	
@@ -168,6 +168,13 @@ void testApp::setupPresets(){
 
 void testApp::setupSearchPresets(){
 
+	searchPreset sp3;
+	
+	sp3.name = "allSearch";
+	sp3.manualMacro.push_back(SEARCH_POSITION);
+	
+	searchPresets.push_back(sp3);
+	
 	searchPreset sp1;
 	
 	sp1.name = "surfaceSearch";
@@ -195,16 +202,13 @@ void testApp::update(){
 	
 	ofBackground(255);
 	
-	//handleMessages();
-	
 	chimeManager::update();
-	
 
 }
 
 void testApp::handleMessages(){
 
-	while (receiver.hasWaitingMessages()) {
+	/*while (receiver.hasWaitingMessages()) {
 		
 		ofxOscMessage m;
 		receiver.getNextMessage(&m);
@@ -226,7 +230,9 @@ void testApp::handleMessages(){
 			
 		
 		
-	}
+	}*/
+	
+	//not using iphone control
 
 }
 
@@ -540,7 +546,7 @@ void testApp::keyPressed(int key){
 	if(key == '[')chimeManager::switchSelBank(-1);
 	if(key == ']')chimeManager::switchSelBank(1);
 	
-		
+	if(key == 'D')chimeRenderer::isDrawPivots = !chimeRenderer::isDrawPivots;
 
 }
 

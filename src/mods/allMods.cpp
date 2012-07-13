@@ -10,7 +10,10 @@
 #include "allMods.h"
 
 allMods::allMods(){
-
+	
+	ofPtr<setMod> sm = ofPtr<setMod>(new setMod());
+	mods.push_back((ofPtr<baseMod>)sm);
+	
 	ofPtr<gatherMod> gm = ofPtr<gatherMod>(new gatherMod());
 	mods.push_back((ofPtr<baseMod>)gm);
 	

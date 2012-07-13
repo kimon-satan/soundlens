@@ -31,21 +31,77 @@ namespace chimeFactory {
 	
 	}
 	
-	void conformPhase(ofPtr<chime> c){
+	void changePhase(ofPtr<chime> c){
 		
-		stemDims sd = c->getStemDims();
-		sd.cPos = c->getAnchorPos(); 
-		sd.iAngle = c->getModParam(CH_PHASE);
-		sd.iAngle += fmod(c->getModParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
-		c->setStemDims(sd);
+		b2Body * stem = c->getStemBody();
+		b2Body * hammer = c->getHammer();
+		b2Body * sensors[2];
 		
-		b2Body * b = c->getStemBody();
 		
-		if(b){
-			b->SetTransform(b->GetPosition(), sd.iAngle);
+		float chng = c->getModParam(CH_PHASE);
+		chng += c->getModParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f;
+		
+		for(int i = 0; i < 2; i++)sensors[i] = c->getSensors()[i];
+		
+		if(stem){
+			stem->SetTransform(stem->GetPosition(), chng);
+			hammer->SetTransform(hammer->GetPosition(), chng);
+			for(int i = 0; i < 2; i++)sensors[i]->SetTransform(sensors[i]->GetPosition(), chng);
 		}
 		
 		
+	}	
+	
+	
+	void conformPhase(ofPtr<chime> c){
+		
+		stemDims sd = c->getStemDims();
+		
+		sd.iAngle = c->getModParam(CH_PHASE);
+		sd.iAngle += c->getModParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f;
+		
+		c->setStemDims(sd);
+		
+		b2Body * stem = c->getStemBody();
+		b2Body * hammer = c->getHammer();
+		b2Body * sensors[2];
+		for(int i = 0; i < 2; i++)sensors[i] = c->getSensors()[i];
+		
+		if(stem){
+			stem->SetTransform(stem->GetPosition(), sd.iAngle);
+			hammer->SetTransform(hammer->GetPosition(), sd.iAngle);
+			for(int i = 0; i < 2; i++)sensors[i]->SetTransform(sensors[i]->GetPosition(), sd.iAngle);
+		}
+		
+	}
+	
+	
+	void changeSpeed(ofPtr <chime> c){
+	
+		b2Body * stem = c->getStemBody();
+		stem->SetAngularVelocity(c->getModParam(CH_SPEED));
+		
+	}
+	
+	void changeLength(ofPtr<chime> c){
+	
+		/*b2World * world = c->getWorld();
+		b2Body * stem = c->getStemBody();
+		world->DestroyBody(stem);
+		b2Body * hammer = c->getHammer();
+		world->DestroyBody(hammer);
+		b2Body * sensors[2];
+		
+		for(int i = 0; i < 2; i++){
+			sensors[i] = c->getSensors()[i];
+			world->DestroyBody(sensors[i]);
+		}
+		
+		createStem(c);
+		createSensors(c);
+		createHammer(c);
+		joinStemBodies(c);*/
+	
 	}
 	
 	void initBodies(ofPtr<chime> c){

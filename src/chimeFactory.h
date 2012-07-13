@@ -19,6 +19,10 @@ namespace chimeFactory{
 	void conformPhase(ofPtr<chime> c);
 	void mapFreqToSensors(ofPtr<chime> c); //this probably should be elsewhere
 	
+	void changeSpeed(ofPtr <chime> c);
+	void changeLength(ofPtr <chime> c);
+	void changePhase(ofPtr <chime> c);
+	
 	void createStem(ofPtr<chime> c);
 	void createHammer(ofPtr<chime> c);
 	void createSensors(ofPtr<chime> c);

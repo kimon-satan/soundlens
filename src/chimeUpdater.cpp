@@ -28,9 +28,10 @@ void chimeUpdater::update(ofPtr<chime> c){
 	w->Step(timeStep, vel_i, pos_i);
 	w->ClearForces();
 	
+	updateModifiables(c);
 	updateDims(c);
 	updateSensors(c);
-	updateModifiables(c);
+	
 
 }
 
@@ -49,16 +50,15 @@ void chimeUpdater::updateModifiables(ofPtr<chime> c){
 					break;
 				
 				case CH_PHASE:
-					// chimeFactory::conformPhase(c); 
-					//need a different method through adjusting speed
+					chimeFactory::conformPhase(c); 
 					break;
 				
 				case CH_SPEED:
-					//potential for conflict when phase is changing too
+					chimeFactory::changeSpeed(c);
 					break;
 				
 				case CH_LENGTH:
-					//should be fine
+					chimeFactory::changeLength(c); //potentially don't do this one
 					break;
 					
 				//decay is fine
@@ -96,14 +96,12 @@ void chimeUpdater::updateDims(ofPtr<chime> c){
 	if(c->getModParam(CH_PIV_SPD_SKEW) < 0)reverse(sp_props.begin(), sp_props.end());
 	for(int i = 0; i < c->getModParam(CH_PIV_NUM); i++)sp_props[i] /= nTot; //normalisedSum
 	
+	float sRot = (b) ? b->GetAngle() : sd.iAngle;
 	
 	for(int i = 0; i < c->getModParam(CH_PIV_NUM); i++){
 		
-		//need a better formula here
-		float speed = c->getModParam(CH_SPEED) * sp_props[i]; 
-		float rot = c->getModParam(CH_PHASE) * c->getModParam(CH_PIV_PH_MUL);
-		
-		rot += fmod(speed * (float)ofGetFrameNum()/60.0f, b2_pi * 2.0f);
+		float rot = sRot * sp_props[i] + (c->getModParam(CH_PHASE) * c->getModParam(CH_PIV_PH_MUL));
+		rot = fmod(rot, b2_pi * 2);
 		
 		ofVec2f t(0,c->getModParam(CH_PIV_LGTH)/c->getModParam(CH_PIV_NUM));
 		

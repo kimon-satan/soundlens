@@ -1,26 +1,26 @@
 /*
- *  gatherMod.h
+ *  copyMod.h
  *  testBed1
  *
- *  Created by Simon Katan on 06/07/2012.
+ *  Created by Simon Katan on 14/07/2012.
  *  Copyright 2012 __MyCompanyName__. All rights reserved.
  *
  */
 
-#pragma once
 
+#pragma once
 #include "baseMod.h"
 
-class gatherMod : public baseMod{
+class copyMod : public baseMod{
+
 
 	public:
 	
-	gatherMod();
+	copyMod();
 	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
-	void drawControl(float dragDist, float dragAngle);
+	void drawControl( float dragDist, float dragAngle);
 	
 	private:
-	
 	
 
 };

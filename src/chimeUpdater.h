@@ -29,6 +29,7 @@ class chimeUpdater{
 	static float getFocalPoint();
 	
 	static void updateDims(ofPtr<chime> c);
+	static void reCalcAnchorPoint(ofPtr<chime> c);
 	
 	private:
 	

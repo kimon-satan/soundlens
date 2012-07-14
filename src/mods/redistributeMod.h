@@ -17,7 +17,7 @@ class redistributeMod : public baseMod{
 	public:
 	
 	redistributeMod(int pType, int dType);
-	void makeMod(vector<ofPtr<chime> > chimes);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
 	void drawControl(float dragDist, float dragAngle);
 	
 	private:

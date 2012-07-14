@@ -18,7 +18,7 @@ class setMod : public baseMod{
 	public:
 	
 	setMod();
-	void makeMod(vector<ofPtr<chime> > chimes);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
 	void drawControl(float dragDist, float dragAngle);
 	string setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	

@@ -12,7 +12,7 @@
 float chimeUpdater::timeStep = 1.0f / TARGET_FRAME;
 float chimeUpdater::vel_i = 2;
 float chimeUpdater::pos_i = 1;
-float chimeUpdater::mFocalPoint = 0.0f;
+float chimeUpdater::mFocalPoint = 1.0f;
 unsigned long chimeUpdater::mTimeStamp1 = ofGetSystemTime();
 unsigned long chimeUpdater::mTimeStamp2 = ofGetSystemTime();
 
@@ -35,6 +35,36 @@ void chimeUpdater::update(ofPtr<chime> c){
 
 }
 
+void chimeUpdater::reCalcAnchorPoint(ofPtr <chime> c){
+	
+	//back calculate the anchor pos based on the new pivot dimensions
+	b2Body * b = c->getStemBody();
+	float cAng = b->GetAngle();
+	ofVec2f cPos = c->getStemDims().cPos;
+	
+	updateDims(c);
+
+	
+	vector<float> rots = c->getPivotRots();
+	float l = c->getModParam(CH_PIV_LGTH)/rots.size();
+	
+	float cumRot = 0;
+	
+	if(rots.size() > 0){
+		
+		for(int i = rots.size() -1; i >= 0; i--){
+			
+			cumRot += rots[i];
+			ofVec2f piv(0,l);
+			piv.rotateRad(cumRot);
+			cPos -= piv;
+			
+		}
+	
+	}
+	c->setAnchorPos(cPos);
+	
+}
 
 void chimeUpdater::updateModifiables(ofPtr<chime> c){
 
@@ -61,6 +91,9 @@ void chimeUpdater::updateModifiables(ofPtr<chime> c){
 					chimeFactory::changeLength(c); //potentially don't do this one
 					break;
 					
+				case CH_PIV_NUM: 
+					reCalcAnchorPoint(c); 
+					break;
 				//decay is fine
 			
 			}

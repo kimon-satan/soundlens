@@ -18,7 +18,11 @@ struct chimeSorter{
 	
 	bool operator()(ofPtr<chime> a, ofPtr<chime> b){
 	
-		return a->getModParam(param) < b->getModParam(param);
+		if(param == CH_PHASE){
+			return fmod(a->getModParam(param),b2_pi) < fmod(b->getModParam(param), b2_pi);
+		}else{
+			return a->getModParam(param) < b->getModParam(param);
+		}
 		
 	}
 
@@ -31,7 +35,7 @@ class spreadMod : public baseMod{
 public:
 	
 	spreadMod(int i = -1);
-	void makeMod(vector<ofPtr<chime> > chimes);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
 	void drawControl(float dragDist, float dragAngle);
 	
 private:

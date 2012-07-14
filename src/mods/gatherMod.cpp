@@ -21,7 +21,7 @@ gatherMod::gatherMod(){
 }
 
 
-void gatherMod::makeMod( vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > gatherMod::makeMod( vector<ofPtr<chime> > chimes){
 	
 	vector<ofPtr<chime> >::iterator it;
 	
@@ -44,7 +44,7 @@ void gatherMod::makeMod( vector<ofPtr<chime> > chimes){
 		count ++;
 	}
 
-	
+	return chimes;
 	
 
 }

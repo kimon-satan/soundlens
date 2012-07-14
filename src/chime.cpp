@@ -64,6 +64,8 @@ chime::chime(){
 }
 
 
+
+
 void chime::stepIncrement(int direction){
 	
 	anchorPos.shiftValue(direction);

@@ -40,7 +40,7 @@ spreadMod::spreadMod(int i){
 	
 }
 
-void spreadMod::makeMod(vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > spreadMod::makeMod(vector<ofPtr<chime> > chimes){
 	
 	vector<ofPtr<chime> >::iterator it;
 	
@@ -91,6 +91,8 @@ void spreadMod::makeMod(vector<ofPtr<chime> > chimes){
 		(*it)->setAnchorTarget(nPos[count], inc, false);
 		count ++;
 	}
+	
+	return chimes;
 	
 }
 

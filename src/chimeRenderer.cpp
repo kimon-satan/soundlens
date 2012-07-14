@@ -116,7 +116,7 @@ void chimeRenderer::drawPivots(ofPtr<chime> c){
 
 void chimeRenderer::drawStem(ofPtr<chime> c){
 
-	//if(c->getSpIndex() >= 99)return;
+	if(c->getSpIndex() >= 99)return;
 	
 	b2Body * b = c->getStemBody();
 	stemDims sd = c->getStemDims();
@@ -139,7 +139,7 @@ void chimeRenderer::drawStem(ofPtr<chime> c){
 
 void chimeRenderer::drawHammer(ofPtr<chime> c){
 	
-	//if(c->getSpIndex() >= 99)return;
+	if(c->getSpIndex() >= 99)return;
 	
 	b2Body * b = c->getHammer();
 	stemDims sd = c->getStemDims();
@@ -168,7 +168,7 @@ void chimeRenderer::drawHammer(ofPtr<chime> c){
 
 void chimeRenderer::drawSensors(ofPtr<chime> c){
 	
-	//if(c->getSpIndex() >= 99)return;
+	if(c->getSpIndex() >= 99)return;
 	
 	b2Body ** b = c->getSensors();
 	float zt = c->getBlur()-(1.0 - 0.1);

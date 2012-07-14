@@ -12,6 +12,7 @@
 #include "spreadMod.h"
 #include "redistributeMod.h"
 #include "setMod.h"
+#include "copyMod.h"
 
 
 enum e_modType{
@@ -29,7 +30,7 @@ enum e_modType{
 	
 	//redist mods
 	
-	MOD_RD_SINGLE_PHASE,
+	/*MOD_RD_SINGLE_PHASE,
 	MOD_RD_SINGLE_SPEED,
 	MOD_RD_SINGLE_LENGTH,
 	MOD_RD_SINGLE_FREQ,
@@ -69,7 +70,9 @@ enum e_modType{
 	MOD_RD_SEQ_SPEED,
 	MOD_RD_SEQ_LENGTH,
 	MOD_RD_SEQ_FREQ,
-	MOD_RD_SEQ_DEC,
+	MOD_RD_SEQ_DEC,*/
+	
+	MOD_COPY,
 	
 	MOD_COUNT
 
@@ -81,6 +84,7 @@ class allMods{
 	
 	allMods();
 	
+	vector <ofPtr<chime> > getModCopies(int modType, vector<ofPtr<chime> > targetGrp);
 	void makeMod(int modType, vector<ofPtr<chime> > targetGrp);
 	void drawPreview(int modType,float dragDist, float dragAngle);
 	string updateUserValues(int modType, ofVec2f mD, ofVec2f mDr, float ua, float ub);

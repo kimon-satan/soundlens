@@ -17,7 +17,8 @@ class baseMod{
 
 	public:
 	
-	virtual void makeMod(vector<ofPtr<chime> > chimes) = 0;
+	
+	virtual vector<ofPtr<chime> >makeMod(vector<ofPtr<chime> > chimes) = 0;
 	virtual void drawControl( float dragDist, float dragAngle) = 0;
 	
 	void setName(string s);

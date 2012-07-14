@@ -62,15 +62,15 @@ void testApp::setupPresets(){
 	
 	
 	preset1.fParams[CH_PHASE].setInitVal(b2_pi);
-	preset1.fParams[CH_PHASE].setDType( DT_FLAT);
+	preset1.fParams[CH_PHASE].setDType(DT_FLAT);
 	preset1.fParams[CH_PHASE].setVal(DD_UNIT, b2_pi * 1.0f/64.0f);
 	preset1.fParams[CH_PHASE].setVal(DD_RNG, b2_pi * 2);
 	preset1.fParams[CH_SPEED].setInitVal(1.0);
 	preset1.fParams[CH_LENGTH].setInitVal(2.0);
 	
-	preset1.fParams[CH_PIV_NUM].setInitVal(1);
+	preset1.fParams[CH_PIV_NUM].setInitVal(0);
 	
-	preset1.fParams[CH_PIV_LGTH].setInitVal(4.0);
+	preset1.fParams[CH_PIV_LGTH].setInitVal(2.0);
 	
 	preset1.fParams[CH_PIV_PH_MUL].setInitVal(1);
 	preset1.fParams[CH_PIV_SPD_SKEW].setInitVal(0);

@@ -85,9 +85,9 @@ redistributeMod::redistributeMod(int pt, int dt){
 }
 
 
-void redistributeMod::makeMod(vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > redistributeMod::makeMod(vector<ofPtr<chime> > chimes){
 
-	if(chimes.size() < 1)return;
+	if(chimes.size() < 1)return chimes;
 	
 	vector<ofPtr<chime> >::iterator it;
 	
@@ -203,7 +203,7 @@ void redistributeMod::makeMod(vector<ofPtr<chime> > chimes){
 	}
 	
 
-
+	return chimes;
 
 }
 

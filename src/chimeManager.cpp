@@ -89,10 +89,10 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 		}
 		
 		c->setAnchorPos(aPositions[i]);
-		c->setSpIndex(100);
+		c->setSpIndex(0);
 		c->setSensorColor(ofColor(255,0,0)); //needs to change
 		
-		c->setZpos(chimeUpdater::getFocalPoint() + 1.0); // needs changing
+		c->setZpos(chimeUpdater::getFocalPoint()); // needs changing
 	
 		
 		mPreviewChimes.push_back(c);
@@ -145,6 +145,7 @@ void chimeManager::endNewChimes(){
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++){
 		(*it)->setIsSelected(true);
+		chimeFactory::mapFreqToSensors(*it);
 		chimeFactory::conformPhase(*it);
 		chimeFactory::initBodies(*it);
 		(*it)->setCollisionListener(mListener);
@@ -188,16 +189,16 @@ void chimeManager::shiftFocalPoint(float direction){
 	
 	float f = chimeUpdater::getFocalPoint();
 	
-	f =(direction > 0.1)? min(f + 0.005f, mMaxZ) : max(f - 0.005, 0.0);
+	f = (direction > 0.1)? min(f + 0.01f, 2.0f) : max(f - 0.01f, 0.0f);
 	
 	chimeUpdater::setFocalPoint(f);
 	rePopulateRenderList();
 	
-	ofxOscMessage m;
+	/*ofxOscMessage m;
 	m.setAddress("/depthMeter");
 	m.addFloatArg(f/mMaxZ);
 	
-	iSender->sendMessage(m);
+	iSender->sendMessage(m);*/
 	
 	
 }
@@ -217,11 +218,19 @@ void chimeManager::shiftZPos(float direction){
 			
 		}else{
 			
-			//you can only move it just out of range
-			//however could make this a delete trigger
+			float a = (d > 0)? -0.01: 0.01;
 			
-			float a = (d > 0)? -0.005: 0.005;
-			(*it)->setZpos(min(max((*it)->getZpos() + a, 0.0f), fp + 1.0f )); 
+			//to allow always to move out of focus
+			
+			if(d >= 0 && fp < 1){
+				(*it)->setZpos(fp + d);
+				a = 0.01;
+			}else if(d <= 0 && fp > 1){
+				(*it)->setZpos(fp - d);
+				a = -0.01;
+			}
+			
+			(*it)->setZpos(min(max((*it)->getZpos() + a, 0.0f), 2.0f )); 
 			
 		}
 		
@@ -342,7 +351,16 @@ string chimeManager::continueMod(int modType, ofVec2f mD, ofVec2f mDr, float use
 
 void chimeManager::endMod(int modType){
 
-	mModEngine.makeMod(modType, mSelected);
+	if(modType == MOD_COPY){
+	
+		mPreviewChimes = mModEngine.getModCopies(modType, mSelected);
+		endNewChimes();
+		
+		
+	}else{
+	
+		mModEngine.makeMod(modType, mSelected);
+	}
 }
 
 void chimeManager::incrementMod(int direction){

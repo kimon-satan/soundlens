@@ -27,7 +27,7 @@ setMod::setMod(){
 						{0.5, 5.0}, 
 						{MIDI_MIN, MIDI_MIN + MIDI_RANGE}, 
 						{0.1,3.0}, 
-						{0,3}, //num
+						{0,5}, //num
 						{-3,3},	
 						{0,4.0},
 						{-1.0,1.0}};
@@ -51,7 +51,7 @@ setMod::setMod(){
 }
 
 
-void setMod::makeMod(vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > setMod::makeMod(vector<ofPtr<chime> > chimes){
 	
 	vector<ofPtr<chime> >::iterator it;
 	
@@ -79,7 +79,7 @@ void setMod::makeMod(vector<ofPtr<chime> > chimes){
 		count ++;
 	}
 	
-	
+	return chimes;
 }
 
 string setMod::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){

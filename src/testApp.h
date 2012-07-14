@@ -9,6 +9,8 @@
 #define I_HOST "192.168.1.3"
 #define I_PORT 9000
 
+//could have somthign similar for mods
+
 struct searchPreset{
 
 	string name;
@@ -49,8 +51,8 @@ class testApp : public ofBaseApp{
 	};
 	
 	enum e_MenuType {
-		MT_ADD,
-		MT_ADJUST,
+		MT_COPY,
+		MT_POSITION,
 		MT_COUNT,
 	};
 	
@@ -76,8 +78,8 @@ class testApp : public ofBaseApp{
 	ofxOscSender sender, iSender;
 	ofxOscReceiver receiver;
 	
-	vector<groupPreset> mPresets;
-	int mCurrentPreset;
+	//vector<groupPreset> mPresets;
+	
 	
 	e_ActionType currentAction;
 	e_MenuType currentMode;
@@ -88,6 +90,7 @@ class testApp : public ofBaseApp{
 	//mouse stuff
 	
 	ofVec2f mouseDownPos, mouseDragPos, mouseMovePos;
+	bool isMouseDown;
 	float dragDist, dragAngle;
 	float distParam, angleParam;
 	string mDisplayString;
@@ -100,6 +103,7 @@ class testApp : public ofBaseApp{
 	vector<searchPreset> searchPresets;
 	
 	int currentMod;
+	int mCurrentCopier;
 
 	
 	

@@ -19,6 +19,8 @@ vector<vector<ofPtr<chime> > > chimeManager::renderList;
 
 allSearches chimeManager::mSearchEngine;
 allMods chimeManager::mModEngine;
+allCopiers chimeManager::mCopyEngine;
+
 ofxOscSender * chimeManager::iSender = NULL;
 
 int chimeManager::sbIndex = 0;
@@ -42,90 +44,39 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 
 }
 
-string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float userB){
-	
-	mPreviewChimes.clear();
-	
-	p.aPos.setInitVal(pos);
-	
-	string infoString = "";
-	
-	infoString = p.numChimes.setUserValues(userA, userB);
-	infoString += p.aPos.setUserValues(userA, userB);
-	
-	for(int i = 0; i < p.fParams.size(); i++){
-	
-		infoString += p.fParams[i].setUserValues(userA, userB);
-		
-	}
-	
-	vector<float> nc;
-	distributionEngine::makeValues(nc, p.numChimes);
-	
-	vector<vector<float> >modParams;
-	
-	//make the distributions
-	
-	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
-		vector<float> fVec;
-		p.fParams[i].setNumVals(nc[0]);
-		distributionEngine::makeValues(fVec, p.fParams[i]);
-		modParams.push_back(fVec);
-	}
-	
-	vector<ofVec2f> aPositions;
-	p.aPos.setNumVals(nc[0]);
-	distributionEngine::makeValues(aPositions, p.aPos);
-	
-	
-	for(int i = 0; i < nc[0]; i ++){
-		
-		ofPtr<chime> c = ofPtr<chime>(new chime());
-		
-		for(int j = 0; j < CH_FLOAT_COUNT; j ++){
-			
-			//set the float count from the distributions just made
-			c->setModParam(j, modParams[j][i]);
-		}
-		
-		c->setAnchorPos(aPositions[i]);
-		c->setSpIndex(0);
-		c->setSensorColor(ofColor(255,0,0)); //needs to change
-		
-		c->setZpos(chimeUpdater::getFocalPoint()); // needs changing
-	
-		
-		mPreviewChimes.push_back(c);
-		
-	}
-	
-	//this may still move to mods ? 
-	//nothing to handle position mapping here
-	
-	for(int j = 0; j < p.mapParams.size(); j++){
 
-		vector<float> inVals;
-		vector<float> outVals;
-		vector<ofPtr<chime> >::iterator it;
-		for(it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
-			
-			inVals.push_back((*it)->getModParam(p.mapParams[j].inMap));
-			
-		}
-		
-		mappingEngine::makeMapping(inVals, outVals, p.mapParams[j]);
-		
-		int counter = 0;
-		for(it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
-			
-			(*it)->setModParam(p.mapParams[j].outMap, outVals[counter]);
-			counter ++;
-		}
-		
-		
-	}
+void chimeManager::createInitialChime(){
+
+	ofPtr<chime> c = ofPtr<chime>(new chime());
 	
-	//now update changes and init chimes
+
+	c->setModParam(CH_FREQ, 74);
+	c->setModParam(CH_SPEED, 1.0);
+	c->setModParam(CH_LENGTH, 2.0);
+	c->setModParam(CH_PHASE, 0);
+	c->setModParam(CH_DECAY, 1.8);
+	c->setModParam(CH_PIV_NUM, 0);
+	c->setModParam(CH_PIV_PH_MUL, 1);
+	c->setModParam(CH_PIV_SPD_SKEW, 0);
+	
+	c->setAnchorPos(ofVec2f(0,0));
+	c->setSpIndex(100);
+	c->setSensorColor(ofColor(255,0,0)); //needs to change
+	
+	c->setZpos(2.0);
+	
+	mPreviewChimes.push_back(c);
+	endNewChimes();
+
+}
+
+
+string chimeManager::continueCopy(int copyType, ofVec2f mD, ofVec2f mDr, float userA, float userB){
+
+	string s = "";
+	s = mCopyEngine.updateUserValues(copyType, mD, mDr, userA, userB);
+	mPreviewChimes = mCopyEngine.getCopies(copyType, mSelected);
+	
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
 		chimeFactory::conformPhase(*it);
@@ -134,8 +85,10 @@ string chimeManager::createChimes(groupPreset p, ofVec2f pos, float userA, float
 		
 	}
 	
-	return infoString;
 	
+	return s;
+	
+
 }
 
 void chimeManager::endNewChimes(){
@@ -331,7 +284,6 @@ void chimeManager::endSearch(){
 	
 }
 
-
 void chimeManager::clearTmps(){
 		
 	for(vector<ofPtr<chime> >::iterator it = mTmpSelected.begin(); it != mTmpSelected.end(); it++)(*it)->setIsTmpSelected(false);
@@ -339,7 +291,14 @@ void chimeManager::clearTmps(){
 }
 
 
+void chimeManager::clearAllMods(){
 
+	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
+	
+		(*it)->endMods();
+	
+	}
+}
 
 string chimeManager::continueMod(int modType, ofVec2f mD, ofVec2f mDr, float userA, float userB){
 
@@ -350,17 +309,9 @@ string chimeManager::continueMod(int modType, ofVec2f mD, ofVec2f mDr, float use
 }
 
 void chimeManager::endMod(int modType){
-
-	if(modType == MOD_COPY){
 	
-		mPreviewChimes = mModEngine.getModCopies(modType, mSelected);
-		endNewChimes();
-		
-		
-	}else{
+	mModEngine.makeMod(modType, mSelected);
 	
-		mModEngine.makeMod(modType, mSelected);
-	}
 }
 
 void chimeManager::incrementMod(int direction){
@@ -449,6 +400,11 @@ void chimeManager::drawModEngine(int searchType, float dragDist, float dragAngle
 	mModEngine.drawPreview(searchType, dragDist, dragAngle);
 }
 
+void chimeManager::drawCopyEngine(int copyType, float dragDist, float dragAngle){
+	
+	mCopyEngine.drawPreview(copyType, dragDist, dragAngle);
+}
 
 string chimeManager::getSearchName(int i){return mSearchEngine.getSearchName(i);}
 string chimeManager::getModName(int i){return mModEngine.getModName(i);}
+string chimeManager::getCopierName(int i){return mCopyEngine.getCopyName(i);}

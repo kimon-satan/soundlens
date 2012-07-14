@@ -110,6 +110,7 @@ public:
 	void setModParamTarget(int p, float val, float increment, bool isAuto);
 	bool getModParamChanged(int p);
 	void resetModParam(int i);
+	void endMods();
 	
 	
 	void setBlur(float f);

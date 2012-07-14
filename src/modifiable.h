@@ -38,6 +38,9 @@ class modifiable{
 	};
 	
 	T getCVal(){return cVal;}
+	
+	
+	void end(){tVal = cVal; isChanged = false; increment = 0;}
 
 	void shiftValue(int direction){
 	
@@ -105,6 +108,7 @@ public:
 		return cVal;
 	}
 
+	void end(){tVal = cVal; increment = 0;}
 	
 	void shiftValue(int direction){
 		

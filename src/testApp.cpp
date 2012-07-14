@@ -28,9 +28,8 @@ void testApp::setup(){
 
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 	
-	setupPresets();
 	
-	mCurrentPreset = 0;
+	mCurrentCopier= 0;
 	currentMode = e_MenuType(0);
 
 	currentMod = MOD_GATHER;
@@ -39,132 +38,20 @@ void testApp::setup(){
 	cSearchPreset = 0;
 	cMacroStage = 0;
 	
-	setupSearchPresets();
+	isMouseDown = false;
 	
-	menuStrings.push_back("add");
-	menuStrings.push_back("adjust");
+	setupSearchPresets();
+	chimeManager::createInitialChime();
+	
+	menuStrings.push_back("copy");
+	menuStrings.push_back("position");
 	menuStrings.push_back("select");
 	
-}
-
-
-void testApp::setupPresets(){
-	
-	groupPreset preset1;
-	
-	preset1.name = "single";
-	preset1.numChimes.setInitVal(1);
-	
-
-	preset1.fParams[CH_FREQ].setInitVal(MIDI_MIN + MIDI_RANGE/2);
-	preset1.fParams[CH_FREQ].setDType(DT_NONE);
-	preset1.fParams[CH_DECAY].setInitVal(1.8);
-	
-	
-	preset1.fParams[CH_PHASE].setInitVal(b2_pi);
-	preset1.fParams[CH_PHASE].setDType(DT_FLAT);
-	preset1.fParams[CH_PHASE].setVal(DD_UNIT, b2_pi * 1.0f/64.0f);
-	preset1.fParams[CH_PHASE].setVal(DD_RNG, b2_pi * 2);
-	preset1.fParams[CH_SPEED].setInitVal(1.0);
-	preset1.fParams[CH_LENGTH].setInitVal(2.0);
-	
-	preset1.fParams[CH_PIV_NUM].setInitVal(0);
-	
-	preset1.fParams[CH_PIV_LGTH].setInitVal(2.0);
-	
-	preset1.fParams[CH_PIV_PH_MUL].setInitVal(1);
-	preset1.fParams[CH_PIV_SPD_SKEW].setInitVal(0);
-	
-	mPresets.push_back(preset1);
-	
-	groupPreset preset2;
-	
-	preset2.name = "multiple";
-	preset2.numChimes.setInitVal(20);
-	preset2.numChimes.setDType(DT_NONE);
-
-	preset2.fParams[CH_FREQ].setInitVal(MIDI_MIN + MIDI_RANGE/2);
-	preset2.fParams[CH_FREQ].setDType(DT_FLAT);
-	preset2.fParams[CH_FREQ].setVal(DD_RNG, 24);
-	preset2.fParams[CH_FREQ].setVal(DD_UNIT, 3);
-	preset2.fParams[CH_DECAY].setInitVal(1.8);
-	
-	
-	preset2.fParams[CH_PHASE].setInitVal(0);
-	preset2.fParams[CH_PHASE].setDType(DT_SLICE);
-	preset2.fParams[CH_PHASE].setVal(DD_UNIT, 0);
-	preset2.fParams[CH_PHASE].setVal(DD_RNG, b2_pi);
-	preset2.fParams[CH_SPEED].setInitVal(0.5);
-	preset2.fParams[CH_LENGTH].setInitVal(2.0);
-	
-	preset2.fParams[CH_PIV_NUM].setInitVal(2);
-	preset2.fParams[CH_PIV_LGTH].setInitVal(4);
-	preset2.fParams[CH_PIV_SPD_SKEW].setInitVal(0);
-	preset2.fParams[CH_PIV_PH_MUL].setInitVal(1);
-	
-	mPresets.push_back(preset2);
-	
-	
-	groupPreset preset3;
-	
-	preset3.name = "multipleClimber";
-	preset3.numChimes.setInitVal(10);
-	preset3.numChimes.setDType(DT_FLAT);
-	preset3.numChimes.setVal(DD_RNG, 3);
-	
-	preset3.fParams[CH_FREQ].setInitVal(MIDI_MIN + MIDI_RANGE/2);
-	preset3.fParams[CH_FREQ].setDType(DT_NONE);
-	preset3.fParams[CH_DECAY].setInitVal(1.8);
-	
-	preset3.fParams[CH_PHASE].setInitVal(0);
-	preset3.fParams[CH_PHASE].setDType(DT_SLICE);
-	preset3.fParams[CH_PHASE].setVal(DD_RNG, b2_pi);
-	preset3.fParams[CH_SPEED].setInitVal(1.0);
-	preset3.fParams[CH_LENGTH].setInitVal(2.0);
-	preset3.fParams[CH_PIV_NUM].setInitVal(0);
-	
-	mapDef freq;
-	freq.mapType = MAP_1_TO_R;
-	freq.inMap = CH_PHASE;
-	freq.outMap = CH_FREQ;
-	freq.outRange[0] = MIDI_MIN;
-	freq.outRange[1] = MIDI_MIN + MIDI_RANGE;
-	preset3.mapParams.push_back(freq);
-	
-	mPresets.push_back(preset3);
-	
-	groupPreset preset4;
-	
-	preset4.name = "multipleSpeeds";
-	preset4.numChimes.setInitVal(4);
-	preset4.numChimes.setDType(DT_NONE);
-	preset4.numChimes.setVal(DD_RNG, 3);
-	preset4.numChimes.setVal(DD_UNIT, 1);
-	
-
-	preset4.fParams[CH_FREQ].setInitVal(MIDI_MIN,MIDI_MIN + MIDI_RANGE, SET_USER_B); //need a method to set increment
-	preset4.fParams[CH_FREQ].setVal(DD_UNIT, 1);
-	preset4.fParams[CH_FREQ].setVal(DD_RNG, 6,12,SET_USER_A);
-	preset4.fParams[CH_FREQ].setDType(DT_SLICE);
-	preset4.fParams[CH_DECAY].setInitVal(0.5);
-	
-	preset4.fParams[CH_PHASE].setInitVal(0,b2_pi/2,SET_USER_B);
-	preset4.fParams[CH_PHASE].setDType( DT_NONE);
-	preset4.fParams[CH_SPEED].setInitVal(0.2);
-	preset4.fParams[CH_SPEED].setDType(DT_SLICE);
-	preset4.fParams[CH_SPEED].setVal(DD_RNG, 1);
-	preset4.fParams[CH_SPEED].setVal(DD_UNIT, 0.3);
-	preset4.fParams[CH_LENGTH].setInitVal(2.0);
-	preset4.fParams[CH_PIV_NUM].setInitVal(0);
-	
-	preset4.fParams[CH_PIV_LGTH].setInitVal(2.0);
-	preset4.fParams[CH_PIV_NUM].setInitVal(1);
-	preset4.fParams[CH_PIV_PH_MUL].setInitVal(0.25);
-	preset4.fParams[CH_PIV_SPD_SKEW].setInitVal(0);
-	
-	mPresets.push_back(preset4);
+	currentAction = AT_NONE;
 	
 }
+
+
 
 void testApp::setupSearchPresets(){
 
@@ -203,6 +90,8 @@ void testApp::update(){
 	ofBackground(255);
 	
 	chimeManager::update();
+	
+	if(isMouseDown)continueAction();
 
 }
 
@@ -341,10 +230,10 @@ void testApp::draw(){
 	}else{
 		
 		switch (currentMode) {
-			case MT_ADD:
-				ofDrawBitmapString("preset: " + mPresets[mCurrentPreset].name, 300,20);
+			case MT_COPY:
+				ofDrawBitmapString("copier: " + chimeManager::getCopierName(mCurrentCopier), 300,20);
 				break;
-			case MT_ADJUST:
+			case MT_POSITION:
 				ofDrawBitmapString("modType: " + chimeManager::getModName(currentMod) , 300,20);
 				break;
 				
@@ -370,7 +259,7 @@ void testApp::drawActions(){
 	
 		chimeManager::drawPreviewChimes();
 		ofSetColor(100);
-		ofLine(mouseDownPos.x, mouseDownPos.y, mouseDragPos.x, mouseDragPos.y);
+		chimeManager::drawCopyEngine(mCurrentCopier, dragDist, dragAngle);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 		
 	}
@@ -407,6 +296,7 @@ void testApp::beginAction(){
 	
 	switch (currentAction) {
 		case AT_ADD:
+			chimeManager::clearAllMods();
 			break;
 			
 		case AT_SELECT:
@@ -426,7 +316,7 @@ void testApp::continueAction(){
 	
 	switch (currentAction) {
 		case AT_ADD:
-			mDisplayString = chimeManager::createChimes(mPresets[mCurrentPreset], mouseDownPos, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueCopy(mCurrentCopier, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			break;
 			
 		case AT_SELECT:
@@ -507,9 +397,9 @@ void testApp::keyPressed(int key){
 	
 	}
 	
-	if(currentMode == MT_ADD){
-		if(key == OF_KEY_UP)mCurrentPreset = min(mCurrentPreset + 1, (int)mPresets.size() -1);
-		if(key == OF_KEY_DOWN)mCurrentPreset = max(mCurrentPreset - 1,0);
+	if(currentMode == MT_COPY){
+		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)COPY_COUNT -1);
+		if(key == OF_KEY_DOWN)mCurrentCopier= max(mCurrentCopier- 1,0);
 	}
 	
 	if(isSearching){
@@ -519,7 +409,7 @@ void testApp::keyPressed(int key){
 
 	}
 	
-	if(currentMode == MT_ADJUST){
+	if(currentMode == MT_POSITION){
 		
 		if(key == OF_KEY_UP)currentMod = min(currentMod + 1, (int)MOD_COUNT -1);
 		if(key == OF_KEY_DOWN)currentMod = max(currentMod - 1,0);
@@ -574,7 +464,7 @@ void testApp::mouseDragged(int x, int y, int button){
 	dragAngle = ofVec2f(mouseDownPos - mouseDragPos).angle(ofVec2f(0,-1));
 	if(dragAngle < 0)dragAngle += 360;
 	dragAngle = ofMap(dragAngle, 0,360, 0, 1);
-	continueAction();
+	
 	
 }
 
@@ -587,8 +477,8 @@ void testApp::mousePressed(int x, int y, int button){
 
 		switch (currentMode) {
 				
-			case MT_ADD:currentAction = AT_ADD;break;
-			case MT_ADJUST:currentAction = AT_ADJUST;break;
+			case MT_COPY:currentAction = AT_ADD;break;
+			case MT_POSITION:currentAction = AT_ADJUST;break;
 				
 			default:
 				break;
@@ -600,13 +490,14 @@ void testApp::mousePressed(int x, int y, int button){
 	}
 	
 	beginAction();
-	
+	isMouseDown = true;
 }
 
 //--------------------------------------------------------------
 void testApp::mouseReleased(int x, int y, int button){
 
 	endAction();
+	isMouseDown = false;
 	
 }
 

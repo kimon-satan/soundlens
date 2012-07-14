@@ -136,7 +136,19 @@ void chime::setAnchorTarget(ofVec2f t, float increment, bool isAuto){
 	anchorPos.setTarget(t,increment,isAuto);
 }
 
-void chime::setModParam(int p, float val){modParams[p].set(val);}
+void chime::setModParam(int p, float val){
+	
+	if(p == CH_PHASE){
+		
+		val = fmod(val, b2_pi * 2);
+		if(val < 0)val += b2_pi * 2;
+		val = fmod(val, b2_pi);
+		
+	}
+	
+	modParams[p].set(val);
+
+}
 float chime::getModParam(int p){return modParams[p].getCVal();}
 
 void chime::setModParamTarget(int p, float val, float increment, bool isAuto){
@@ -144,7 +156,13 @@ void chime::setModParamTarget(int p, float val, float increment, bool isAuto){
 }
 
 bool chime::getModParamChanged(int i){return modParams[i].getIsChanged();}
-void chime::resetModParam(int i){return modParams[i].setIsChanged(false);}
+void chime::resetModParam(int i){modParams[i].setIsChanged(false);}
+void chime::endMods(){
+	
+	for(int i =0 ; i < CH_FLOAT_COUNT; i++)modParams[i].end();
+	anchorPos.end();
+
+}
 
 void chime::setBlur(float f){mBlur = f;}
 float chime::getBlur(){return mBlur;}

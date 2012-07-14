@@ -22,9 +22,6 @@ allMods::allMods(){
 		mods.push_back((ofPtr<baseMod>)spm);
 	}
 	
-	ofPtr<copyMod> cpm = ofPtr<copyMod>(new copyMod());
-	mods.push_back((ofPtr<baseMod>)cpm);
-	
 	//not sure I want these
 	/*for(int i = 0; i < 7; i ++){
 		for(int j = 0; j < 5; j++){

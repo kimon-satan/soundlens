@@ -12,9 +12,13 @@
 #include "chimeFactory.h"
 #include "chimeRenderer.h"
 #include "chimeUpdater.h"
+
 #include "distributionEngine.h"
+
 #include "allSearches.h"
 #include "allMods.h"
+#include "allCopiers.h"
+
 
 
 
@@ -61,9 +65,13 @@ class chimeManager{
 	static void shiftFocalPoint(float direction);
 	static void shiftZPos(float direction);
 	
+	//copyCreate
 	
-	static string createChimes(groupPreset p, ofVec2f pos, float userA, float userB);
+	static void createInitialChime();
+	static string continueCopy(int copyType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
+	//static string createChimes(groupPreset p, ofVec2f pos, float userA, float userB);
 	static void endNewChimes();
+	static string getCopierName(int i);
 	
 	//search methods
 	
@@ -102,6 +110,7 @@ class chimeManager{
 	static void drawPreviewChimes();
 	static void drawSearchEngine(int searchType,float dragDist, float dragAngle);
 	static void drawModEngine(int searchType, float dragDist, float dragAngle);
+	static void drawCopyEngine(int copyType, float dragDist, float dragAngle);
 	
 	private:
 
@@ -125,6 +134,6 @@ class chimeManager{
 	
 	static allSearches mSearchEngine;
 	static allMods mModEngine;
-	
+	static allCopiers mCopyEngine;
 	
 };

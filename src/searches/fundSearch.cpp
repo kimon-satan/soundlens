@@ -72,7 +72,7 @@ vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample,
 		
 		bool isFund = false;
 			
-			float rmdr = (*it)->getModParam(fundType) - sample->getModParam(fundType);
+			float rmdr = (*it)->getFixedParam(fundType) - sample->getFixedParam(fundType);
 			rmdr = fmod(abs(rmdr),div);
 			
 			if(rmdr <= tol_r || div - rmdr <= tol_r)isFund = true;

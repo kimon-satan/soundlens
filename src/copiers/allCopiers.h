@@ -11,9 +11,12 @@
 
 #include "baseMod.h"
 #include "copyMod.h"
+#include "transpose.h"
 
 enum e_copyType{
 	
+	TRN_P,
+	TRN_PF,
 	COPY_P,
 	COPY_S,
 	COPY_F,
@@ -23,6 +26,8 @@ enum e_copyType{
 	COPY_SF_LI,
 	COPY_PF_LL,
 	COPY_SF_LL,
+	COPY_PF_IL,
+	COPY_SF_IL,
 	COPY_COUNT,
 	
 };

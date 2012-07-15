@@ -13,28 +13,24 @@ setMod::setMod(){
 
 	dataElement <int> t_para;
 	t_para.name = "parameter";
-	t_para.set(0,CH_FLOAT_COUNT,SET_USER_B);
+	t_para.set(0, CH_MOD_COUNT, SET_USER_B);
 	
-	for(int i = 0; i < CH_FLOAT_COUNT; i ++)t_para.displayNames.push_back(chime::getChParamString(i));
+	for(int i = 0; i < CH_MOD_COUNT; i ++)t_para.displayNames.push_back(chime::getChModString(i));
 	
 	t_para.abs_val = 0;
 	
 	intParameters.push_back(t_para);
 	
 	
-	float bands[][2] = {{0, b2_pi * 2}, 
-						{0, 1.0}, 
-						{0.5, 5.0}, 
-						{MIDI_MIN, MIDI_MIN + MIDI_RANGE}, 
-						{0.1,3.0}, 
+	float bands[][2] = {
 						{0,5}, //num
 						{-3,3},	
 						{0,4.0},
 						{-1.0,1.0}};
 	
-	float incs[] = {b2_pi/32,0.05,0,1.0,0,1,0.05,0.05,0.05};
+	float incs[] = {1,0.05,0.05,0.05};
 	
-	for(int i = 0; i < CH_FLOAT_COUNT; i++){
+	for(int i = 0; i < CH_MOD_COUNT; i++){
 		
 		dataElement <float> t_rng;
 		t_rng.name = "val";
@@ -44,7 +40,7 @@ setMod::setMod(){
 		
 	}
 	
-	name = "multiSet";
+	name = "pivots";
 	
 	
 
@@ -58,6 +54,7 @@ vector<ofPtr<chime> > setMod::makeMod(vector<ofPtr<chime> > chimes){
 	float longDist = 0;
 	vector<float> distances;
 	
+	
 	//calculate the distances
 	
 	for(it = chimes.begin(); it != chimes.end(); it++){
@@ -68,14 +65,17 @@ vector<ofPtr<chime> > setMod::makeMod(vector<ofPtr<chime> > chimes){
 		
 	}
 	
-	float incs[] = {0.002,0.001,0.01,0.1,0.01,1,0.001,0.01,0.001};
+	float inc = (intParameters[0].abs_val == CH_PIV_LGTH)? 0.01 : 0.001;
 	
 	//set the targets
 	int count = 0;
 	
+	
 	for(it = chimes.begin(); it != chimes.end(); it++){
-		float inc = incs[intParameters[0].abs_val] * distances[count]/longDist;
-		(*it)->setModParamTarget(intParameters[0].abs_val , floatParameters[intParameters[0].abs_val].abs_val, inc, false);
+
+		(*it)->flagModParam(intParameters[0].abs_val);
+		(*it)->setModParam(intParameters[0].abs_val , floatParameters[intParameters[0].abs_val].abs_val);
+	
 		count ++;
 	}
 	
@@ -86,7 +86,7 @@ string setMod::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 	
 	baseMod::setUserData(mD,mDr,ua,ub);
 	
-	for(int i = 0; i < CH_FLOAT_COUNT; i ++)floatParameters[i].isActive = (i == intParameters[0].abs_val);
+	for(int i = 0; i < CH_MOD_COUNT; i ++)floatParameters[i].isActive = (i == intParameters[0].abs_val);
 	
 	return baseMod::setUserData(mD,mDr,ua,ub);
 	

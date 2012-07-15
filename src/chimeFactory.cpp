@@ -24,7 +24,7 @@ namespace chimeFactory {
 		md.outRange[1] = 1;
 		md.exp = 0.5;
 		
-		freqs.push_back(c->getModParam(CH_FREQ));
+		freqs.push_back(c->getFixedParam(CH_FREQ));
 		
 		mappingEngine::makeMapping(freqs,heights, md);
 		c->setSensorHeight(heights[0]);
@@ -36,8 +36,8 @@ namespace chimeFactory {
 		
 		stemDims sd = c->getStemDims();
 		
-		sd.iAngle = c->getModParam(CH_PHASE);
-		sd.iAngle += c->getModParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f;
+		sd.iAngle = c->getFixedParam(CH_PHASE);
+		sd.iAngle += c->getFixedParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f;
 		
 		c->setStemDims(sd);
 		
@@ -60,7 +60,7 @@ namespace chimeFactory {
 	void changeSpeed(ofPtr <chime> c){
 	
 		b2Body * stem = c->getStemBody();
-		stem->SetAngularVelocity(c->getModParam(CH_SPEED));
+		stem->SetAngularVelocity(c->getFixedParam(CH_SPEED));
 		
 	}
 	
@@ -113,10 +113,10 @@ namespace chimeFactory {
 		
 		b2Body * stem = c->getWorld()->CreateBody(&bd);
 		stem->SetSleepingAllowed(true);
-		stem->SetAngularVelocity(c->getModParam(CH_SPEED)); 
+		stem->SetAngularVelocity(c->getFixedParam(CH_SPEED)); 
 		
 		b2PolygonShape stemShape;
-		stemShape.SetAsBox(0.01,c->getModParam(CH_LENGTH)/2);
+		stemShape.SetAsBox(0.01,c->getFixedParam(CH_LENGTH)/2);
 		b2FixtureDef fd;
 		fd.shape = &stemShape;
 		fd.density = 0.25;
@@ -137,7 +137,7 @@ namespace chimeFactory {
 		//position the hammer
 		//probably needs to go into another method
 		
-		sd.iHoff = -c->getModParam(CH_LENGTH)/2 + 0.1;
+		sd.iHoff = -c->getFixedParam(CH_LENGTH)/2 + 0.1;
 		
 		if(sd.iAngle > 0){
 		
@@ -195,7 +195,7 @@ namespace chimeFactory {
 			
 			
 			ofVec2f tmp(0, 0); //will need to be set to offset
-			tmp.y += (i == 0)? c->getModParam(CH_LENGTH)/2 : -c->getModParam(CH_LENGTH)/2;
+			tmp.y += (i == 0)? c->getFixedParam(CH_LENGTH)/2 : -c->getFixedParam(CH_LENGTH)/2;
 			tmp.rotateRad(sd.iAngle); //will need to pivot around offsetPoint
 			
 			b2BodyDef sdef;
@@ -268,7 +268,7 @@ namespace chimeFactory {
 		hjd.Initialize(hammer, stem,  hammer->GetPosition(), b2Vec2(axis.x,axis.y));
 		
 		hjd.lowerTranslation = 0;
-		hjd.upperTranslation = c->getModParam(CH_LENGTH) - 0.2; 
+		hjd.upperTranslation = c->getFixedParam(CH_LENGTH) - 0.2; 
 		
 
 		hjd.enableLimit = true;

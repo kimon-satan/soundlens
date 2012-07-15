@@ -68,14 +68,14 @@ vector<ofPtr<chime> > quantSearch::getChimes(searchData& sd, ofPtr<chime> sample
 	}
 	
 	
-	float offset = sample->getModParam(fundType) + (float)intParameters[0].abs_val * div;
+	float offset = sample->getFixedParam(fundType) + (float)intParameters[0].abs_val * div;
 	div *= intParameters[1].abs_val;
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		
 		bool isQuant = true;
 		
-		float rmdr = abs(fmod((*it)->getModParam(fundType) - offset,div));
+		float rmdr = abs(fmod((*it)->getFixedParam(fundType) - offset,div));
 		rmdr = min(rmdr, div - rmdr);
 		if(rmdr > tol)isQuant = false;
 		

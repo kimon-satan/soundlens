@@ -71,6 +71,16 @@ void testApp::setupSearchPresets(){
 	
 	searchPresets.push_back(sp1);
 	
+	searchPreset sp4;
+	
+	sp4.name = "deepSearch";
+	sp4.autoMacro.push_back(SEARCH_BPF_FDIST);
+	sp4.autoSettings.push_back(ofVec2f(0.8,0.2));
+	sp4.manualMacro.push_back(SEARCH_POSITION);
+	
+	searchPresets.push_back(sp4);
+	
+	
 	searchPreset sp2;
 	
 	sp2.name = "pulseSearch";
@@ -80,6 +90,14 @@ void testApp::setupSearchPresets(){
 	sp2.manualMacro.push_back(SEARCH_QUANT_PHASE);
 	
 	searchPresets.push_back(sp2);
+	
+	searchPreset sp5;
+	
+	sp5.name = "filterSearch";
+	sp5.manualMacro.push_back(SEARCH_MULTI_HPF);
+	sp5.manualMacro.push_back(SEARCH_MULTI_LPF);
+	
+	searchPresets.push_back(sp5);
 
 }
 
@@ -397,19 +415,18 @@ void testApp::keyPressed(int key){
 	
 	}
 	
-	if(currentMode == MT_COPY){
-		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)COPY_COUNT -1);
-		if(key == OF_KEY_DOWN)mCurrentCopier= max(mCurrentCopier- 1,0);
-	}
 	
 	if(isSearching){
 		
 		if(key == OF_KEY_UP)cSearchPreset = min(cSearchPreset + 1, (int)searchPresets.size() - 1);
 		if(key == OF_KEY_DOWN)cSearchPreset = max(cSearchPreset - 1,0);
-
-	}
-	
-	if(currentMode == MT_POSITION){
+		
+	}else if(currentMode == MT_COPY){
+		
+		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)COPY_COUNT -1);
+		if(key == OF_KEY_DOWN)mCurrentCopier= max(mCurrentCopier- 1,0);
+		
+	}else if(currentMode == MT_POSITION){
 		
 		if(key == OF_KEY_UP)currentMod = min(currentMod + 1, (int)MOD_COUNT -1);
 		if(key == OF_KEY_DOWN)currentMod = max(currentMod - 1,0);
@@ -437,6 +454,7 @@ void testApp::keyPressed(int key){
 	if(key == ']')chimeManager::switchSelBank(1);
 	
 	if(key == 'D')chimeRenderer::isDrawPivots = !chimeRenderer::isDrawPivots;
+	if(key == OF_KEY_BACKSPACE)chimeManager::deleteHiddenChimes();
 
 }
 

@@ -29,6 +29,9 @@ bool chimeManager::isNewSelection = false;
 float chimeManager::flashAlpha = 0;
 customListener chimeManager::mListener;
 
+
+bool isChimeHidden(ofPtr<chime> c){return (c->getBlur() > 0.99);}
+
 void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 
 	chimeUpdater::setOscSender(&s);
@@ -49,21 +52,20 @@ void chimeManager::createInitialChime(){
 
 	ofPtr<chime> c = ofPtr<chime>(new chime());
 	
-
-	c->setModParam(CH_FREQ, 74);
-	c->setModParam(CH_SPEED, 1.0);
-	c->setModParam(CH_LENGTH, 2.0);
-	c->setModParam(CH_PHASE, 0);
-	c->setModParam(CH_DECAY, 1.8);
+	c->setFixedParam(CH_FREQ, 74);
+	c->setFixedParam(CH_SPEED, 1.0);
+	c->setFixedParam(CH_LENGTH, 2.0);
+	c->setFixedParam(CH_PHASE, 1);
+	c->setFixedParam(CH_DECAY, 1.8);
+	c->setFixedParam(CH_COLOR, 0);
+	
 	c->setModParam(CH_PIV_NUM, 0);
-	c->setModParam(CH_PIV_PH_MUL, 1);
+	c->setModParam(CH_PIV_PH_MUL, 0);
 	c->setModParam(CH_PIV_SPD_SKEW, 0);
+	c->setModParam(CH_PIV_LGTH, 4);
 	
 	c->setAnchorPos(ofVec2f(0,0));
 	c->setSpIndex(100);
-	c->setSensorColor(ofColor(255,0,0)); //needs to change
-	
-	c->setZpos(2.0);
 	
 	mPreviewChimes.push_back(c);
 	endNewChimes();
@@ -102,6 +104,7 @@ void chimeManager::endNewChimes(){
 		chimeFactory::conformPhase(*it);
 		chimeFactory::initBodies(*it);
 		(*it)->setCollisionListener(mListener);
+		(*it)->setZpos((chimeUpdater::getFocalPoint() > 1) ? 0 : 2);
 		mChimes.push_back(*it);
 	}
 	mPreviewChimes.clear();
@@ -115,6 +118,17 @@ void chimeManager::endNewChimes(){
 	
 	rePopulateRenderList();
 
+}
+
+void chimeManager::deleteHiddenChimes(){
+
+	vector<ofPtr<chime> >::iterator it;
+	
+	it = remove_if(mChimes.begin(), mChimes.end(), isChimeHidden);
+	mChimes.erase(it, mChimes.end());
+	
+	if(mChimes.size() == 0)createInitialChime();
+	
 }
 
 void chimeManager::rePopulateRenderList(){

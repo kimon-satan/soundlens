@@ -17,9 +17,9 @@ matchSearch::matchSearch(){
 	
 	dataElement <int> t_para;
 	t_para.name = "parameter";
-	t_para.set(0,7,SET_USER_B);
+	t_para.set(0,5,SET_USER_B);
 	
-	for(int i = 0; i < 5; i ++)t_para.displayNames.push_back(chime::getChParamString(i));
+	for(int i = 0; i < 5; i ++)t_para.displayNames.push_back(chime::getChFixedString(i));
 	
 	t_para.abs_val = 0;
 	
@@ -59,8 +59,8 @@ vector<ofPtr<chime> > matchSearch::getChimes(searchData& sd, ofPtr<chime> sample
 		
 		if(mTolIndex < 3){
 		
-			sVal = sample->getModParam(mTolIndex);
-			itVal = (*it)->getModParam(mTolIndex);
+			sVal = sample->getFixedParam(mTolIndex);
+			itVal = (*it)->getFixedParam(mTolIndex);
 			
 		}
 		

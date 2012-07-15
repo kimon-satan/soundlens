@@ -21,23 +21,26 @@
 #define MIDI_MIN 28
 
 
-enum e_chimeParameter {
+enum e_chimeFixedPara {
 	
 	CH_PHASE,
 	CH_SPEED,
 	CH_LENGTH,
 	CH_FREQ,
 	CH_DECAY,
+	CH_COLOR,
+	CH_FIXED_COUNT,
+	
+};
+
+enum e_chimeModPara {
+	
 	CH_PIV_NUM,
 	CH_PIV_PH_MUL,
 	CH_PIV_LGTH,
 	CH_PIV_SPD_SKEW,
-	CH_FLOAT_COUNT,
-	CH_ANCHOR, //non standard types
-	CH_COLOR,
-	CH_BLUR,
-	CH_COUNT,
-	
+	CH_MOD_COUNT,
+
 };
 
 
@@ -59,7 +62,7 @@ public:
 	virtual ~chime();
 	
 	void stepIncrement(int direction);
-	void autoIncrement();
+	void autoStepIncrement();
 	
 	//getters and setters
 	
@@ -92,9 +95,6 @@ public:
 	float getSensorAlpha(int i);
 	void setSensorAlpha(int i, float a);
 	
-	ofColor getSensorColor();
-	void setSensorColor(ofColor c);
-	
 	void setReactTotal(int t);
 	int getReactTotal();
 	
@@ -105,13 +105,16 @@ public:
 	ofVec2f getAnchorPos();
 	void setAnchorTarget(ofVec2f t, float increment, bool isAuto);
 	
-	void setModParam(int p, float val);
+	void setModParam(int p, float val); //instant setting
 	float getModParam(int p);
 	void setModParamTarget(int p, float val, float increment, bool isAuto);
 	bool getModParamChanged(int p);
 	void resetModParam(int i);
+	void flagModParam(int i);
 	void endMods();
 	
+	void setFixedParam(int p, float val);
+	float getFixedParam(int p);
 	
 	void setBlur(float f);
 	float getBlur();
@@ -130,7 +133,8 @@ public:
 	
 	int getIndex();
 	
-	static string getChParamString(int i);
+	static string getChFixedString(int i);
+	static string getChModString(int i);
 	
 	static int cIndex;
 	
@@ -163,6 +167,7 @@ private:
 	
 	modifiable<ofVec2f> anchorPos;
 	vector<modifiable<float> >modParams;
+	vector<float> fixedParams;
 	
 	float zPos;
 	bool isSelected, isTmpSelected;

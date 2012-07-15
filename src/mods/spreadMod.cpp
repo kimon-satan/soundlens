@@ -9,6 +9,15 @@
 
 #include "spreadMod.h"
 
+bool chimeSorter::operator()(ofPtr<chime> a, ofPtr<chime> b){
+	
+	if(param == CH_PHASE){
+		return fmod(a->getFixedParam(param),b2_pi) < fmod(b->getFixedParam(param), b2_pi);
+	}else{
+		return a->getFixedParam(param) < b->getFixedParam(param);
+	}
+	
+}
 
 
 
@@ -24,7 +33,7 @@ spreadMod::spreadMod(int i){
 	}else if(paramType == -2){
 		name += "_shuffle";
 	}else{
-		name += "_" + chime::getChParamString(paramType);
+		name += "_" + chime::getChFixedString(paramType);
 	}
 	
 	

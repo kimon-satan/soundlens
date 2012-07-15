@@ -17,6 +17,7 @@ string baseMod::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 		
 		if(it->isActive){
 			s += it->setUserValues(ua,ub);
+			s += "\n";
 		}else{
 			
 		}
@@ -26,6 +27,7 @@ string baseMod::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 		
 		if(it->isActive){
 			s += it->setUserValues(ua,ub);
+			s += "\n";
 		}
 	}
 	
@@ -33,7 +35,7 @@ string baseMod::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 	mDown.set(mD);
 	mDrag.set(mDr);
 	
-	if(s != "")s = name + ": " + s;
+	if(s != "")s = name + ": \n" + s;
 	
 	userDataString = s;
 	

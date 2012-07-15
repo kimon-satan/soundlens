@@ -32,9 +32,9 @@ struct groupPreset{
 		
 		aPos.setName("aPos");
 		
-		for(int i  =0; i < CH_FLOAT_COUNT; i++){
+		for(int i  =0; i < CH_FIXED_COUNT; i++){
 			distributionDef<float> d;
-			d.setName(chime::getChParamString(i));
+			d.setName(chime::getChFixedString(i));
 			fParams.push_back(d);
 			
 		}
@@ -69,9 +69,9 @@ class chimeManager{
 	
 	static void createInitialChime();
 	static string continueCopy(int copyType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
-	//static string createChimes(groupPreset p, ofVec2f pos, float userA, float userB);
 	static void endNewChimes();
 	static string getCopierName(int i);
+	static void deleteHiddenChimes();
 	
 	//search methods
 	

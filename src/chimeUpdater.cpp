@@ -43,65 +43,32 @@ void chimeUpdater::reCalcAnchorPoint(ofPtr <chime> c){
 	ofVec2f cPos = c->getStemDims().cPos;
 	
 	updateDims(c);
+	
+	ofVec2f nPos = c->getStemDims().cPos;
+	
+	ofVec2f oPos(c->getAnchorPos());
+	ofVec2f d = ( cPos - nPos );
 
+	c->setAnchorPos(oPos + d);
+	c->setAnchorTarget(oPos, 0.005 * d.length(),true);
 	
-	vector<float> rots = c->getPivotRots();
-	float l = c->getModParam(CH_PIV_LGTH)/rots.size();
-	
-	float cumRot = 0;
-	
-	if(rots.size() > 0){
-		
-		for(int i = rots.size() -1; i >= 0; i--){
-			
-			cumRot += rots[i];
-			ofVec2f piv(0,l);
-			piv.rotateRad(cumRot);
-			cPos -= piv;
-			
-		}
-	
-	}
-	c->setAnchorPos(cPos);
 	
 }
 
 void chimeUpdater::updateModifiables(ofPtr<chime> c){
 
 	
-	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
+	for(int i = 0; i < CH_MOD_COUNT; i ++){
 	
 		if(c->getModParamChanged(i)){
 			
-			switch(i){
-			
-				case CH_FREQ:
-					chimeFactory::mapFreqToSensors(c);
-					break;
-				
-				case CH_PHASE:
-					chimeFactory::conformPhase(c); 
-					break;
-				
-				case CH_SPEED:
-					chimeFactory::changeSpeed(c);
-					break;
-				
-				case CH_LENGTH:
-					chimeFactory::changeLength(c); //potentially don't do this one
-					break;
-					
-				case CH_PIV_NUM: 
-					reCalcAnchorPoint(c); 
-					break;
-				//decay is fine
-			
-			}
-		
+			reCalcAnchorPoint(c); 
 			c->resetModParam(i);
 		}
 	
 	}
+	
+	c->autoStepIncrement();
 	
 }
 
@@ -133,7 +100,7 @@ void chimeUpdater::updateDims(ofPtr<chime> c){
 	
 	for(int i = 0; i < c->getModParam(CH_PIV_NUM); i++){
 		
-		float rot = sRot * sp_props[i] + (c->getModParam(CH_PHASE) * c->getModParam(CH_PIV_PH_MUL));
+		float rot = sRot * sp_props[i] + (c->getFixedParam(CH_PHASE) * c->getModParam(CH_PIV_PH_MUL));
 		rot = fmod(rot, b2_pi * 2);
 		
 		ofVec2f t(0,c->getModParam(CH_PIV_LGTH)/c->getModParam(CH_PIV_NUM));
@@ -167,7 +134,7 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 		
 		cd[sIndex]->initContact = false;
 		
-		c->setReactTotal(ofGetFrameRate() * c->getModParam(CH_DECAY));
+		c->setReactTotal(ofGetFrameRate() * c->getFixedParam(CH_DECAY));
 		c->setReactCount(sIndex, c->getReactTotal());
 		
 		if(mSender && c->getBlur() < 0.99){
@@ -175,8 +142,8 @@ void chimeUpdater::updateSensors(ofPtr<chime> c){
 			ofxOscMessage m;
 			m.setAddress("/chime");
 			m.addIntArg(c->getIndex());
-			m.addFloatArg(c->getModParam(CH_FREQ));
-			m.addFloatArg(c->getModParam(CH_DECAY));
+			m.addFloatArg(c->getFixedParam(CH_FREQ));
+			m.addFloatArg(c->getFixedParam(CH_DECAY));
 			m.addFloatArg(c->getBlur());
 			float p = c->getHammer()->GetPosition().x;
 			p += c->getStemDims().cPos.x;

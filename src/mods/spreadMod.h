@@ -15,16 +15,7 @@ struct chimeSorter{
 	
 	int param;
 	chimeSorter(int i):param(i){}
-	
-	bool operator()(ofPtr<chime> a, ofPtr<chime> b){
-	
-		if(param == CH_PHASE){
-			return fmod(a->getModParam(param),b2_pi) < fmod(b->getModParam(param), b2_pi);
-		}else{
-			return a->getModParam(param) < b->getModParam(param);
-		}
-		
-	}
+	bool operator()(ofPtr<chime> a, ofPtr<chime> b);
 
 
 };

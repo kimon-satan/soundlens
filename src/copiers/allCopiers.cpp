@@ -14,12 +14,26 @@
 
 allCopiers::allCopiers(){
 	
+	
+	
 	int singleMutes[] = {CH_PHASE, CH_SPEED, CH_FREQ};
+	
+	
+	for(int i = 0; i < 2; i ++){
+		vector<int> params;
+		params.push_back(singleMutes[0]);
+		if(i == 1)params.push_back(singleMutes[2]);
+		params.push_back(CH_COLOR);
+		ofPtr<transpose> cpm = ofPtr<transpose>(new transpose(params));
+		copiers.push_back((ofPtr<baseMod>)cpm);
+	}
+	
 	
 	for(int i = 0; i < 3; i ++){
 	
 		vector<int> params;
 		params.push_back(singleMutes[i]);
+		params.push_back(CH_COLOR);
 		ofPtr<copyMod> cpm = ofPtr<copyMod>(new copyMod(true, true, params));
 		copiers.push_back((ofPtr<baseMod>)cpm);
 		
@@ -31,6 +45,7 @@ allCopiers::allCopiers(){
 		
 		vector<int> params;
 		for(int j = 0; j < 2; j ++)params.push_back(doubleMutes[i][j]);
+		params.push_back(CH_COLOR);
 		ofPtr<copyMod> cpm = ofPtr<copyMod>(new copyMod(true, true, params));
 		copiers.push_back((ofPtr<baseMod>)cpm);
 		
@@ -40,6 +55,7 @@ allCopiers::allCopiers(){
 		
 		vector<int> params;
 		for(int j = 0; j < 2; j ++)params.push_back(doubleMutes[i][j]);
+		params.push_back(CH_COLOR);
 		ofPtr<copyMod> cpm = ofPtr<copyMod>(new copyMod(false, true, params));
 		copiers.push_back((ofPtr<baseMod>)cpm);
 		
@@ -50,7 +66,18 @@ allCopiers::allCopiers(){
 		
 		vector<int> params;
 		for(int j = 0; j < 2; j ++)params.push_back(doubleMutes[i][j]);
+		params.push_back(CH_COLOR);
 		ofPtr<copyMod> cpm = ofPtr<copyMod>(new copyMod(false, false, params));
+		copiers.push_back((ofPtr<baseMod>)cpm);
+		
+	}
+	
+	for(int i = 0; i < 2; i ++){
+		
+		vector<int> params;
+		for(int j = 0; j < 2; j ++)params.push_back(doubleMutes[i][j]);
+		params.push_back(CH_COLOR);
+		ofPtr<copyMod> cpm = ofPtr<copyMod>(new copyMod(true, false, params));
 		copiers.push_back((ofPtr<baseMod>)cpm);
 		
 	}

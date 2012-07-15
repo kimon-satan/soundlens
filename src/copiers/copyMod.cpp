@@ -15,7 +15,7 @@ copyMod::copyMod(bool g_i, bool p_i, vector<int> params){
 	if(!g_i)name += "gLinked ";
 	if(!p_i)name += "pLinked ";
 	
-	for(int i = 0; i < params.size(); i++)name += chime::getChParamString(params[i]) + ",";
+	for(int i = 0; i < params.size(); i++)name += chime::getChFixedString(params[i]) + ",";
 	
 	
 	dataElement <float> rng;
@@ -57,7 +57,7 @@ vector<ofPtr<chime> >copyMod::makeMod(vector<ofPtr<chime> > chimes){
 	vector<vector<float > > mutateCoeffs;
 	
 	distributionDef <float> dDef;
-	dDef.setDType(DT_NORMAL);
+	dDef.setDType(DT_FLAT);
 	dDef.setInitVal(0);
 	dDef.setVal( DD_RNG, floatParameters[0].abs_val);
 	dDef.setVal( DD_DEV, floatParameters[1].abs_val);
@@ -76,7 +76,7 @@ vector<ofPtr<chime> >copyMod::makeMod(vector<ofPtr<chime> > chimes){
 	int count = 0;
 	
 	// copy and assign
-	float ranges[] = {b2_pi, 1.0, 1.0, 3.0, 1.0};
+	float ranges[] = {b2_pi/4, 1.0, 5.0, 3.0, 1.0};
 	
 	//freq can eventually be set by tuning coefficient
 	
@@ -96,19 +96,22 @@ vector<ofPtr<chime> >copyMod::makeMod(vector<ofPtr<chime> > chimes){
 				int pBin = (isParamInd) ? i : 0;
 				int cBin = (isGroupInd) ? count : 0;
 				
-				c->setModParam(i, (*it)->getModParam(i) + ranges[i] * mutateCoeffs[i][count]);
+				float val =  (*it)->getModParam(i) + ranges[i] * mutateCoeffs[pBin][cBin];
+				
+				if(i == CH_FREQ)val = val - fmod(val, 0.78f); //wendy alpha - should ultimately be adapatable
+				
+				c->setModParam(i,val);
 				
 				
 			}
 		}
 		
-		for(int i = 6; i < CH_FLOAT_COUNT; i++)c->setModParam(i, (*it)->getModParam(i));
+		for(int i = 0; i < CH_MOD_COUNT; i++)c->setModParam(i, (*it)->getModParam(i));
 			
 		c->setAnchorPos((*it)->getAnchorPos());
-		c->setAnchorTarget((*it)->getAnchorPos() + 8.0, 0.01, false);
-		(*it)->setAnchorTarget((*it)->getAnchorPos() - 8.0, 0.01, false);
-		c->setSensorColor((*it)->getSensorColor());
-		c->setZpos((*it)->getZpos()); //potentially not
+		c->setAnchorTarget((*it)->getAnchorPos() + ofVec2f(8.0,0), 0.01, false);
+		(*it)->setAnchorTarget((*it)->getAnchorPos() - ofVec2f(8.0,0), 0.01, false);
+
 	
 		nChimes.push_back(c);
 		count ++;

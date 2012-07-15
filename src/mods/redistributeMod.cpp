@@ -17,7 +17,7 @@ redistributeMod::redistributeMod(int pt, int dt){
 	
 	string dNames[7] = {"single", "step", "slice", "flat", "normal", "shuffle", "seq"};
 	
-	name += "rd_"  + dNames[distType] + "_"+ chime::getChParamString(paramType);
+	name += "rd_"  + dNames[distType] + "_"+ chime::getChFixedString(paramType);
 	
 	string paramBNames[7] = {"rngMul", "unit", "dev", "unit", "unit", "", "seqSize"};
 	

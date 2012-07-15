@@ -12,14 +12,17 @@
 
 int chime::cIndex = 1;
 
-string chime::getChParamString(int i){
+string chime::getChFixedString(int i){
 	
-	string nameList[CH_COUNT] = {"phase", "speed", "length", "freq", "decay", 
-		"numPivots", "pivotPhaseMul", "pivotLngth", "pivotSpdSkew",
-		"emptyCount", 
-		"aPos", "col" };
+	string fnameList[CH_FIXED_COUNT] = {"phase", "speed", "length", "freq", "decay", "col"};
+	return fnameList[i];
+
+}
+
+string chime::getChModString(int i){
 	
-	return nameList[i];
+	string mnameList[CH_MOD_COUNT] = {"numPivots", "pivotPhaseMul", "pivotLngth", "pivotSpdSkew"};
+	return mnameList[i];
 	
 }
 
@@ -47,11 +50,18 @@ chime::chime(){
 	mSensorHeight = 0.5;
 	mSensorColor = ofColor(255,0,0);
 	
-	for(int i = 0; i < CH_FLOAT_COUNT; i ++){
+	for(int i = 0; i < CH_MOD_COUNT; i ++){
 		
 		modifiable<float> mp;
 		modParams.push_back(mp);
 	
+	}
+	
+	for(int i = 0; i < CH_FIXED_COUNT; i ++){
+		
+		float fp;
+		fixedParams.push_back(fp);
+		
 	}
 	
 	mBlur = 1.0;
@@ -64,14 +74,25 @@ chime::chime(){
 }
 
 
-
-
 void chime::stepIncrement(int direction){
 	
 	anchorPos.shiftValue(direction);
 	
 	for(int i =0; i < modParams.size(); i ++){
 		modParams[i].shiftValue(direction);
+	}
+	
+}
+
+void chime::autoStepIncrement(){
+
+	if(anchorPos.getIsAuto()){
+		anchorPos.shiftValue(1);
+	}
+		
+	
+	for(int i =0; i < modParams.size(); i ++){
+		if(modParams[i].getIsAuto())modParams[i].shiftValue(1);
 	}
 	
 }
@@ -120,9 +141,6 @@ float chime::getSensorHeight(){return mSensorHeight;}
 float chime::getSensorAlpha(int i){return mSensorAlphas[i];}
 void chime::setSensorAlpha(int i, float a){mSensorAlphas[i] = a;}
 
-ofColor chime::getSensorColor(){return mSensorColor;}
-void chime::setSensorColor(ofColor c){mSensorColor = c;}
-
 void chime::setReactTotal(int t){reactTotal = t;}
 int chime::getReactTotal(){return reactTotal;}
 
@@ -138,6 +156,30 @@ void chime::setAnchorTarget(ofVec2f t, float increment, bool isAuto){
 
 void chime::setModParam(int p, float val){
 	
+
+	modParams[p].set(val);
+
+}
+float chime::getModParam(int p){return modParams[p].getCVal();}
+
+void chime::setModParamTarget(int p, float val, float increment, bool isAuto){
+	
+	modParams[p].setTarget(val, increment, isAuto);
+}
+
+void chime::flagModParam(int i){modParams[i].setFlagChanged(true);}
+bool chime::getModParamChanged(int i){return modParams[i].getFlagChanged();}
+void chime::resetModParam(int i){modParams[i].setFlagChanged(false);}
+
+void chime::endMods(){
+	
+	for(int i =0 ; i < CH_MOD_COUNT; i++)modParams[i].end();
+	anchorPos.end();
+
+}
+
+void chime::setFixedParam(int p, float val){
+	
 	if(p == CH_PHASE){
 		
 		val = fmod(val, b2_pi * 2);
@@ -146,23 +188,23 @@ void chime::setModParam(int p, float val){
 		
 	}
 	
-	modParams[p].set(val);
-
-}
-float chime::getModParam(int p){return modParams[p].getCVal();}
-
-void chime::setModParamTarget(int p, float val, float increment, bool isAuto){
-	modParams[p].setTarget(val, increment, isAuto);
-}
-
-bool chime::getModParamChanged(int i){return modParams[i].getIsChanged();}
-void chime::resetModParam(int i){modParams[i].setIsChanged(false);}
-void chime::endMods(){
+	if(p == CH_FREQ){
+		
+		val = min((float)(MIDI_MIN + MIDI_RANGE), max((float)MIDI_MIN, val));
+		
+	}
 	
-	for(int i =0 ; i < CH_FLOAT_COUNT; i++)modParams[i].end();
-	anchorPos.end();
-
+	if(p == CH_COLOR){
+		if(val < 0)val += 255;
+		val = fmod(val, 255);
+	}
+		
+	
+	fixedParams[p] = val;
+	
 }
+
+float chime::getFixedParam(int p){ return fixedParams[p];}
 
 void chime::setBlur(float f){mBlur = f;}
 float chime::getBlur(){return mBlur;}

@@ -24,6 +24,7 @@ allSearches::allSearches(){
 		searches.push_back((ofPtr<baseSearch>)bfs);
 	}
 	
+	
 	for(int i = 0; i < 3; i++){
 		ofPtr<quantSearch> qs = ofPtr<quantSearch>(new quantSearch(i));
 		searches.push_back((ofPtr<baseSearch>)qs);
@@ -38,6 +39,10 @@ allSearches::allSearches(){
 		ofPtr<multiFilterSearch> mfs = ofPtr<multiFilterSearch>(new multiFilterSearch(i));
 		searches.push_back((ofPtr<baseSearch>)mfs);
 	}
+	
+	ofPtr<uniqueSearch> us = ofPtr<uniqueSearch>(new uniqueSearch());
+	searches.push_back((ofPtr<baseSearch>)us);
+	
 	
 	ofPtr<positionSearch> ps = ofPtr<positionSearch>(new positionSearch());
 	searches.push_back((ofPtr<baseSearch>)ps);

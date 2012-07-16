@@ -22,5 +22,6 @@ public:
 private:
 	
 	int fundType;
+	bool isUnique;
 	
 };

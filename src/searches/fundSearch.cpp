@@ -14,6 +14,7 @@ fundSearch::fundSearch(int fType){
 	isSample = true;
 	isMDrag = false;
 	
+	
 	int params[] = {CH_PHASE, CH_SPEED, CH_FREQ};
 	
 	fundType = params[fType];
@@ -63,10 +64,10 @@ vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample,
 	float tol_r = (fundType == CH_PHASE) ? floatParameters[1].abs_val * b2_pi/180.0f : floatParameters[1].abs_val;
 	tol_r = max(tol_r, 0.0001f);
 	
-	float div = (fundType == CH_PHASE) ? 2.0f * b2_pi/floatParameters[0].abs_val : floatParameters[0].abs_val;
-	
+	float div = (fundType == CH_PHASE) ? b2_pi/floatParameters[0].abs_val : floatParameters[0].abs_val;
 	
 	vector<ofPtr<chime> > tmp;
+	
 	
 	for(vector<ofPtr<chime> >::iterator it = searchGroup.begin(); it != searchGroup.end(); it++){
 		

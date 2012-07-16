@@ -87,7 +87,7 @@ void testApp::setupSearchPresets(){
 	sp2.autoMacro.push_back(SEARCH_MATCH_SPEED);
 	sp2.autoSettings.push_back(ofVec2f(0,0));
 	sp2.manualMacro.push_back(SEARCH_FUND_PHASE);
-	sp2.manualMacro.push_back(SEARCH_QUANT_PHASE);
+	sp2.manualMacro.push_back(SEARCH_UNIQUE);
 	
 	searchPresets.push_back(sp2);
 	

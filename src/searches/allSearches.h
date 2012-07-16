@@ -14,6 +14,7 @@
 #include "filterSearch.h"
 #include "multiFilterSearch.h"
 #include "positionSearch.h"
+#include "uniqueSearch.h"
 
 
 enum e_SearchType {
@@ -28,7 +29,7 @@ enum e_SearchType {
 	SEARCH_FUND_PHASE,
 	SEARCH_FUND_SPEED,
 	SEARCH_FUND_FREQ,
-	
+
 	SEARCH_QUANT_PHASE,
 	SEARCH_QUANT_SPEED,
 	SEARCH_QUANT_FREQ,
@@ -43,7 +44,9 @@ enum e_SearchType {
 	SEARCH_MULTI_LPF,
 	SEARCH_MULTI_HPF,
 
+	SEARCH_UNIQUE,
 	SEARCH_POSITION,
+	
 	
 	SEARCH_COUNT,
 };

@@ -11,9 +11,9 @@
 
 allMods::allMods(){
 	
-	ofPtr<setMod> sm = ofPtr<setMod>(new setMod());
-	mods.push_back((ofPtr<baseMod>)sm);
-	
+	ofPtr<shiftMod> shm = ofPtr<shiftMod>(new shiftMod());
+	mods.push_back((ofPtr<baseMod>)shm);
+
 	ofPtr<gatherMod> gm = ofPtr<gatherMod>(new gatherMod());
 	mods.push_back((ofPtr<baseMod>)gm);
 	
@@ -22,15 +22,10 @@ allMods::allMods(){
 		mods.push_back((ofPtr<baseMod>)spm);
 	}
 	
-	//not sure I want these
-	/*for(int i = 0; i < 7; i ++){
-		for(int j = 0; j < 5; j++){
-			ofPtr<redistributeMod> rdm = ofPtr<redistributeMod>(new redistributeMod(j,i));
-			mods.push_back((ofPtr<baseMod>)rdm);
-		}
+	ofPtr<setMod> sm = ofPtr<setMod>(new setMod());
+	mods.push_back((ofPtr<baseMod>)sm);
 	
-	}*/
-
+	
 }
 
 

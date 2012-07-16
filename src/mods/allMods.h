@@ -11,9 +11,12 @@
 #include "gatherMod.h"
 #include "spreadMod.h"
 #include "setMod.h"
+#include "shiftMod.h"
+
 
 enum e_modType{
 	
+	MOD_SHIFT,
 	MOD_GATHER,
 	
 	MOD_SPREAD_SHUFFLE,

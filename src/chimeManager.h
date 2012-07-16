@@ -64,6 +64,7 @@ class chimeManager{
 	
 	static void shiftFocalPoint(float direction);
 	static void shiftZPos(float direction);
+	static void equalizeZPos();
 	
 	//copyCreate
 	

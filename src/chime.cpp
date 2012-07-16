@@ -69,6 +69,7 @@ chime::chime(){
 	zPos = 0;
 	isSelected = false;
 	isTmpSelected = false;
+	generation = 0;
 
 	
 }
@@ -220,6 +221,9 @@ bool chime::getIsSelected(){return isSelected;}
 
 void chime::setIsTmpSelected(bool b){isTmpSelected = b;}
 bool chime::getIsTmpSelected(){return isTmpSelected;}
+
+void chime::setGeneration(int i){generation = i;}
+int chime::getGeneration(){return generation;}
 
 chime::~chime(){
 

@@ -9,6 +9,7 @@
 
 #pragma once
 
+#include "chimeUpdater.h"
 #include "baseMod.h"
 #include "copyMod.h"
 #include "transpose.h"
@@ -44,6 +45,9 @@ public:
 	string updateUserValues(int copyType, ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	
 	string getCopyName(int i);
+	
+	void nextGeneration();
+	void resetGenCount();
 	
 private:
 	

@@ -133,6 +133,9 @@ public:
 	
 	int getIndex();
 	
+	void setGeneration(int i);
+	int getGeneration();
+	
 	static string getChFixedString(int i);
 	static string getChModString(int i);
 	
@@ -141,6 +144,7 @@ public:
 private:
 	
 	int index;
+	int generation;
 	
 	b2World * mWorld;
 	

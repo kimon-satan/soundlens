@@ -178,7 +178,7 @@ void testApp::draw(){
 	
 	glFogi(GL_FOG_MODE, GL_LINEAR);      
 	glFogfv(GL_FOG_COLOR, fogColor);            
-	glFogf(GL_FOG_DENSITY, 0.1f);              
+	glFogf(GL_FOG_DENSITY, 0.05f);              
 	glHint(GL_FOG_HINT, GL_NICEST);       
 	glFogf(GL_FOG_START, 800.0f);           
 	glFogf(GL_FOG_END, 825.0f);               
@@ -442,6 +442,7 @@ void testApp::keyPressed(int key){
 	
 	if(key == 'a')chimeManager::shiftZPos(0.0f);
 	if(key == 's')chimeManager::shiftZPos(1.0f);
+	if(key == 'A')chimeManager::equalizeZPos();
 	
 	if(key == 'n')chimeManager::incrementMod(-1);
 	if(key == 'm')chimeManager::incrementMod(1);

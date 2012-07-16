@@ -31,6 +31,7 @@ customListener chimeManager::mListener;
 
 
 bool isChimeHidden(ofPtr<chime> c){return (c->getBlur() > 0.99);}
+bool isBankEmpty(vector<ofPtr<chime> > cVec){return (cVec.size() < 1);}
 
 void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 
@@ -57,12 +58,12 @@ void chimeManager::createInitialChime(){
 	c->setFixedParam(CH_LENGTH, 2.0);
 	c->setFixedParam(CH_PHASE, 1);
 	c->setFixedParam(CH_DECAY, 1.8);
-	c->setFixedParam(CH_COLOR, 0);
+	c->setFixedParam(CH_COLOR, 255);
 	
 	c->setModParam(CH_PIV_NUM, 0);
 	c->setModParam(CH_PIV_PH_MUL, 0);
 	c->setModParam(CH_PIV_SPD_SKEW, 0);
-	c->setModParam(CH_PIV_LGTH, 4);
+	c->setModParam(CH_PIV_LGTH, 2);
 	
 	c->setAnchorPos(ofVec2f(0,0));
 	c->setSpIndex(100);
@@ -94,7 +95,12 @@ string chimeManager::continueCopy(int copyType, ofVec2f mD, ofVec2f mDr, float u
 }
 
 void chimeManager::endNewChimes(){
-
+	
+	
+	if(isNewSelection && mSelected.size() > 0){
+		mSelectionBank.push_back(mSelected);
+	}
+	
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
 	mSelected = mPreviewChimes;
 	
@@ -104,17 +110,19 @@ void chimeManager::endNewChimes(){
 		chimeFactory::conformPhase(*it);
 		chimeFactory::initBodies(*it);
 		(*it)->setCollisionListener(mListener);
-		(*it)->setZpos((chimeUpdater::getFocalPoint() > 1) ? 0 : 2);
 		mChimes.push_back(*it);
 	}
+	
 	mPreviewChimes.clear();
 	
 	isNewSelection = true;
 	
-	if(mSelected.size() > 1){
+	if(mSelected.size() > 0){
 		mSelectionBank.push_back(mSelected);
 		isNewSelection = false;
+		sbIndex = mSelectionBank.size() -1;
 	}
+	
 	
 	rePopulateRenderList();
 
@@ -123,6 +131,25 @@ void chimeManager::endNewChimes(){
 void chimeManager::deleteHiddenChimes(){
 
 	vector<ofPtr<chime> >::iterator it;
+	
+	for(int i =0; i < mSelectionBank.size(); i++){
+		it = remove_if(mSelectionBank[i].begin(), mSelectionBank[i].end(), isChimeHidden);
+		mSelectionBank[i].erase(it, mSelectionBank[i].end());
+	}
+	
+	//remove empty selection banks
+	
+	vector<vector<ofPtr<chime> > >::iterator it2;
+	
+	it2 = remove_if(mSelectionBank.begin(), mSelectionBank.end(), isBankEmpty);
+	mSelectionBank.erase(it2, mSelectionBank.end());
+	sbIndex = mSelectionBank.size() -1;
+	
+	it = remove_if(mSelected.begin(), mSelected.end(), isChimeHidden);
+	mSelected.erase(it, mSelected.end());
+	
+	it = remove_if(mTmpSelected.begin(), mTmpSelected.end(), isChimeHidden);
+	mSelected.erase(it, mTmpSelected.end());
 	
 	it = remove_if(mChimes.begin(), mChimes.end(), isChimeHidden);
 	mChimes.erase(it, mChimes.end());
@@ -206,6 +233,26 @@ void chimeManager::shiftZPos(float direction){
 	rePopulateRenderList();
 }
 
+void chimeManager::equalizeZPos(){
+	
+	vector<ofPtr<chime> >::iterator it; 
+	
+	float zTot = 0;
+
+	for(it = mSelected.begin(); it != mSelected.end(); it++)zTot += (*it)->getZpos();
+	
+	zTot /= (float)mSelected.size();
+	
+	for(it = mSelected.begin(); it != mSelected.end(); it++){
+		
+		float d = ((*it)->getZpos() < zTot)? 0.01 : - 0.01;
+		(*it)->setZpos((*it)->getZpos() + d);
+	
+	}
+		
+	rePopulateRenderList();
+}
+
 
 void chimeManager::switchSelBank(int i){
 	
@@ -228,6 +275,7 @@ void chimeManager::saveSelBank(){
 		mSelectionBank.push_back(mSelected);
 		flashAlpha = 255;
 		isNewSelection = false;
+		sbIndex = mSelectionBank.size() -1;
 	}
 	
 }
@@ -243,8 +291,8 @@ void chimeManager::deleteSelBank(){
 	
 	if(!isNewSelection){
 		mSelectionBank.erase(mSelectionBank.begin() + sbIndex);
-		sbIndex = 0;
 		isNewSelection = true;
+		sbIndex = mSelectionBank.size() -1;
 	}
 	
 }

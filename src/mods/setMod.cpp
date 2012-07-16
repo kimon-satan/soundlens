@@ -47,7 +47,7 @@ setMod::setMod(){
 }
 
 
-vector<ofPtr<chime> > setMod::makeMod(vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > setMod::makeMod(vector<ofPtr<chime> > chimes, bool isAuto){
 	
 	vector<ofPtr<chime> >::iterator it;
 	

@@ -19,6 +19,7 @@ class copyMod : public baseMod{
 	
 	copyMod(bool g_i, bool p_i, vector<int> params);
 	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes, bool isAuto){};
 	void drawControl( float dragDist, float dragAngle);
 	
 	private:

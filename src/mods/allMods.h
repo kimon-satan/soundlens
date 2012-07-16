@@ -38,16 +38,18 @@ class allMods{
 	
 	allMods();
 	
-	vector <ofPtr<chime> > getModCopies(int modType, vector<ofPtr<chime> > targetGrp);
 	void makeMod(int modType, vector<ofPtr<chime> > targetGrp);
 	void drawPreview(int modType,float dragDist, float dragAngle);
 	string updateUserValues(int modType, ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	
 	string getModName(int i);
 	
+	void setIsAuto(bool b);
+	
 	private:
 		
 	vector<ofPtr<baseMod> > mods;
+	bool isAuto;
 
 
 };

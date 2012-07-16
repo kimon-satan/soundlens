@@ -26,7 +26,8 @@ class spreadMod : public baseMod{
 public:
 	
 	spreadMod(int i = -1);
-	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes, bool isAuto);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes){};
 	void drawControl(float dragDist, float dragAngle);
 	
 private:

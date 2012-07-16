@@ -18,8 +18,9 @@ class shiftMod : public baseMod {
 	
 	shiftMod();
 	
-	vector<ofPtr<chime> >makeMod(vector<ofPtr<chime> > chimes);
-	static vector<ofPtr<chime> >makeMod(vector<ofPtr<chime> > chimes, ofVec2f pos, float inc);
+	vector<ofPtr<chime> >makeMod(vector<ofPtr<chime> > chimes, bool isAuto);
+	static vector<ofPtr<chime> >makeMod(vector<ofPtr<chime> > chimes, ofVec2f pos, float inc, bool isAuto);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes){};
 	void drawControl( float dragDist, float dragAngle);
 	
 	private:

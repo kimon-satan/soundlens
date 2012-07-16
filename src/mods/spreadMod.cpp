@@ -49,7 +49,7 @@ spreadMod::spreadMod(int i){
 	
 }
 
-vector<ofPtr<chime> > spreadMod::makeMod(vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > spreadMod::makeMod(vector<ofPtr<chime> > chimes, bool isAuto){
 	
 	vector<ofPtr<chime> >::iterator it;
 	
@@ -97,7 +97,7 @@ vector<ofPtr<chime> > spreadMod::makeMod(vector<ofPtr<chime> > chimes){
 	
 	for(it = chimes.begin(); it != chimes.end(); it++){
 		float inc = 0.02 * distances[count]/longDist;
-		(*it)->setAnchorTarget(nPos[count], inc, false);
+		(*it)->setAnchorTarget(nPos[count], inc, isAuto);
 		count ++;
 	}
 	

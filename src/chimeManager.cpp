@@ -67,6 +67,7 @@ void chimeManager::createInitialChime(){
 	
 	c->setAnchorPos(ofVec2f(0,0));
 	c->setSpIndex(100);
+	c->setZpos((chimeUpdater::getFocalPoint() > 1) ? 0 : 2);
 	
 	mPreviewChimes.push_back(c);
 	endNewChimes();
@@ -360,6 +361,12 @@ void chimeManager::clearAllMods(){
 		(*it)->endMods();
 	
 	}
+}
+
+void chimeManager::beginMod(bool isAuto){
+
+	mModEngine.setIsAuto(isAuto);
+
 }
 
 string chimeManager::continueMod(int modType, ofVec2f mD, ofVec2f mDr, float userA, float userB){

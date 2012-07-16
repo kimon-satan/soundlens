@@ -94,7 +94,7 @@ class chimeManager{
 	//mod methods
 	
 	static string getModName(int i);
-	
+	static void beginMod(bool isAuto);
 	static string continueMod(int modType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
 	static void endMod(int modType);
 	static void clearAllMods();

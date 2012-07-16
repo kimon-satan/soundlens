@@ -16,7 +16,8 @@ class gatherMod : public baseMod{
 	public:
 	
 	gatherMod();
-	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes, bool isAuto);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes){};
 	void drawControl(float dragDist, float dragAngle);
 	
 	private:

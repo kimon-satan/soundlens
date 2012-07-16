@@ -18,7 +18,8 @@ class setMod : public baseMod{
 	public:
 	
 	setMod();
-	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes){};
+	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes, bool isAuto);
 	void drawControl(float dragDist, float dragAngle);
 	string setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	

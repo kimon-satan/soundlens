@@ -29,15 +29,9 @@ allMods::allMods(){
 }
 
 
-vector <ofPtr<chime> > allMods::getModCopies(int modType, vector<ofPtr<chime> > targetGrp){
-
-	return mods[modType]->makeMod(targetGrp);
-
-}
-
 void allMods::makeMod(int modType, vector<ofPtr<chime> > targetGrp){
 
-	mods[modType]->makeMod(targetGrp);
+	mods[modType]->makeMod(targetGrp, isAuto);
 	
 }
 
@@ -56,3 +50,6 @@ string allMods::updateUserValues(int modType, ofVec2f mD, ofVec2f mDr, float ua,
 }
 
 string allMods::getModName(int i){return mods[i]->getName();}
+
+
+void allMods::setIsAuto(bool b){isAuto = b;}

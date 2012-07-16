@@ -20,14 +20,14 @@ shiftMod::shiftMod(){
 
 }
 
-vector<ofPtr<chime> > shiftMod::makeMod(vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > shiftMod::makeMod(vector<ofPtr<chime> > chimes, bool isAuto){
 
 	
-	return makeMod(chimes, mDown, floatParameters[0].abs_val);
+	return makeMod(chimes, mDown, floatParameters[0].abs_val, isAuto);
 
 }
 
-vector<ofPtr<chime> > shiftMod::makeMod(vector<ofPtr<chime> > chimes, ofVec2f pos, float inc){
+vector<ofPtr<chime> > shiftMod::makeMod(vector<ofPtr<chime> > chimes, ofVec2f pos, float inc, bool isAuto){
 
 	vector<ofPtr<chime> >::iterator it;
 	
@@ -41,7 +41,7 @@ vector<ofPtr<chime> > shiftMod::makeMod(vector<ofPtr<chime> > chimes, ofVec2f po
 		ofVec2f op((*it)->getAnchorPos());
 		op -= ave;
 		op += pos;
-		(*it)->setAnchorTarget(op, inc, false);
+		(*it)->setAnchorTarget(op, inc, isAuto);
 	}
 	
 	return chimes;

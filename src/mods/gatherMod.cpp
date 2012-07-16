@@ -21,7 +21,7 @@ gatherMod::gatherMod(){
 }
 
 
-vector<ofPtr<chime> > gatherMod::makeMod( vector<ofPtr<chime> > chimes){
+vector<ofPtr<chime> > gatherMod::makeMod( vector<ofPtr<chime> > chimes, bool isAuto){
 	
 	vector<ofPtr<chime> >::iterator it;
 	
@@ -40,7 +40,7 @@ vector<ofPtr<chime> > gatherMod::makeMod( vector<ofPtr<chime> > chimes){
 	
 	for(it = chimes.begin(); it != chimes.end(); it++){
 		float inc = floatParameters[0].abs_val * distances[count]/longDist;
-		(*it)->setAnchorTarget(mDown, inc, false);
+		(*it)->setAnchorTarget(mDown, inc, isAuto);
 		count ++;
 	}
 

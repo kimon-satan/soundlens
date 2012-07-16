@@ -52,7 +52,9 @@ class testApp : public ofBaseApp{
 	
 	enum e_MenuType {
 		MT_COPY,
-		MT_POSITION,
+		MT_SEARCH,
+		MT_MOVE,
+		MT_PIVOT,
 		MT_COUNT,
 	};
 	
@@ -82,7 +84,7 @@ class testApp : public ofBaseApp{
 	
 	
 	e_ActionType currentAction;
-	e_MenuType currentMode;
+	int currentMode;
 
 	
 	vector<string> menuStrings;
@@ -90,14 +92,13 @@ class testApp : public ofBaseApp{
 	//mouse stuff
 	
 	ofVec2f mouseDownPos, mouseDragPos, mouseMovePos;
-	bool isMouseDown;
+	bool isMouseDown, isRM;
 	float dragDist, dragAngle;
 	float distParam, angleParam;
 	string mDisplayString;
 	
 	//search stuff
-	
-	bool isSearching;
+
 	
 	int cSearchPreset, cMacroStage;
 	vector<searchPreset> searchPresets;

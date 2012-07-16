@@ -30,11 +30,10 @@ void testApp::setup(){
 	
 	
 	mCurrentCopier= 0;
-	currentMode = e_MenuType(0);
+	currentMode = MT_COPY;
 
 	currentMod = MOD_GATHER;
 	
-	isSearching = false;
 	cSearchPreset = 0;
 	cMacroStage = 0;
 	
@@ -44,8 +43,9 @@ void testApp::setup(){
 	chimeManager::createInitialChime();
 	
 	menuStrings.push_back("copy");
-	menuStrings.push_back("position");
-	menuStrings.push_back("select");
+	menuStrings.push_back("search");
+	menuStrings.push_back("move");
+	menuStrings.push_back("pivot");
 	
 	currentAction = AT_NONE;
 	
@@ -192,7 +192,7 @@ void testApp::draw(){
 	
 	chimeManager::draw();
 		
-	if(isSearching){
+	if(currentMode == MT_SEARCH){
 		chimeManager::drawSelected();
 		chimeManager::drawSample();
 	}
@@ -217,14 +217,11 @@ void testApp::draw(){
 	ofDisableAlphaBlending();
 	ofSetColor(100);
 	
-	if(isSearching){
-		ofDrawBitmapString("mode: " + menuStrings[2], 20,20);
-	}else{
-		ofDrawBitmapString("mode: " + menuStrings[currentMode], 20,20);
-	}
+
+	ofDrawBitmapString("mode: " + menuStrings[currentMode], 20,20);
 	
 	
-	if(isSearching){
+	if(currentMode == MT_SEARCH){
 		
 		string mString = "preset: ";
 		
@@ -251,9 +248,13 @@ void testApp::draw(){
 			case MT_COPY:
 				ofDrawBitmapString("copier: " + chimeManager::getCopierName(mCurrentCopier), 300,20);
 				break;
-			case MT_POSITION:
-				ofDrawBitmapString("modType: " + chimeManager::getModName(currentMod) , 300,20);
+			case MT_MOVE:
+				ofDrawBitmapString("moveType: " + chimeManager::getModName(currentMod) , 300,20);
 				break;
+			case MT_PIVOT:
+				ofDrawBitmapString("adjustPivots: " , 300,20);
+				break;
+			
 				
 			default:
 				break;
@@ -297,7 +298,12 @@ void testApp::drawActions(){
 	if(currentAction == AT_ADJUST){
 	
 		chimeManager::drawSelected();
-		chimeManager::drawModEngine(currentMod, dragDist, dragAngle);
+		if(currentMode != MT_PIVOT){
+			chimeManager::drawModEngine(currentMod, dragDist, dragAngle);
+		}else{
+			chimeManager::drawModEngine(MOD_SET_MULTI, dragDist, dragAngle);
+		}
+		
 		ofSetColor(100);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 	}
@@ -322,6 +328,7 @@ void testApp::beginAction(){
 			break;
 			
 		case AT_ADJUST:
+			chimeManager::beginMod(isRM);
 			break;
 			
 		default:
@@ -343,7 +350,11 @@ void testApp::continueAction(){
 			break;
 			
 		case AT_ADJUST:
-			mDisplayString = chimeManager::continueMod(currentMod, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+			if(currentMode != MT_PIVOT){
+				mDisplayString = chimeManager::continueMod(currentMod, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+			}else{
+				mDisplayString = chimeManager::continueMod(MOD_SET_MULTI, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+			}
 			break;
 			
 		default:
@@ -367,7 +378,11 @@ void testApp::endAction(){
 		
 
 		case AT_ADJUST:
-			chimeManager::endMod(currentMod);
+			if(currentMode != MT_PIVOT){
+				chimeManager::endMod(currentMod);
+			}else{
+				chimeManager::endMod(MOD_SET_MULTI);
+			}
 			break;
 			
 		default:
@@ -381,10 +396,11 @@ void testApp::endAction(){
 }
 
 void testApp::newSearch(bool useResults){
-
-	if(!isSearching){
+	
+	
+	if(currentMode != MT_SEARCH){
 		cMacroStage = 0;
-		isSearching = true;
+		currentMode = MT_SEARCH;
 		chimeManager::newSearch(useResults);
 		
 		for(int i = 0; i < searchPresets[cSearchPreset].autoMacro.size(); i++){
@@ -406,17 +422,8 @@ void testApp::newSearch(bool useResults){
 //--------------------------------------------------------------
 void testApp::keyPressed(int key){
 	
-	for(int i = 0; i < MT_COUNT; i++){
 	
-		if(key == 49 + i){
-			currentMode = e_MenuType(i);
-			break;
-		}
-	
-	}
-	
-	
-	if(isSearching){
+	if(currentMode == MT_SEARCH){
 		
 		if(key == OF_KEY_UP)cSearchPreset = min(cSearchPreset + 1, (int)searchPresets.size() - 1);
 		if(key == OF_KEY_DOWN)cSearchPreset = max(cSearchPreset - 1,0);
@@ -426,16 +433,20 @@ void testApp::keyPressed(int key){
 		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)COPY_COUNT -1);
 		if(key == OF_KEY_DOWN)mCurrentCopier= max(mCurrentCopier- 1,0);
 		
-	}else if(currentMode == MT_POSITION){
+	}else if(currentMode == MT_MOVE){
 		
-		if(key == OF_KEY_UP)currentMod = min(currentMod + 1, (int)MOD_COUNT -1);
+		if(key == OF_KEY_UP)currentMod = min(currentMod + 1, (int)MOD_COUNT -2);
 		if(key == OF_KEY_DOWN)currentMod = max(currentMod - 1,0);
 		
 	}
 	
 	
 	if(key == ' ')newSearch(false);
-	if(key == OF_KEY_RETURN)newSearch(true);
+	if(key == 'b')newSearch(true);
+	if(key == 'm')currentMode = MT_MOVE;
+	if(key == 'M')currentMode = MT_PIVOT;
+	
+	
 	
 	if(key == 'x')chimeManager::shiftFocalPoint(0.0f);
 	if(key == 'z')chimeManager::shiftFocalPoint(1.0f);
@@ -444,8 +455,7 @@ void testApp::keyPressed(int key){
 	if(key == 's')chimeManager::shiftZPos(1.0f);
 	if(key == 'A')chimeManager::equalizeZPos();
 	
-	if(key == 'n')chimeManager::incrementMod(-1);
-	if(key == 'm')chimeManager::incrementMod(1);
+	if(key == 'v')chimeManager::incrementMod(1);
 	
 	
 	if(key == 'i')chimeManager::clearSelBanks();
@@ -462,8 +472,8 @@ void testApp::keyPressed(int key){
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
 
-	if(key == ' ' || key == OF_KEY_RETURN){
-		isSearching = false;
+	if(key == ' ' || key == 'b'|| key == 'm' || key == 'M'){
+		currentMode = MT_COPY;
 	}
 	
 }
@@ -492,22 +502,18 @@ void testApp::mousePressed(int x, int y, int button){
 	
 	mouseDownPos = getZPlaneProjection(ofVec2f(x,y));
 	
-	if(!isSearching){
-
-		switch (currentMode) {
-				
-			case MT_COPY:currentAction = AT_ADD;break;
-			case MT_POSITION:currentAction = AT_ADJUST;break;
-				
-			default:
-				break;
-		}
-		
-	}else{
+	isRM = (button > 0);
 	
-		currentAction  = AT_SELECT;
+	switch (currentMode) {
+			
+		case MT_COPY:currentAction = AT_ADD;break;
+		case MT_MOVE: case MT_PIVOT: currentAction = AT_ADJUST;break;
+		case MT_SEARCH:currentAction  = AT_SELECT;break;
+			
+		default:
+			break;
 	}
-	
+		
 	beginAction();
 	isMouseDown = true;
 }

@@ -31,7 +31,7 @@ fundSearch::fundSearch(int fType){
 		fundParam.incr = 1.0;
 		fundParam.set(1,50,SET_USER_B);
 		tolParam.incr = 1.0;
-		tolParam.set(0,20,SET_USER_A);
+		tolParam.set(180,100,SET_USER_A);
 		
 		
 	}else if(fundType == CH_SPEED){
@@ -61,7 +61,7 @@ fundSearch::fundSearch(int fType){
 
 vector<ofPtr<chime> > fundSearch::getChimes(searchData& sd, ofPtr<chime> sample, vector<ofPtr<chime> > searchGroup){
 	
-	float tol_r = (fundType == CH_PHASE) ? floatParameters[1].abs_val * b2_pi/180.0f : floatParameters[1].abs_val;
+	float tol_r = (fundType == CH_PHASE) ? b2_pi/floatParameters[1].abs_val : floatParameters[1].abs_val;
 	tol_r = max(tol_r, 0.0001f);
 	
 	float div = (fundType == CH_PHASE) ? b2_pi/floatParameters[0].abs_val : floatParameters[0].abs_val;
@@ -114,7 +114,18 @@ void fundSearch::drawPreview(float dragDist, float dragAngle){
 	
 	//may end up as a method in baseSearch for reuse
 	
-	float d = 0.5 + floatParameters[1].abs_val * 3.0f/(float)floatParameters[1].max_val;
+	float d; 
+	
+	if(fundType == CH_PHASE){ 
+		
+		d = d = 0.5 + (3 - floatParameters[1].abs_val * 3.0f/(float)floatParameters[1].min_val);
+	
+	}else{
+		
+		d = 0.5 + floatParameters[1].abs_val * 3.0f/(float)floatParameters[1].max_val;
+		
+	}
+	
 	
 	ofNoFill();
 	ofSetColor(150);

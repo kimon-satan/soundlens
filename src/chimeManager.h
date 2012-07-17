@@ -91,6 +91,8 @@ class chimeManager{
 	static void clearSelBanks();
 	static void deleteSelBank();
 	
+	static void invertSelection();
+	
 	//mod methods
 	
 	static string getModName(int i);

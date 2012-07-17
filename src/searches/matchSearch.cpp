@@ -57,13 +57,11 @@ vector<ofPtr<chime> > matchSearch::getChimes(searchData& sd, ofPtr<chime> sample
 		float sVal;
 		float itVal; 
 		
-		if(mTolIndex < 3){
 		
-			sVal = sample->getFixedParam(mTolIndex);
-			itVal = (*it)->getFixedParam(mTolIndex);
+		sVal = sample->getFixedParam(mTolIndex);
+		itVal = (*it)->getFixedParam(mTolIndex);
 			
-		}
-		
+
 		//the tests
 	
 		if(itVal >= sVal - mTol && itVal <= sVal + mTol)isMatches = true;
@@ -90,7 +88,7 @@ string matchSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 	
 	mTolIndex = intParameters[0].abs_val;
 	mTol = floatParameters[mTolIndex].abs_val;
-	if(mTolIndex == 0)mTol *= b2_pi;
+	if(mTolIndex == CH_PHASE)mTol *= b2_pi;
 	
 	for(int i = 0; i < 5; i ++)floatParameters[i].isActive = (i == mTolIndex);
 	

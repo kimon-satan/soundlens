@@ -22,6 +22,9 @@ void testApp::setup(){
 	
 	chimeManager::setup(sender, iSender);
 	
+	tuningEngine::setSender(&sender);
+	tuningEngine::setReciever(&receiver);
+	
 	ofxOscMessage m;
 	m.setAddress("/init");
 	sender.sendMessage(m);
@@ -48,6 +51,7 @@ void testApp::setup(){
 	menuStrings.push_back("pivot");
 	
 	currentAction = AT_NONE;
+	isLastActionCopy = false;
 	
 }
 
@@ -55,49 +59,43 @@ void testApp::setup(){
 
 void testApp::setupSearchPresets(){
 
-	searchPreset sp3;
-	
-	sp3.name = "allSearch";
-	sp3.manualMacro.push_back(SEARCH_POSITION);
-	
-	searchPresets.push_back(sp3);
-	
 	searchPreset sp1;
 	
-	sp1.name = "surfaceSearch";
-	sp1.autoMacro.push_back(SEARCH_BPF_FDIST);
-	sp1.autoSettings.push_back(ofVec2f(0.2,0.1));
+	sp1.name = "position";
 	sp1.manualMacro.push_back(SEARCH_POSITION);
+	sp1.manualMacro.push_back(SEARCH_BPF_FDIST);
 	
 	searchPresets.push_back(sp1);
 	
-	searchPreset sp4;
-	
-	sp4.name = "deepSearch";
-	sp4.autoMacro.push_back(SEARCH_BPF_FDIST);
-	sp4.autoSettings.push_back(ofVec2f(0.8,0.2));
-	sp4.manualMacro.push_back(SEARCH_POSITION);
-	
-	searchPresets.push_back(sp4);
-	
-	
 	searchPreset sp2;
 	
-	sp2.name = "pulseSearch";
+	sp2.name = "phase";
 	sp2.autoMacro.push_back(SEARCH_MATCH_SPEED);
 	sp2.autoSettings.push_back(ofVec2f(0,0));
 	sp2.manualMacro.push_back(SEARCH_FUND_PHASE);
 	sp2.manualMacro.push_back(SEARCH_UNIQUE);
+	sp2.manualMacro.push_back(SEARCH_QUANT_PHASE);
 	
 	searchPresets.push_back(sp2);
 	
-	searchPreset sp5;
 	
-	sp5.name = "filterSearch";
-	sp5.manualMacro.push_back(SEARCH_MULTI_HPF);
-	sp5.manualMacro.push_back(SEARCH_MULTI_LPF);
+	searchPreset sp3;
 	
-	searchPresets.push_back(sp5);
+	sp3.name = "PassFiltering";
+	sp3.manualMacro.push_back(SEARCH_MULTI_LPF);
+	sp3.manualMacro.push_back(SEARCH_MULTI_HPF);
+	
+	searchPresets.push_back(sp3);
+	
+	
+	searchPreset sp4;
+	
+	sp4.name = "freq";
+	sp4.manualMacro.push_back(SEARCH_FUND_FREQ);
+	sp4.manualMacro.push_back(SEARCH_QUANT_FREQ);
+	sp4.manualMacro.push_back(SEARCH_UNIQUE);
+	
+	searchPresets.push_back(sp4);
 
 }
 
@@ -108,6 +106,7 @@ void testApp::update(){
 	ofBackground(255);
 	
 	chimeManager::update();
+	tuningEngine::handleMessages();
 	
 	if(isMouseDown)continueAction();
 
@@ -240,19 +239,19 @@ void testApp::draw(){
 		}
 		
 		
-		ofDrawBitmapString(mString,300,20);
+		ofDrawBitmapString(mString,200,20);
 		
 	}else{
 		
 		switch (currentMode) {
 			case MT_COPY:
-				ofDrawBitmapString("copier: " + chimeManager::getCopierName(mCurrentCopier), 300,20);
+				ofDrawBitmapString("copier: " + chimeManager::getCopierName(mCurrentCopier), 200,20);
 				break;
 			case MT_MOVE:
-				ofDrawBitmapString("moveType: " + chimeManager::getModName(currentMod) , 300,20);
+				ofDrawBitmapString("moveType: " + chimeManager::getModName(currentMod) , 200,20);
 				break;
 			case MT_PIVOT:
-				ofDrawBitmapString("adjustPivots: " , 300,20);
+				ofDrawBitmapString("adjustPivots: " , 200,20);
 				break;
 			
 				
@@ -263,7 +262,9 @@ void testApp::draw(){
 	}
 	
 	
-	ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate(),2), 1100,20);
+	ofDrawBitmapString("fps: " + ofToString(ofGetFrameRate(),2), 1150,20);
+	
+	ofDrawBitmapString("sieve: " + tuningEngine::getCScaleName(), 800, 20);
 	
 
 	
@@ -316,11 +317,10 @@ void testApp::drawActions(){
 
 void testApp::beginAction(){
 
-	//ActionTypes will become more specific
 	
 	switch (currentAction) {
 		case AT_ADD:
-			chimeManager::clearAllMods();
+			chimeManager::clearAllMods(); //change for selected only
 			break;
 			
 		case AT_SELECT:
@@ -328,6 +328,10 @@ void testApp::beginAction(){
 			break;
 			
 		case AT_ADJUST:
+			if(isLastActionCopy){
+				isLastActionCopy = false;
+				chimeManager::clearAllMods();
+			}
 			chimeManager::beginMod(isRM);
 			break;
 			
@@ -368,7 +372,8 @@ void testApp::endAction(){
 
 	switch (currentAction) {
 		case AT_ADD:
-			chimeManager::endNewChimes();										
+			chimeManager::endNewChimes();	
+			isLastActionCopy = true;
 			break;																
 																				
 		case AT_SELECT:
@@ -445,7 +450,8 @@ void testApp::keyPressed(int key){
 	if(key == 'b')newSearch(true);
 	if(key == 'm')currentMode = MT_MOVE;
 	if(key == 'M')currentMode = MT_PIVOT;
-	
+	if(key == '.')chimeManager::incrementMod(1);
+	if(key == ',')chimeManager::incrementMod(-1);
 	
 	
 	if(key == 'x')chimeManager::shiftFocalPoint(0.0f);
@@ -455,12 +461,14 @@ void testApp::keyPressed(int key){
 	if(key == 's')chimeManager::shiftZPos(1.0f);
 	if(key == 'A')chimeManager::equalizeZPos();
 	
-	if(key == 'v')chimeManager::incrementMod(1);
+	if(key == 't')tuningEngine::changeCScale(1);
+	if(key == 'r')tuningEngine::changeCScale(-1);
 	
+	if(key == 'i')chimeManager::invertSelection();
 	
-	if(key == 'i')chimeManager::clearSelBanks();
-	if(key == 'o')chimeManager::deleteSelBank();
-	if(key == 'p')chimeManager::saveSelBank();
+	if(key == '_')chimeManager::clearSelBanks();
+	if(key == '-')chimeManager::deleteSelBank();
+	if(key == '=')chimeManager::saveSelBank();
 	if(key == '[')chimeManager::switchSelBank(-1);
 	if(key == ']')chimeManager::switchSelBank(1);
 	
@@ -475,6 +483,8 @@ void testApp::keyReleased(int key){
 	if(key == ' ' || key == 'b'|| key == 'm' || key == 'M'){
 		currentMode = MT_COPY;
 	}
+	
+	if(key == 'r' || key == 't')tuningEngine::requestScale();
 	
 }
 

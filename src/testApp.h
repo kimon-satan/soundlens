@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "chimeManager.h"
+#include "tuningEngine.h"
 
 #define HOST "127.0.0.1"
 #define SC_PORT 57120
@@ -96,10 +97,11 @@ class testApp : public ofBaseApp{
 	float dragDist, dragAngle;
 	float distParam, angleParam;
 	string mDisplayString;
+
+	bool isLastActionCopy;
 	
 	//search stuff
 
-	
 	int cSearchPreset, cMacroStage;
 	vector<searchPreset> searchPresets;
 	

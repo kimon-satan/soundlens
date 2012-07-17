@@ -17,18 +17,10 @@
 enum e_copyType{
 	
 	TRN_P,
+	TRN_S,
+	TRN_F,
 	TRN_PF,
-	COPY_P,
-	COPY_S,
-	COPY_F,
-	COPY_PF_II,
-	COPY_SF_II,
-	COPY_PF_LI,
-	COPY_SF_LI,
-	COPY_PF_LL,
-	COPY_SF_LL,
-	COPY_PF_IL,
-	COPY_SF_IL,
+
 	COPY_COUNT,
 	
 };

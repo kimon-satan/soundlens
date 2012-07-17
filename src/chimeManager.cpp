@@ -150,7 +150,7 @@ void chimeManager::deleteHiddenChimes(){
 	mSelected.erase(it, mSelected.end());
 	
 	it = remove_if(mTmpSelected.begin(), mTmpSelected.end(), isChimeHidden);
-	mSelected.erase(it, mTmpSelected.end());
+	mTmpSelected.erase(it, mTmpSelected.end());
 	
 	it = remove_if(mChimes.begin(), mChimes.end(), isChimeHidden);
 	mChimes.erase(it, mChimes.end());
@@ -345,6 +345,30 @@ void chimeManager::endSearch(){
 	if(mSelected.size() > 0)isNewSelection = true;
 	
 	
+}
+
+
+void chimeManager::invertSelection(){
+	
+	clearTmps();
+	
+	vector<ofPtr<chime> >tmp;
+	
+	for(vector<ofPtr<chime> >::iterator it = mChimes.begin(); it != mChimes.end(); it++){
+		
+		if(!(*it)->getIsSelected()){
+			(*it)->setIsSelected(true);
+			tmp.push_back(*it);
+		}else{
+			(*it)->setIsSelected(false);
+		}
+		
+	}
+	
+	flashAlpha = 255;
+	mSelected.clear();
+	mSelected = tmp;
+
 }
 
 void chimeManager::clearTmps(){

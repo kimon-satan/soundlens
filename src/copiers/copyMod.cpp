@@ -9,7 +9,7 @@
 
 #include "copyMod.h"
 
-copyMod::copyMod(bool g_i, bool p_i, vector<int> params){
+/*copyMod::copyMod(bool g_i, bool p_i, vector<int> params){
 
 	name = "normal - ";
 	if(!g_i)name += "gLinked ";
@@ -131,4 +131,4 @@ void copyMod::drawControl( float dragDist, float dragAngle){
 	ofLine(mDown.x, mDown.y, mDrag.x, mDrag.y);
 
 
-}
+}*/

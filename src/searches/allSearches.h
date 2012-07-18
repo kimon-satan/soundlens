@@ -15,6 +15,7 @@
 #include "multiFilterSearch.h"
 #include "positionSearch.h"
 #include "uniqueSearch.h"
+#include "sieve.h"
 
 
 enum e_SearchType {
@@ -45,6 +46,7 @@ enum e_SearchType {
 	SEARCH_MULTI_HPF,
 
 	SEARCH_UNIQUE,
+	SEARCH_SIEVE,
 	SEARCH_POSITION,
 	
 	

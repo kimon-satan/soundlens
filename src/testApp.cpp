@@ -28,21 +28,23 @@ void testApp::setup(){
 	ofxOscMessage m;
 	m.setAddress("/init");
 	sender.sendMessage(m);
+	
+	tuningEngine::requestScale();
 
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
-	
+
+	currentMode = MT_COPY;
+	currentMod = MOD_GATHER; //need to change name of this
 	
 	mCurrentCopier= 0;
-	currentMode = MT_COPY;
-
-	currentMod = MOD_GATHER;
-	
 	cSearchPreset = 0;
 	cMacroStage = 0;
 	
 	isMouseDown = false;
 	
 	setupSearchPresets();
+	setupCopyPresets();
+	
 	chimeManager::createInitialChime();
 	
 	menuStrings.push_back("copy");
@@ -96,9 +98,62 @@ void testApp::setupSearchPresets(){
 	sp4.manualMacro.push_back(SEARCH_UNIQUE);
 	
 	searchPresets.push_back(sp4);
+	
+	
+	searchPreset sp5;
+	
+	sp5.name = "freqSieve";
+	sp5.manualMacro.push_back(SEARCH_SIEVE);
+	sp5.manualMacro.push_back(SEARCH_UNIQUE);
+	
+	searchPresets.push_back(sp5);
 
 }
 
+void testApp::setupCopyPresets(){
+
+	copierSpec cs;
+	copyPreset cp;
+	
+	cp.name = "p transposer";
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0.01,0.5,SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	cp.name = "fp transposer";
+	
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-12,12,SET_MAP_Y);
+	cs.para1.incr = 0.25;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	cp.name = "transMutator";
+	
+	cs.copierType = CP_MUTATE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(0,0.25,SET_USER_A);
+	cs.para2.set(0.25);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	cs.chParam = CH_PHASE;
+	cs.para1.set(-0.05,0.05,SET_USER_A);
+	cs.para1.incr = 0.005;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+}
 
 //--------------------------------------------------------------
 void testApp::update(){
@@ -245,7 +300,7 @@ void testApp::draw(){
 		
 		switch (currentMode) {
 			case MT_COPY:
-				ofDrawBitmapString("copier: " + chimeManager::getCopierName(mCurrentCopier), 200,20);
+				ofDrawBitmapString("copier: " + copyPresets[mCurrentCopier].name, 200,20);
 				break;
 			case MT_MOVE:
 				ofDrawBitmapString("moveType: " + chimeManager::getModName(currentMod) , 200,20);
@@ -279,7 +334,7 @@ void testApp::drawActions(){
 	
 		chimeManager::drawPreviewChimes();
 		ofSetColor(100);
-		chimeManager::drawCopyEngine(mCurrentCopier, dragDist, dragAngle);
+		chimeManager::drawCopyEngine(dragDist, dragAngle);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
 		
 	}
@@ -317,10 +372,16 @@ void testApp::drawActions(){
 
 void testApp::beginAction(){
 
+	if(isLastActionCopy){
+		isLastActionCopy = false;
+		chimeManager::clearAllMods();
+	}	
+
 	
 	switch (currentAction) {
+		
 		case AT_ADD:
-			chimeManager::clearAllMods(); //change for selected only
+			chimeManager::beginCopy(copyPresets[mCurrentCopier]);
 			break;
 			
 		case AT_SELECT:
@@ -328,10 +389,6 @@ void testApp::beginAction(){
 			break;
 			
 		case AT_ADJUST:
-			if(isLastActionCopy){
-				isLastActionCopy = false;
-				chimeManager::clearAllMods();
-			}
 			chimeManager::beginMod(isRM);
 			break;
 			
@@ -345,7 +402,7 @@ void testApp::continueAction(){
 	
 	switch (currentAction) {
 		case AT_ADD:
-			mDisplayString = chimeManager::continueCopy(mCurrentCopier, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueCopy(mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			break;
 			
 		case AT_SELECT:
@@ -435,7 +492,7 @@ void testApp::keyPressed(int key){
 		
 	}else if(currentMode == MT_COPY){
 		
-		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)COPY_COUNT -1);
+		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)copyPresets.size() - 1);
 		if(key == OF_KEY_DOWN)mCurrentCopier= max(mCurrentCopier- 1,0);
 		
 	}else if(currentMode == MT_MOVE){

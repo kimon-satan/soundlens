@@ -44,6 +44,9 @@ allSearches::allSearches(){
 	searches.push_back((ofPtr<baseSearch>)us);
 	
 	
+	ofPtr<sieve> ss = ofPtr<sieve>(new sieve());
+	searches.push_back((ofPtr<sieve>)ss);
+	
 	ofPtr<positionSearch> ps = ofPtr<positionSearch>(new positionSearch());
 	searches.push_back((ofPtr<baseSearch>)ps);
 	

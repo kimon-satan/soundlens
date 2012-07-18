@@ -9,17 +9,16 @@
 
 
 #pragma once
-#include "baseMod.h"
+#include "baseCopy.h"
 
 
-class copyMod : public baseMod{
+/*class copyMod : public baseCopy{
 
 
 	public:
 	
 	copyMod(bool g_i, bool p_i, vector<int> params);
 	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes);
-	vector<ofPtr<chime> > makeMod(vector<ofPtr<chime> > chimes, bool isAuto){};
 	void drawControl( float dragDist, float dragAngle);
 	
 	private:
@@ -28,4 +27,4 @@ class copyMod : public baseMod{
 	bool isGroupInd;
 	bool isParamInd;
 	
-};
+};*/

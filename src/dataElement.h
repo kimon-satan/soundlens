@@ -14,7 +14,11 @@ enum e_setType{
 	
 	SET_FIXED,
 	SET_USER_A,
-	SET_USER_B, //could add a randomize here
+	SET_USER_B,
+	SET_USER_A_INV,
+	SET_USER_B_INV,
+	SET_MAP_X,
+	SET_MAP_Y
 	
 };
 
@@ -46,11 +50,35 @@ public:
 		
 	};
 	
-	string setUserValues(float ua, float ub){ //might need ofVec2f specialization
+	string setUserValues(float ua, float ub, ofVec2f pos = ofVec2f(0,0)){ 
 		
 		if(setType != SET_FIXED){
 			
-			abs_val = ofMap((setType == SET_USER_A)? ua:ub,0,1,min_val, max_val);
+			switch(setType){
+			
+				case SET_USER_A:
+					abs_val = ofMap(ua,0,1,min_val, max_val);
+					break;
+				case SET_USER_B:
+					abs_val = ofMap(ub,0,1,min_val, max_val);
+					break;
+				case SET_USER_A_INV:
+					abs_val = ofMap(ua,0,1,max_val, min_val);
+					break;
+				case SET_USER_B_INV:
+					abs_val = ofMap(ub,0,1,max_val, min_val);
+					break;
+				case SET_MAP_X:
+					abs_val = ofMap(pos.x,-10,10,max_val, min_val,true);
+					break;
+				case SET_MAP_Y:
+					abs_val = ofMap(pos.y,4.5,-4.5,max_val, min_val,true);
+					break;
+			
+			}
+
+			
+			
 			if(incr > 0)abs_val -= fmod((float)abs_val, incr);
 			
 			if(displayNames.size() > 0){

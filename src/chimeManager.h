@@ -69,7 +69,8 @@ class chimeManager{
 	//copyCreate
 	
 	static void createInitialChime();
-	static string continueCopy(int copyType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
+	static void beginCopy(copyPreset cp);
+	static string continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float userB);
 	static void endNewChimes();
 	static string getCopierName(int i);
 	static void deleteHiddenChimes();
@@ -113,7 +114,7 @@ class chimeManager{
 	static void drawPreviewChimes();
 	static void drawSearchEngine(int searchType,float dragDist, float dragAngle);
 	static void drawModEngine(int searchType, float dragDist, float dragAngle);
-	static void drawCopyEngine(int copyType, float dragDist, float dragAngle);
+	static void drawCopyEngine(float dragDist, float dragAngle);
 	
 	private:
 

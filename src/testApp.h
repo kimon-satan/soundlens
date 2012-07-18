@@ -10,7 +10,7 @@
 #define I_HOST "192.168.1.3"
 #define I_PORT 9000
 
-//could have somthign similar for mods
+//could have somthing similar for mods
 
 struct searchPreset{
 
@@ -62,7 +62,7 @@ class testApp : public ofBaseApp{
 	
 	void handleMessages();	
 
-	void setupPresets();
+	void setupCopyPresets();
 	void setupSearchPresets();
 	
 	ofVec2f getZPlaneProjection(ofVec2f screenPoint);
@@ -81,12 +81,8 @@ class testApp : public ofBaseApp{
 	ofxOscSender sender, iSender;
 	ofxOscReceiver receiver;
 	
-	//vector<groupPreset> mPresets;
-	
-	
 	e_ActionType currentAction;
 	int currentMode;
-
 	
 	vector<string> menuStrings;
 	
@@ -102,9 +98,10 @@ class testApp : public ofBaseApp{
 	
 	//search stuff
 
-	int cSearchPreset, cMacroStage;
 	vector<searchPreset> searchPresets;
+	vector<copyPreset> copyPresets;
 	
+	int cSearchPreset, cMacroStage;
 	int currentMod;
 	int mCurrentCopier;
 

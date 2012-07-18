@@ -51,6 +51,8 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 
 void chimeManager::createInitialChime(){
 
+	chimeUpdater::setFocalPoint(1);
+	
 	ofPtr<chime> c = ofPtr<chime>(new chime());
 	
 	c->setFixedParam(CH_FREQ, 74);
@@ -71,15 +73,25 @@ void chimeManager::createInitialChime(){
 	
 	mPreviewChimes.push_back(c);
 	endNewChimes();
+	
+	mSelected.clear();
+	mSelected.push_back(c);
 
 }
 
 
-string chimeManager::continueCopy(int copyType, ofVec2f mD, ofVec2f mDr, float userA, float userB){
+void chimeManager::beginCopy(copyPreset cp){
+	
+	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->endMods();
+	mCopyEngine.beginCopy(cp);	
+
+}
+
+string chimeManager::continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float userB){
 
 	string s = "";
-	s = mCopyEngine.updateUserValues(copyType, mD, mDr, userA, userB);
-	mPreviewChimes = mCopyEngine.getCopies(copyType, mSelected);
+	s = mCopyEngine.updateUserValues(mD, mDr, userA, userB);
+	mPreviewChimes = mCopyEngine.getCopies(mSelected);
 	
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
@@ -493,11 +505,10 @@ void chimeManager::drawModEngine(int searchType, float dragDist, float dragAngle
 	mModEngine.drawPreview(searchType, dragDist, dragAngle);
 }
 
-void chimeManager::drawCopyEngine(int copyType, float dragDist, float dragAngle){
+void chimeManager::drawCopyEngine(float dragDist, float dragAngle){
 	
-	mCopyEngine.drawPreview(copyType, dragDist, dragAngle);
+	mCopyEngine.drawPreview(dragDist, dragAngle);
 }
 
 string chimeManager::getSearchName(int i){return mSearchEngine.getSearchName(i);}
 string chimeManager::getModName(int i){return mModEngine.getModName(i);}
-string chimeManager::getCopierName(int i){return mCopyEngine.getCopyName(i);}

@@ -24,6 +24,9 @@ class tuningEngine{
 	static void setSender(ofxOscSender * s);
 	static void setReciever(ofxOscReceiver * r);
 	static void handleMessages();
+	static void setOffset(float f);
+	static bool checkForMatch(float f, float toll);
+	static float getNearestNeighbour(float f);
 	
 	private:
 	
@@ -32,6 +35,8 @@ class tuningEngine{
 	static ofxOscSender * mSender;
 	static ofxOscReceiver * mReceiver;
 	static vector<float> mMidiNotes;
+	static vector<float> mOffsetMidiNotes;
+	static float mOffset;
 	
 
 };

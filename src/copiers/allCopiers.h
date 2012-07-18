@@ -10,20 +10,37 @@
 #pragma once
 
 #include "chimeUpdater.h"
-#include "baseMod.h"
-#include "copyMod.h"
+#include "shiftMod.h"
+#include "baseCopy.h"
 #include "transpose.h"
+#include "mutate.h"
 
 enum e_copyType{
 	
-	TRN_P,
-	TRN_S,
-	TRN_F,
-	TRN_PF,
+	CP_TRANSPOSE,
+	CP_MUTATE,
+	CP_ROTATE,
+	CP_SHUFFLE,
+	CP_INVERT,
+	CP_REVERSE,
+	CP_EXPAND,
+	CP_CONTRACT,
+	CP_SIEVE,
 
-	COPY_COUNT,
+	COPY_COUNT
 	
 };
+
+
+
+struct copyPreset{
+	
+	string name;
+	vector<copierSpec> copiers;
+	
+};
+
+
 
 class allCopiers{
 	
@@ -31,19 +48,20 @@ public:
 	
 	allCopiers();
 	
-	vector <ofPtr<chime> > getCopies(int copyType, vector<ofPtr<chime> > targetGrp);
-	void drawPreview(int copyType,float dragDist, float dragAngle);
+	void beginCopy(copyPreset cp);
+	vector <ofPtr<chime> > getCopies(vector<ofPtr<chime> > targetGrp);
+	void drawPreview(float dragDist, float dragAngle);
 	
-	string updateUserValues(int copyType, ofVec2f mD, ofVec2f mDr, float ua, float ub);
-	
-	string getCopyName(int i);
+	string updateUserValues(ofVec2f mD, ofVec2f mDr, float ua, float ub);
 	
 	void nextGeneration();
 	void resetGenCount();
 	
 private:
 	
-	vector<ofPtr<baseMod> > copiers;
+	vector<ofPtr<baseCopy> > copiers;
+	
+	ofVec2f mDown, mDrag;
 	
 	
 };

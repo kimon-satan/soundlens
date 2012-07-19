@@ -7,3 +7,20 @@
  *
  */
 
+#pragma once
+#include "baseCopy.h"
+
+class invert : public baseCopy{
+	
+	
+public:
+	
+	invert(copierSpec cSpec);
+	vector<ofPtr<chime> > getCopies(vector<ofPtr<chime> > chimes);
+
+	
+private:
+	
+	
+	
+};

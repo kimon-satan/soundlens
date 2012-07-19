@@ -305,7 +305,8 @@ float tuningEngine::getNearestNeighbour(float f){
 	
 	}
 	
-	newF = f - minDiff;
+	newF = f + minDiff;
+	
 	
 	return newF;
 	

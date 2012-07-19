@@ -36,13 +36,26 @@ void allCopiers::beginCopy(copyPreset cp){
 			ofPtr<mutate> ncpy = ofPtr<mutate>(new mutate(cp.copiers[i]));
 			copiers.push_back((ofPtr<baseCopy>)ncpy);
 			
-		}else if(cp.copiers[i].copierType == CP_ROTATE){ 
-		}else if(cp.copiers[i].copierType == CP_SHUFFLE){ 
+		}else if(cp.copiers[i].copierType == CP_ARRANGE){ 
+			
+			ofPtr<arrangeCopy> ncpy = ofPtr<arrangeCopy>(new arrangeCopy(cp.copiers[i]));
+			copiers.push_back((ofPtr<baseCopy>)ncpy);
+			
+			
 		}else if(cp.copiers[i].copierType == CP_INVERT){ 
-		}else if(cp.copiers[i].copierType == CP_REVERSE){ 
-		}else if(cp.copiers[i].copierType == CP_EXPAND){ 
-		}else if(cp.copiers[i].copierType == CP_CONTRACT){ 
+			
+			ofPtr<invert> ncpy = ofPtr<invert>(new invert(cp.copiers[i]));
+			copiers.push_back((ofPtr<baseCopy>)ncpy);
+			
+		}else if(cp.copiers[i].copierType == CP_RESIZE){
+			
+			ofPtr<resize> ncpy = ofPtr<resize>(new resize(cp.copiers[i]));
+			copiers.push_back((ofPtr<baseCopy>)ncpy);
+			
 		}else if(cp.copiers[i].copierType == CP_SIEVE){ 
+			
+			ofPtr<sieveCopy> ncpy = ofPtr<sieveCopy>(new sieveCopy(cp.copiers[i]));
+			copiers.push_back((ofPtr<baseCopy>)ncpy);
 		}
 		
 	}

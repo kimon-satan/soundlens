@@ -136,7 +136,7 @@ void testApp::setupCopyPresets(){
 	copyPresets.push_back(cp);
 	
 	
-	cp.name = "transMutator";
+	cp.name = "fp TransMutator";
 	
 	cs.copierType = CP_MUTATE;
 	cs.chParam = CH_FREQ;
@@ -151,6 +151,58 @@ void testApp::setupCopyPresets(){
 	cp.copiers.push_back(cs);
 	
 	copyPresets.push_back(cp);
+	
+	
+	cp.name = "f Arranger";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_ARRANGE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(0,3,SET_USER_B);
+	cs.para1.incr = 1.0;
+	cs.para2.set(1,20,SET_USER_A);
+	cs.para2.incr = 1.0;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	cp.name = "fp Inverter";
+	cp.copiers.clear();
+	cs.chParam = CH_FREQ;
+	cs.copierType = CP_INVERT;
+	cp.copiers.push_back(cs);
+	cs.chParam = CH_PHASE;
+	cs.copierType = CP_INVERT;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	cp.name = "p Resizor";
+	cp.copiers.clear();
+	cs.chParam = CH_FREQ;
+	cs.copierType = CP_RESIZE;
+	cs.para1.set(0.25, 2.0, SET_USER_A);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+
+	
+	copyPresets.push_back(cp);
+	
+	
+	cp.name = "transpose sieve";
+	cp.copiers.clear();
+	/*cs.chParam = CH_FREQ;
+	cs.copierType = CP_TRANSPOSE;
+	cs.para1.set(-12, 12.0, SET_MAP_Y);
+	cp.copiers.push_back(cs);*/
+	cs.chParam = CH_FREQ;
+	cs.copierType = CP_SIEVE;
+	cs.para1.set(0, 12.0, SET_USER_B);
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
 	
 	
 }

@@ -7,3 +7,21 @@
  *
  */
 
+
+#pragma once
+#include "baseCopy.h"
+
+class resize : public baseCopy{
+	
+	
+public:
+	
+	resize(copierSpec cSpec);
+	vector<ofPtr<chime> > getCopies(vector<ofPtr<chime> > chimes);
+	
+	
+private:
+	
+	
+	
+};

@@ -14,23 +14,23 @@
 #include "baseCopy.h"
 #include "transpose.h"
 #include "mutate.h"
+#include "arrangeCopy.h"
+#include "invert.h"
+#include "resize.h"
+#include "sieveCopy.h"
 
 enum e_copyType{
 	
 	CP_TRANSPOSE,
 	CP_MUTATE,
-	CP_ROTATE,
-	CP_SHUFFLE,
+	CP_ARRANGE,
 	CP_INVERT,
-	CP_REVERSE,
-	CP_EXPAND,
-	CP_CONTRACT,
+	CP_RESIZE,
 	CP_SIEVE,
 
 	COPY_COUNT
 	
 };
-
 
 
 struct copyPreset{
@@ -39,7 +39,6 @@ struct copyPreset{
 	vector<copierSpec> copiers;
 	
 };
-
 
 
 class allCopiers{

@@ -22,10 +22,12 @@ invert::invert(copierSpec cSpec){
 
 vector<ofPtr<chime> >invert::getCopies(vector<ofPtr<chime> > chimes){
 	
-	if(chimes.size() < 2)return chimes;
+	
 	
 	vector<ofPtr<chime> >::iterator it;
 	vector<ofPtr<chime> > nChimes;
+	
+	if(chimes.size() < 2)return nChimes;
 	
 	vector<float> rVals;
 	

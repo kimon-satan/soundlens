@@ -70,7 +70,7 @@ chime::chime(){
 	isSelected = false;
 	isTmpSelected = false;
 	generation = 0;
-
+	timeToConform = 300;
 	
 }
 
@@ -224,6 +224,20 @@ bool chime::getIsTmpSelected(){return isTmpSelected;}
 
 void chime::setGeneration(int i){generation = i;}
 int chime::getGeneration(){return generation;}
+
+bool chime::incrTimeToConform(){ 
+	
+	timeToConform -= 1;
+	if(timeToConform == 0){
+		timeToConform = 300;
+		return true;
+	}else{
+		return false;
+	}
+
+}
+
+
 
 chime::~chime(){
 

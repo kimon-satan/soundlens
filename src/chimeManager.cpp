@@ -14,8 +14,10 @@ vector<ofPtr<chime> > chimeManager::mPreviewChimes;
 
 vector<ofPtr<chime> > chimeManager::mSelected;
 vector<ofPtr<chime> > chimeManager::mTmpSelected;
-vector<vector<ofPtr<chime> > > chimeManager::mSelectionBank;
+vector<ofPtr<chime> > chimeManager::mCrossFaded;
+vector<vector<ofPtr<chime> > > chimeManager::mHistory;
 vector<vector<ofPtr<chime> > > chimeManager::renderList;
+vector<vector<ofPtr<chime> > > chimeManager::mSaved;
 
 allSearches chimeManager::mSearchEngine;
 allMods chimeManager::mModEngine;
@@ -28,7 +30,6 @@ float chimeManager::mMaxZ = 0.0f;
 bool chimeManager::isNewSelection = false;
 float chimeManager::flashAlpha = 0;
 customListener chimeManager::mListener;
-
 
 bool isChimeHidden(ofPtr<chime> c){return (c->getBlur() > 0.99);}
 bool isBankEmpty(vector<ofPtr<chime> > cVec){return (cVec.size() < 1);}
@@ -44,7 +45,12 @@ void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
 		vector<ofPtr<chime> > tc;
 		renderList.push_back(tc);
 	}
-
+	
+	
+	for(int i = 0; i < 10; i++){
+		vector<ofPtr<chime> > t;
+		mSaved.push_back(t);
+	}
 
 }
 
@@ -95,7 +101,7 @@ string chimeManager::continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float us
 	
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){
-		chimeFactory::conformPhase(*it);
+		chimeUpdater::conformPhase(*it);
 		chimeUpdater::updateDims(*it);
 		chimeFactory::mapFreqToSensors(*it);
 		
@@ -111,7 +117,7 @@ void chimeManager::endNewChimes(){
 	
 	
 	if(isNewSelection && mSelected.size() > 0){
-		mSelectionBank.push_back(mSelected);
+		mHistory.push_back(mSelected);
 	}
 	
 	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
@@ -120,7 +126,7 @@ void chimeManager::endNewChimes(){
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it++){
 		(*it)->setIsSelected(true);
 		chimeFactory::mapFreqToSensors(*it);
-		chimeFactory::conformPhase(*it);
+		chimeUpdater::conformPhase(*it);
 		chimeFactory::initBodies(*it);
 		(*it)->setCollisionListener(mListener);
 		mChimes.push_back(*it);
@@ -131,9 +137,9 @@ void chimeManager::endNewChimes(){
 	isNewSelection = true;
 	
 	if(mSelected.size() > 0){
-		mSelectionBank.push_back(mSelected);
+		mHistory.push_back(mSelected);
 		isNewSelection = false;
-		sbIndex = mSelectionBank.size() -1;
+		sbIndex = mHistory.size() -1;
 	}
 	
 	
@@ -145,24 +151,36 @@ void chimeManager::deleteHiddenChimes(){
 
 	vector<ofPtr<chime> >::iterator it;
 	
-	for(int i =0; i < mSelectionBank.size(); i++){
-		it = remove_if(mSelectionBank[i].begin(), mSelectionBank[i].end(), isChimeHidden);
-		mSelectionBank[i].erase(it, mSelectionBank[i].end());
+	
+	for(int i =0; i < mSaved.size(); i++){
+		it = remove_if(mSaved[i].begin(), mSaved[i].end(), isChimeHidden);
+		mSaved[i].erase(it, mSaved[i].end());
+	}
+	
+	
+	
+	for(int i =0; i < mHistory.size(); i++){
+		it = remove_if(mHistory[i].begin(), mHistory[i].end(), isChimeHidden);
+		mHistory[i].erase(it, mHistory[i].end());
 	}
 	
 	//remove empty selection banks
 	
 	vector<vector<ofPtr<chime> > >::iterator it2;
 	
-	it2 = remove_if(mSelectionBank.begin(), mSelectionBank.end(), isBankEmpty);
-	mSelectionBank.erase(it2, mSelectionBank.end());
-	sbIndex = mSelectionBank.size() -1;
+
+	it2 = remove_if(mHistory.begin(), mHistory.end(), isBankEmpty);
+	mHistory.erase(it2, mHistory.end());
+	sbIndex = mHistory.size() -1;
 	
 	it = remove_if(mSelected.begin(), mSelected.end(), isChimeHidden);
 	mSelected.erase(it, mSelected.end());
 	
 	it = remove_if(mTmpSelected.begin(), mTmpSelected.end(), isChimeHidden);
 	mTmpSelected.erase(it, mTmpSelected.end());
+	
+	it = remove_if(mCrossFaded.begin(), mCrossFaded.end(), isChimeHidden);
+	mCrossFaded.erase(it, mCrossFaded.end());
 	
 	it = remove_if(mChimes.begin(), mChimes.end(), isChimeHidden);
 	mChimes.erase(it, mChimes.end());
@@ -210,11 +228,13 @@ void chimeManager::shiftFocalPoint(float direction){
 	
 }
 
-void chimeManager::shiftZPos(float direction){
-	
+
+void chimeManager::shiftZPos(vector<ofPtr<chime> > & tChimes, float direction){
+
 	float fp = chimeUpdater::getFocalPoint();
 	
-	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++){
+	
+	for(vector<ofPtr<chime> >::iterator it = tChimes.begin(); it != tChimes.end(); it++){
 		
 		float d = fp - (*it)->getZpos();
 		
@@ -222,7 +242,7 @@ void chimeManager::shiftZPos(float direction){
 			
 			float a = (d != 0.0) ?((d > 0)? 0.005: -0.005) : 0.0;
 			(*it)->setZpos((*it)->getZpos() + a);
-			
+
 		}else{
 			
 			float a = (d > 0)? -0.01: 0.01;
@@ -233,12 +253,11 @@ void chimeManager::shiftZPos(float direction){
 				(*it)->setZpos(fp + d);
 				a = 0.01;
 			}else if(d <= 0 && fp > 1){
-				(*it)->setZpos(fp - d);
+				(*it)->setZpos(fp + d);
 				a = -0.01;
 			}
 			
 			(*it)->setZpos(min(max((*it)->getZpos() + a, 0.0f), 2.0f )); 
-			
 		}
 		
 	}
@@ -246,7 +265,26 @@ void chimeManager::shiftZPos(float direction){
 	rePopulateRenderList();
 }
 
+void chimeManager::shiftZPos(float direction){
+	
+	shiftZPos(mSelected, direction);
+	if(isNewSelection)saveHistory();
+	
+}
+
+void chimeManager::crossFade(float direction){
+	
+	if(mHistory.size() >= 2){
+		shiftZPos(mHistory[mHistory.size() - 1], direction);
+		shiftZPos(mHistory[mHistory.size() - 2], -direction);
+	}
+		
+}
+
+
 void chimeManager::equalizeZPos(){
+	
+	if(isNewSelection)saveHistory();
 	
 	vector<ofPtr<chime> >::iterator it; 
 	
@@ -267,13 +305,15 @@ void chimeManager::equalizeZPos(){
 }
 
 
-void chimeManager::switchSelBank(int i){
+
+
+void chimeManager::incrHistory(int i){
 	
-	if(mSelectionBank.size() > 0){
-		sbIndex = min((int)mSelectionBank.size() - 1, max(sbIndex + i, 0));
+	if(mHistory.size() > 0){
+		sbIndex = min((int)mHistory.size() - 1, max(sbIndex + i, 0));
 		for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
 		mSelected.clear();
-		mSelected = mSelectionBank[sbIndex];
+		mSelected = mHistory[sbIndex];
 		for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
 		flashAlpha = 255;
 		isNewSelection = false;
@@ -282,32 +322,51 @@ void chimeManager::switchSelBank(int i){
 }
 
 
-void chimeManager::saveSelBank(){
+void chimeManager::saveHistory(){
 
 	if(isNewSelection){
-		mSelectionBank.push_back(mSelected);
+		mHistory.push_back(mSelected);
 		flashAlpha = 255;
 		isNewSelection = false;
-		sbIndex = mSelectionBank.size() -1;
+		sbIndex = mHistory.size() -1;
 	}
 	
 }
 
-void chimeManager::clearSelBanks(){
+void chimeManager::saveToBank(int i){
 
-	mSelectionBank.clear();
-	sbIndex = 0;
-
+	mSaved[i] = mSelected;
+	flashAlpha = 255;
+	isNewSelection = true;
+	saveHistory();
+	
 }
 
-void chimeManager::deleteSelBank(){
+void chimeManager::switchToBank(int i, bool merge){
 	
-	if(!isNewSelection){
-		mSelectionBank.erase(mSelectionBank.begin() + sbIndex);
-		isNewSelection = true;
-		sbIndex = mSelectionBank.size() -1;
+	vector<ofPtr<chime> >::iterator it;
+	
+	if(merge){
+		
+		for(it = mSaved[i].begin(); it != mSaved[i].end(); it++){
+			(*it)->setIsSelected(true);
+			mSelected.push_back((*it));
+		}
+		
+		sort(mSelected.begin(), mSelected.end());
+		it = unique(mSelected.begin(), mSelected.end());
+		mSelected.resize(it - mSelected.begin());
+	
+	}else{
+	
+		for(it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
+		mSelected = mSaved[i];
+	
 	}
 	
+	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
+	flashAlpha = 255;
+
 }
 
 
@@ -380,6 +439,8 @@ void chimeManager::invertSelection(){
 	flashAlpha = 255;
 	mSelected.clear();
 	mSelected = tmp;
+	
+	isNewSelection = true;
 
 }
 
@@ -416,6 +477,8 @@ string chimeManager::continueMod(int modType, ofVec2f mD, ofVec2f mDr, float use
 void chimeManager::endMod(int modType){
 	
 	mModEngine.makeMod(modType, mSelected);
+	
+	if(isNewSelection)saveHistory();
 	
 }
 

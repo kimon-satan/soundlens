@@ -104,7 +104,7 @@ class testApp : public ofBaseApp{
 	int cSearchPreset, cMacroStage;
 	int currentMod;
 	int mCurrentCopier;
-
+	bool isTab;
 	
 	
 };

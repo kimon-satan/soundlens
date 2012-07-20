@@ -136,6 +136,8 @@ public:
 	void setGeneration(int i);
 	int getGeneration();
 	
+	bool incrTimeToConform();
+	
 	static string getChFixedString(int i);
 	static string getChModString(int i);
 	
@@ -175,5 +177,7 @@ private:
 	
 	float zPos;
 	bool isSelected, isTmpSelected;
+	
+	int timeToConform;
 
 };

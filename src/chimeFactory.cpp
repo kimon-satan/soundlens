@@ -32,30 +32,8 @@ namespace chimeFactory {
 	}
 	
 	
-	void conformPhase(ofPtr<chime> c){
-		
-		stemDims sd = c->getStemDims();
-		
-		sd.iAngle = c->getFixedParam(CH_PHASE);
-		sd.iAngle += c->getFixedParam(CH_SPEED) * (float)ofGetFrameNum()/60.0f;
-		
-		c->setStemDims(sd);
-		
-		b2Body * stem = c->getStemBody();
-		b2Body * hammer = c->getHammer();
-		b2Body * sensors[2];
-		for(int i = 0; i < 2; i++)sensors[i] = c->getSensors()[i];
-		
-		if(stem){
-			stem->SetTransform(stem->GetPosition(), sd.iAngle);
-			hammer->SetTransform(hammer->GetPosition(), sd.iAngle);
-			for(int i = 0; i < 2; i++)sensors[i]->SetTransform(sensors[i]->GetPosition(), sd.iAngle);
-		}
-		
-	}
-	
-	
-	
+
+
 	
 	void changeSpeed(ofPtr <chime> c){
 	

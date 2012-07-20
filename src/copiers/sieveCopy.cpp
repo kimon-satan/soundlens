@@ -31,7 +31,6 @@ sieveCopy::sieveCopy(copierSpec cSpec){
 
 vector<ofPtr<chime> >sieveCopy::getCopies(vector<ofPtr<chime> > chimes){
 	
-	if(chimes.size() < 1)return chimes;
 	
 	vector<ofPtr<chime> >::iterator it;
 	vector<ofPtr<chime> > nChimes;

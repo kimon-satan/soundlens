@@ -20,10 +20,11 @@ arrangeCopy::arrangeCopy(copierSpec cSpec){
 	if(cSpec.para1.setType == SET_FIXED)cSpec.para1.isActive = false;
 	cSpec.para1.incr = 1.0;
 	cSpec.para1.min_val = 0;
-	cSpec.para1.max_val = 3;
+	cSpec.para1.max_val = 4;
 	cSpec.para1.displayNames.push_back("rotate");
 	cSpec.para1.displayNames.push_back("shuffle");
 	cSpec.para1.displayNames.push_back("reverse");
+	cSpec.para1.displayNames.push_back("sort - asc");
 	
 	cSpec.para2.name = "num";
 	if(cSpec.para2.setType == SET_FIXED)cSpec.para2.isActive = false;
@@ -55,9 +56,14 @@ vector<ofPtr<chime> >arrangeCopy::getCopies(vector<ofPtr<chime> > chimes){
 		
 		random_shuffle(rVals.begin(), rVals.end()); //could look into making this more subtle at some point
 		
-	}else{
+	}else if(floatParameters[0].abs_val == 2){
 		
 		reverse(rVals.begin(), rVals.end());
+		
+	}else if(floatParameters[0].abs_val == 3){
+	
+		sort(rVals.begin(), rVals.end());
+	
 	}
 	 
 	

@@ -17,20 +17,17 @@ multiFilterSearch::multiFilterSearch(bool isHpass){
 	
 	dataElement <int> t_para;
 	t_para.name = "parameter";
-	t_para.set(0,6,SET_USER_B);
+	t_para.set(0,5,SET_USER_B);
 	
-	for(int i = 0; i < 3; i ++)t_para.displayNames.push_back(chime::getChFixedString(i));
+	for(int i = 0; i < 5; i ++)t_para.displayNames.push_back(chime::getChFixedString(i));
 	
-	t_para.displayNames.push_back("blur");
-	t_para.displayNames.push_back("freq");
-	t_para.displayNames.push_back("decay");
 	
 	t_para.abs_val = 0;
 	
 	intParameters.push_back(t_para);
 	
 	
-	float bands[][2] = {{0, b2_pi}, {0, 1.0}, {0.5, 5.0}, {0,1.0}, {MIDI_MIN, MIDI_MIN + MIDI_RANGE}, {0.1,3.0}};
+	float bands[][2] = {{0, b2_pi}, {0, 1.0}, {0.5, 5.0}, {MIDI_MIN, MIDI_MIN + MIDI_RANGE}, {0.1,3.0}};
 	
 	for(int i = 0; i < 6; i++){
 		
@@ -56,7 +53,7 @@ vector<ofPtr<chime> > multiFilterSearch::getChimes(searchData& sd,ofPtr<chime> s
 		
 		bool isPassed = true;
 			
-		float val = (paramType != 4)?(*it)->getFixedParam(paramType) : (*it)->getBlur();
+		float val = (*it)->getFixedParam(paramType);
 		
 		if(mIsHighPass){
 			if(val <  fp)isPassed = false;
@@ -81,8 +78,8 @@ string multiFilterSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float u
 	
 	baseSearch::setUserData(mD,mDr,ua,ub);
 	
-	int pIndexes[] = {CH_PHASE, CH_SPEED, CH_LENGTH, 3, CH_FREQ, CH_DECAY};
-	paramType = pIndexes[intParameters[0].abs_val];
+	
+	paramType = intParameters[0].abs_val;
 	
 	for(int i = 0; i < 6; i ++)floatParameters[i].isActive = (i == intParameters[0].abs_val);
 	

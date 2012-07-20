@@ -64,7 +64,13 @@ class chimeManager{
 	
 	static void shiftFocalPoint(float direction);
 	static void shiftZPos(float direction);
+	static void shiftZPos(vector<ofPtr<chime> > & tChimes, float direction);
 	static void equalizeZPos();
+	
+	
+	//crossFading
+	
+	static void crossFade(float direction);
 	
 	//copyCreate
 	
@@ -87,12 +93,13 @@ class chimeManager{
 	static void clearTmps();
 	
 	//
-	static void switchSelBank(int i);
-	static void saveSelBank();
-	static void clearSelBanks();
-	static void deleteSelBank();
+	static void incrHistory(int i);
+	static void saveHistory();
 	
 	static void invertSelection();
+	
+	static void saveToBank(int i);
+	static void switchToBank(int i, bool merge);
 	
 	//mod methods
 	
@@ -122,10 +129,13 @@ class chimeManager{
 	
 	static vector<ofPtr<chime> > mPreviewChimes;
 	static vector<ofPtr<chime> > mSelected;
+	static vector<ofPtr<chime> > mCrossFaded;
 	static vector<ofPtr<chime> > mTmpSelected;
 	static vector<vector<ofPtr<chime> > > renderList;
 	
-	static vector<vector<ofPtr<chime> > >mSelectionBank;
+	static vector<vector<ofPtr<chime> > >mHistory;
+	static vector<vector<ofPtr<chime> > >mSaved;
+
 	
 	static int sbIndex;
 	static float mMaxZ;

@@ -86,7 +86,6 @@ vector <ofPtr<chime> > allCopiers::getCopies(vector<ofPtr<chime> > targetGrp){
 		
 	}
 	
-	//bad access here not sure why 16/07
 	vector<ofPtr<chime> > nGrp = targetGrp;
 	
 	for(int i = 0; i < copiers.size(); i ++){
@@ -94,7 +93,7 @@ vector <ofPtr<chime> > allCopiers::getCopies(vector<ofPtr<chime> > targetGrp){
 	}
 	
 	int nGen = oldGen + 1;
-	float hue = 255 - (nGen * 5)%255;
+	float hue = 255 - (nGen * 7)%255;
 	
 	for(it = nGrp.begin(); it != nGrp.end(); it++){
 		(*it)->setGeneration(nGen);	

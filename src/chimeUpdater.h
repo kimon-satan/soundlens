@@ -30,6 +30,8 @@ class chimeUpdater{
 	
 	static void updateDims(ofPtr<chime> c);
 	static void reCalcAnchorPoint(ofPtr<chime> c);
+	static void conformPhase(ofPtr<chime> c);
+	
 	
 	private:
 	

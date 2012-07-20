@@ -55,6 +55,8 @@ void testApp::setup(){
 	currentAction = AT_NONE;
 	isLastActionCopy = false;
 	
+	isTab = false;
+	
 }
 
 
@@ -107,6 +109,18 @@ void testApp::setupSearchPresets(){
 	sp5.manualMacro.push_back(SEARCH_UNIQUE);
 	
 	searchPresets.push_back(sp5);
+	
+	
+	searchPreset sp6;
+	
+	sp6.name = "phase";
+	sp6.autoMacro.push_back(SEARCH_MATCH_SPEED);
+	sp6.autoSettings.push_back(ofVec2f(0,0));
+	sp6.manualMacro.push_back(SEARCH_BPF_PHASE);
+
+	
+	searchPresets.push_back(sp6);
+	
 
 }
 
@@ -119,7 +133,7 @@ void testApp::setupCopyPresets(){
 	
 	cs.copierType = CP_TRANSPOSE;
 	cs.chParam = CH_PHASE;
-	cs.para1.set(0.01,0.5,SET_USER_B);
+	cs.para1.set(0.01,1.0,SET_USER_B);
 	cs.para1.incr = 0.01;
 	cp.copiers.push_back(cs);
 	
@@ -129,8 +143,21 @@ void testApp::setupCopyPresets(){
 	cp.name = "fp transposer";
 	
 	cs.chParam = CH_FREQ;
-	cs.para1.set(-12,12,SET_MAP_Y);
-	cs.para1.incr = 0.25;
+	cs.para1.set(-6,6,SET_MAP_Y);
+	cs.para1.incr = 0.5;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	cp.name = "fp transposer2";
+	cp.copiers.clear();
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-6,6,SET_USER_A);
+	cs.para1.incr = 0.5;
+	cp.copiers.push_back(cs);
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0.01,1.0,SET_USER_B);
+	cs.para1.incr = 0.01;
 	cp.copiers.push_back(cs);
 	
 	copyPresets.push_back(cp);
@@ -166,11 +193,43 @@ void testApp::setupCopyPresets(){
 	
 	copyPresets.push_back(cp);
 	
-	cp.name = "fp Inverter";
+	
+	cp.name = "fp Arranger";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_ARRANGE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(0,3,SET_USER_B);
+	cs.para1.incr = 1.0;
+	cs.para2.set(1,20,SET_USER_A);
+	cs.para2.incr = 1.0;
+	cp.copiers.push_back(cs);
+	cs.copierType = CP_ARRANGE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0,3,SET_USER_B);
+	cs.para1.incr = 1.0;
+	cs.para2.set(1,20,SET_USER_A);
+	cs.para2.incr = 1.0;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	cp.name = "transpose sieve";
 	cp.copiers.clear();
 	cs.chParam = CH_FREQ;
-	cs.copierType = CP_INVERT;
+	cs.copierType = CP_TRANSPOSE;
+	cs.para1.set(-12, 12.0, SET_MAP_Y);
 	cp.copiers.push_back(cs);
+	cs.chParam = CH_FREQ;
+	cs.copierType = CP_SIEVE;
+	cs.para1.set(0, 12.0, SET_USER_B);
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	cp.name = "p Inverter";
+	cp.copiers.clear();
 	cs.chParam = CH_PHASE;
 	cs.copierType = CP_INVERT;
 	cp.copiers.push_back(cs);
@@ -180,28 +239,42 @@ void testApp::setupCopyPresets(){
 	
 	cp.name = "p Resizor";
 	cp.copiers.clear();
-	cs.chParam = CH_FREQ;
+	cs.chParam = CH_PHASE;
 	cs.copierType = CP_RESIZE;
 	cs.para1.set(0.25, 2.0, SET_USER_A);
 	cs.para1.incr = 0.01;
 	cp.copiers.push_back(cs);
 
-	
 	copyPresets.push_back(cp);
 	
 	
-	cp.name = "transpose sieve";
+	cp.name = "pf Resizor";
 	cp.copiers.clear();
-	/*cs.chParam = CH_FREQ;
-	cs.copierType = CP_TRANSPOSE;
-	cs.para1.set(-12, 12.0, SET_MAP_Y);
-	cp.copiers.push_back(cs);*/
+	cs.chParam = CH_PHASE;
+	cs.copierType = CP_RESIZE;
+	cs.para1.set(0.25, 2.0, SET_USER_A);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
 	cs.chParam = CH_FREQ;
-	cs.copierType = CP_SIEVE;
-	cs.para1.set(0, 12.0, SET_USER_B);
+	cs.copierType = CP_RESIZE;
+	cs.para1.set(0.25, 2.0, SET_USER_A);
+	cs.para1.incr = 0.01;
 	cp.copiers.push_back(cs);
 	
 	copyPresets.push_back(cp);
+	
+	
+	cp.name = "s Transposor";
+	cp.copiers.clear();
+	cs.chParam = CH_SPEED;
+	cs.copierType = CP_TRANSPOSE;
+	cs.para1.set(-0.5, 0.5, SET_USER_A);
+	cs.para1.incr = 0.05;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
 	
 	
 	
@@ -314,6 +387,7 @@ void testApp::draw(){
 	mCam.end();
 	
 	
+	
 	ofFill();
 	ofSetRectMode(OF_RECTMODE_CORNER);
 	
@@ -322,6 +396,7 @@ void testApp::draw(){
 	ofRect(0,0,ofGetScreenWidth(),30);
 	ofDisableAlphaBlending();
 	ofSetColor(100);
+
 	
 
 	ofDrawBitmapString("mode: " + menuStrings[currentMode], 20,20);
@@ -373,7 +448,12 @@ void testApp::draw(){
 	
 	ofDrawBitmapString("sieve: " + tuningEngine::getCScaleName(), 800, 20);
 	
-
+	//for debugging
+	/*ofSetColor(100);
+	ofNoFill();
+	ofRect(50,ofGetScreenHeight() - 50, ofGetScreenWidth()- 100, 30);
+	float fp = ofMap(chimeUpdater::getFocalPoint(), 0, 2, 50, ofGetScreenWidth() - 50, true);
+	ofRect( fp ,ofGetScreenHeight() - 50, 20, 30);*/
 	
 }
 
@@ -556,42 +636,63 @@ void testApp::keyPressed(int key){
 	
 	
 	if(key == ' ')newSearch(false);
-	if(key == 'b')newSearch(true);
+	if(key == 0)newSearch(true); //ctrl + space
 	if(key == 'm')currentMode = MT_MOVE;
-	if(key == 'M')currentMode = MT_PIVOT;
+	if(key == 'n')currentMode = MT_PIVOT;
 	if(key == '.')chimeManager::incrementMod(1);
 	if(key == ',')chimeManager::incrementMod(-1);
 	
 	
-	if(key == 'x')chimeManager::shiftFocalPoint(0.0f);
-	if(key == 'z')chimeManager::shiftFocalPoint(1.0f);
+	if(key == 'z')chimeManager::shiftFocalPoint(-1.0f);
+	if(key == 'x')chimeManager::shiftFocalPoint(1.0f);
 	
-	if(key == 'a')chimeManager::shiftZPos(0.0f);
+	if(key == 'a')chimeManager::shiftZPos(-1.0f);
 	if(key == 's')chimeManager::shiftZPos(1.0f);
-	if(key == 'A')chimeManager::equalizeZPos();
+	if(key == 'A')chimeManager::crossFade(-1.0f);
+	if(key == 'S')chimeManager::crossFade(1.0f); 
+	if(key == 'q')chimeManager::equalizeZPos();
 	
 	if(key == 't')tuningEngine::changeCScale(1);
 	if(key == 'r')tuningEngine::changeCScale(-1);
 	
 	if(key == 'i')chimeManager::invertSelection();
+	if(key == 9)isTab = true;
 	
-	if(key == '_')chimeManager::clearSelBanks();
-	if(key == '-')chimeManager::deleteSelBank();
-	if(key == '=')chimeManager::saveSelBank();
-	if(key == '[')chimeManager::switchSelBank(-1);
-	if(key == ']')chimeManager::switchSelBank(1);
+	for(int i=0; i < 10; i++)if(key == 48 + i)chimeManager::switchToBank(i, isTab);
+	
+	switch(key){
+		case'!':chimeManager::saveToBank(1);break;
+		case'@':chimeManager::saveToBank(2);break;
+		case 163:chimeManager::saveToBank(3);break; //£ doesn't work ?
+		case'$':chimeManager::saveToBank(4);break;
+		case'%':chimeManager::saveToBank(5);break;
+		case'^':chimeManager::saveToBank(6);break;
+		case'&':chimeManager::saveToBank(7);break;
+		case'*':chimeManager::saveToBank(8);break;
+		case'(':chimeManager::saveToBank(9);break;
+		case')':chimeManager::saveToBank(0);break;
+	}
+	
+	
+	if(key == '[')chimeManager::incrHistory(-1);
+	if(key == ']')chimeManager::incrHistory(1);
+	
 	
 	if(key == 'D')chimeRenderer::isDrawPivots = !chimeRenderer::isDrawPivots;
 	if(key == OF_KEY_BACKSPACE)chimeManager::deleteHiddenChimes();
-
+	
+	
+	
 }
 
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
 
-	if(key == ' ' || key == 'b'|| key == 'm' || key == 'M'){
+	if(key == ' ' || key == 'n'|| key == 'm' || key == 0){
 		currentMode = MT_COPY;
 	}
+	
+	if(key == 9)isTab = false;
 	
 	if(key == 'r' || key == 't')tuningEngine::requestScale();
 	

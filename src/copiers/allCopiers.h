@@ -48,7 +48,7 @@ public:
 	allCopiers();
 	
 	void beginCopy(copyPreset cp);
-	vector <ofPtr<chime> > getCopies(vector<ofPtr<chime> > targetGrp);
+	vector <ofPtr<chime> > getCopies(vector<ofPtr<chime> > targetGrp, bool autoMove = false);
 	void drawPreview(float dragDist, float dragAngle);
 	
 	string updateUserValues(ofVec2f mD, ofVec2f mDr, float ua, float ub);

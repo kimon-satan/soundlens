@@ -39,11 +39,13 @@ void testApp::setup(){
 	mCurrentCopier= 0;
 	cSearchPreset = 0;
 	cMacroStage = 0;
+	mCurrentBank = 0;
 	
 	isMouseDown = false;
 	
 	setupSearchPresets();
 	setupCopyPresets();
+	setupBanks();
 	
 	chimeManager::createInitialChime();
 	
@@ -56,6 +58,7 @@ void testApp::setup(){
 	isLastActionCopy = false;
 	
 	isTab = false;
+	mDCount = 0;
 	
 }
 
@@ -71,9 +74,18 @@ void testApp::setupSearchPresets(){
 	
 	searchPresets.push_back(sp1);
 	
+	searchPreset sp1a;
+	
+	sp1a.name = "surface";
+	sp1a.autoMacro.push_back(SEARCH_BPF_FDIST);
+	sp1a.autoSettings.push_back(ofVec2f(0.1,0));
+	sp1a.manualMacro.push_back(SEARCH_POSITION);
+	
+	searchPresets.push_back(sp1a);
+	
 	searchPreset sp2;
 	
-	sp2.name = "phase";
+	sp2.name = "phaseFund";
 	sp2.autoMacro.push_back(SEARCH_MATCH_SPEED);
 	sp2.autoSettings.push_back(ofVec2f(0,0));
 	sp2.manualMacro.push_back(SEARCH_FUND_PHASE);
@@ -113,7 +125,7 @@ void testApp::setupSearchPresets(){
 	
 	searchPreset sp6;
 	
-	sp6.name = "phase";
+	sp6.name = "phaseRange";
 	sp6.autoMacro.push_back(SEARCH_MATCH_SPEED);
 	sp6.autoSettings.push_back(ofVec2f(0,0));
 	sp6.manualMacro.push_back(SEARCH_BPF_PHASE);
@@ -163,18 +175,42 @@ void testApp::setupCopyPresets(){
 	copyPresets.push_back(cp);
 	
 	
-	cp.name = "fp TransMutator";
+	cp.name = "fp Mutator";
 	
+	cp.copiers.clear();
 	cs.copierType = CP_MUTATE;
 	cs.chParam = CH_FREQ;
-	cs.para1.set(0,0.25,SET_USER_A);
-	cs.para2.set(0.25);
+	cs.para1.set(0,12,SET_USER_A);
 	cs.para1.incr = 0.01;
+	cs.para2.set(0.25);
 	cp.copiers.push_back(cs);
 	
 	cs.chParam = CH_PHASE;
-	cs.para1.set(-0.05,0.05,SET_USER_A);
-	cs.para1.incr = 0.005;
+	cs.para1.set(0,1,SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	cp.name = "fp transMutate";
+	
+	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-6,6,SET_MAP_Y);
+	cs.para1.incr = 0.5;
+	cp.copiers.push_back(cs);
+	
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0,1,SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_MUTATE;
+	cs.para1.set(0,1,SET_USER_A);
+	cs.para1.incr = 0.01;
+	cs.para2.set(0.25);
 	cp.copiers.push_back(cs);
 	
 	copyPresets.push_back(cp);
@@ -280,6 +316,59 @@ void testApp::setupCopyPresets(){
 	
 }
 
+void testApp::setupBanks(){
+
+	
+	bank tb;
+	
+	//allPresets
+	tb.name = "allPresets";
+	tb.copies = copyPresets;
+	tb.searches = searchPresets;
+	
+	banks.push_back(tb);
+	
+	
+	//bank1
+	tb.copies.clear();
+	tb.searches.clear();
+	
+	tb.name = "intro";
+	
+	tb.searches.push_back(getSearchPreset("position"));
+	tb.searches.push_back(getSearchPreset("phaseRange"));
+	tb.searches.push_back(getSearchPreset("phaseFund"));
+	
+	tb.copies.push_back(getCopyPreset("fp transposer"));
+	tb.copies.push_back(getCopyPreset("fp transMutate"));
+	
+	banks.push_back(tb);
+
+	
+	tb.copies.clear();
+	tb.searches.clear();
+	
+	tb.name = "section2";
+	
+	banks.push_back(tb);
+	
+	
+
+}
+
+searchPreset testApp::getSearchPreset(string name){
+	
+	for(int i = 0; i < searchPresets.size(); i++)if(searchPresets[i].name == name)return searchPresets[i];
+	
+}
+
+copyPreset testApp::getCopyPreset(string name){
+
+	for(int i = 0; i < copyPresets.size(); i++)if(copyPresets[i].name == name)return copyPresets[i];
+	
+
+}
+
 //--------------------------------------------------------------
 void testApp::update(){
 	
@@ -288,7 +377,10 @@ void testApp::update(){
 	chimeManager::update();
 	tuningEngine::handleMessages();
 	
-	if(isMouseDown)continueAction();
+	if(isMouseDown){
+		continueAction();
+		mDCount += 1;
+	}
 
 }
 
@@ -400,40 +492,40 @@ void testApp::draw(){
 	
 
 	ofDrawBitmapString("mode: " + menuStrings[currentMode], 20,20);
-	
+	ofDrawBitmapString("preset: " + banks[mCurrentBank].name, 150,20);
 	
 	if(currentMode == MT_SEARCH){
 		
-		string mString = "preset: ";
+		string mString = "macro: ";
 		
-		mString += searchPresets[cSearchPreset].name + " | ";
+		mString += banks[mCurrentBank].searches[cSearchPreset].name + " | ";
 		
-		for(int i = 0; i < searchPresets[cSearchPreset].autoMacro.size(); i++){
-			mString += chimeManager::getSearchName(searchPresets[cSearchPreset].autoMacro[i]);
+		for(int i = 0; i < banks[mCurrentBank].searches[cSearchPreset].autoMacro.size(); i++){
+			mString += chimeManager::getSearchName(banks[mCurrentBank].searches[cSearchPreset].autoMacro[i]);
 			mString += ", ";
 		}
 		
 		mString += " / ";
 		
-		for(int i = 0; i < searchPresets[cSearchPreset].manualMacro.size(); i++){
-			mString += chimeManager::getSearchName(searchPresets[cSearchPreset].manualMacro[i]);
+		for(int i = 0; i < banks[mCurrentBank].searches[cSearchPreset].manualMacro.size(); i++){
+			mString += chimeManager::getSearchName(banks[mCurrentBank].searches[cSearchPreset].manualMacro[i]);
 			mString += ", ";
 		}
 		
 		
-		ofDrawBitmapString(mString,200,20);
+		ofDrawBitmapString(mString,350,20);
 		
 	}else{
 		
 		switch (currentMode) {
 			case MT_COPY:
-				ofDrawBitmapString("copier: " + copyPresets[mCurrentCopier].name, 200,20);
+				ofDrawBitmapString("copier: " + banks[mCurrentBank].copies[mCurrentCopier].name, 350,20);
 				break;
 			case MT_MOVE:
-				ofDrawBitmapString("moveType: " + chimeManager::getModName(currentMod) , 200,20);
+				ofDrawBitmapString("moveType: " + chimeManager::getModName(currentMod) , 350,20);
 				break;
 			case MT_PIVOT:
-				ofDrawBitmapString("adjustPivots: " , 200,20);
+				ofDrawBitmapString("adjustPivots: " , 350,20);
 				break;
 			
 				
@@ -474,7 +566,7 @@ void testApp::drawActions(){
 	if(currentAction == AT_SELECT){
 		
 		chimeManager::drawTmpSelected();
-		chimeManager::drawSearchEngine(searchPresets[cSearchPreset].manualMacro[cMacroStage],dragDist, dragAngle);
+		chimeManager::drawSearchEngine(banks[mCurrentBank].searches[cSearchPreset].manualMacro[cMacroStage],dragDist, dragAngle);
 		
 		ofSetColor(100);
 		ofDrawBitmapString(mDisplayString, mouseDownPos.x + 0.5, mouseDownPos.y + 0.5);
@@ -513,7 +605,7 @@ void testApp::beginAction(){
 	switch (currentAction) {
 		
 		case AT_ADD:
-			chimeManager::beginCopy(copyPresets[mCurrentCopier]);
+			chimeManager::beginCopy(banks[mCurrentBank].copies[mCurrentCopier]);
 			break;
 			
 		case AT_SELECT:
@@ -534,11 +626,11 @@ void testApp::continueAction(){
 	
 	switch (currentAction) {
 		case AT_ADD:
-			mDisplayString = chimeManager::continueCopy(mouseDownPos, mouseDragPos, dragDist, dragAngle);
+			mDisplayString = chimeManager::continueCopy(mouseDownPos, mouseDragPos, dragDist, dragAngle, isRM);
 			break;
 			
 		case AT_SELECT:
-			mDisplayString = chimeManager::continueSearch(searchPresets[cSearchPreset].manualMacro[cMacroStage],
+			mDisplayString = chimeManager::continueSearch(banks[mCurrentBank].searches[cSearchPreset].manualMacro[cMacroStage],
 														  mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			break;
 			
@@ -567,7 +659,7 @@ void testApp::endAction(){
 																				
 		case AT_SELECT:
 			chimeManager::endSearch();
-			cMacroStage = min(cMacroStage + 1,(int)searchPresets[cSearchPreset].manualMacro.size()-1);
+			cMacroStage = min(cMacroStage + 1,(int)banks[mCurrentBank].searches[cSearchPreset].manualMacro.size()-1);
 			break;
 		
 
@@ -597,13 +689,13 @@ void testApp::newSearch(bool useResults){
 		currentMode = MT_SEARCH;
 		chimeManager::newSearch(useResults);
 		
-		for(int i = 0; i < searchPresets[cSearchPreset].autoMacro.size(); i++){
+		for(int i = 0; i < banks[mCurrentBank].searches[cSearchPreset].autoMacro.size(); i++){
 			chimeManager::beginSearch();
-			chimeManager::continueSearch(searchPresets[cSearchPreset].autoMacro[i],
+			chimeManager::continueSearch(banks[mCurrentBank].searches[cSearchPreset].autoMacro[i],
 										 mouseMovePos,
 										 mouseMovePos,
-										 searchPresets[cSearchPreset].autoSettings[i].x, 
-										 searchPresets[cSearchPreset].autoSettings[i].y 
+										 banks[mCurrentBank].searches[cSearchPreset].autoSettings[i].x, 
+										 banks[mCurrentBank].searches[cSearchPreset].autoSettings[i].y 
 										 );
 			chimeManager::endSearch();
 			
@@ -619,12 +711,12 @@ void testApp::keyPressed(int key){
 	
 	if(currentMode == MT_SEARCH){
 		
-		if(key == OF_KEY_UP)cSearchPreset = min(cSearchPreset + 1, (int)searchPresets.size() - 1);
+		if(key == OF_KEY_UP)cSearchPreset = min(cSearchPreset + 1, (int)banks[mCurrentBank].searches.size() - 1);
 		if(key == OF_KEY_DOWN)cSearchPreset = max(cSearchPreset - 1,0);
 		
 	}else if(currentMode == MT_COPY){
 		
-		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)copyPresets.size() - 1);
+		if(key == OF_KEY_UP)mCurrentCopier= min(mCurrentCopier+ 1, (int)banks[mCurrentBank].copies.size() - 1);
 		if(key == OF_KEY_DOWN)mCurrentCopier= max(mCurrentCopier- 1,0);
 		
 	}else if(currentMode == MT_MOVE){
@@ -634,6 +726,20 @@ void testApp::keyPressed(int key){
 		
 	}
 	
+	
+	if(key == OF_KEY_LEFT){
+		mCurrentBank = max(mCurrentBank - 1, 0);
+		currentMod = 0;
+		mCurrentCopier = 0;
+		cSearchPreset = 0;
+	}
+	
+	if(key == OF_KEY_RIGHT){
+		mCurrentBank = min(mCurrentBank +1, (int)banks.size()-1);
+		currentMod = 0;
+		mCurrentCopier = 0;
+		cSearchPreset = 0;
+	}
 	
 	if(key == ' ')newSearch(false);
 	if(key == 0)newSearch(true); //ctrl + space
@@ -708,11 +814,14 @@ void testApp::mouseMoved(int x, int y ){
 //--------------------------------------------------------------
 void testApp::mouseDragged(int x, int y, int button){
 
-	mouseDragPos = getZPlaneProjection(ofVec2f(x,y));
-	dragDist = ofMap(ofVec2f(mouseDragPos - mouseDownPos).length(),1,4,0,1,true);
-	dragAngle = ofVec2f(mouseDownPos - mouseDragPos).angle(ofVec2f(0,-1));
-	if(dragAngle < 0)dragAngle += 360;
-	dragAngle = ofMap(dragAngle, 0,360, 0, 1);
+	if(mDCount > 10){
+		mouseDragPos = getZPlaneProjection(ofVec2f(x,y));
+		dragDist = ofMap(ofVec2f(mouseDragPos - mouseDownPos).length(),1,4,0,1,true);
+		dragAngle = ofVec2f(mouseDownPos - mouseDragPos).angle(ofVec2f(0,-1));
+		if(dragAngle < 0)dragAngle += 360;
+		dragAngle = ofMap(dragAngle, 0,360, 0, 1);
+	}
+	
 	
 	
 }
@@ -721,6 +830,8 @@ void testApp::mouseDragged(int x, int y, int button){
 void testApp::mousePressed(int x, int y, int button){
 	
 	mouseDownPos = getZPlaneProjection(ofVec2f(x,y));
+	
+	mDCount = 0;
 	
 	isRM = (button > 0);
 	

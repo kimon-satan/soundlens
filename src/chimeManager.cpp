@@ -93,11 +93,11 @@ void chimeManager::beginCopy(copyPreset cp){
 
 }
 
-string chimeManager::continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float userB){
+string chimeManager::continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float userB, bool autoMove){
 
 	string s = "";
 	s = mCopyEngine.updateUserValues(mD, mDr, userA, userB);
-	mPreviewChimes = mCopyEngine.getCopies(mSelected);
+	mPreviewChimes = mCopyEngine.getCopies(mSelected, autoMove);
 	
 	
 	for(vector<ofPtr<chime> >::iterator it = mPreviewChimes.begin(); it != mPreviewChimes.end(); it ++){

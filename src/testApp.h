@@ -22,6 +22,17 @@ struct searchPreset{
 
 };
 
+struct bank{
+	
+	string name;
+	
+	vector<searchPreset> searches;
+	vector<copyPreset> copies;
+	vector<int> mods;
+
+
+};
+
 
 class testApp : public ofBaseApp{
 
@@ -64,6 +75,9 @@ class testApp : public ofBaseApp{
 
 	void setupCopyPresets();
 	void setupSearchPresets();
+	void setupBanks();
+	searchPreset getSearchPreset(string name);
+	copyPreset getCopyPreset(string name);
 	
 	ofVec2f getZPlaneProjection(ofVec2f screenPoint);
 	
@@ -83,6 +97,7 @@ class testApp : public ofBaseApp{
 	
 	e_ActionType currentAction;
 	int currentMode;
+	int mDCount;
 	
 	vector<string> menuStrings;
 	
@@ -101,9 +116,15 @@ class testApp : public ofBaseApp{
 	vector<searchPreset> searchPresets;
 	vector<copyPreset> copyPresets;
 	
+	vector<bank> banks;
+	
+	vector<vector<searchPreset> > searchBank;
+	vector<vector<copyPreset> > copyBank;
+	
+	
 	int cSearchPreset, cMacroStage;
 	int currentMod;
-	int mCurrentCopier;
+	int mCurrentCopier, mCurrentBank;
 	bool isTab;
 	
 	

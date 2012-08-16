@@ -62,7 +62,7 @@ void allCopiers::beginCopy(copyPreset cp){
 	
 }
 
-vector <ofPtr<chime> > allCopiers::getCopies(vector<ofPtr<chime> > targetGrp){
+vector <ofPtr<chime> > allCopiers::getCopies(vector<ofPtr<chime> > targetGrp, bool autoMove){
 	
 	
 	if(targetGrp.size() < 1)return targetGrp;
@@ -102,7 +102,7 @@ vector <ofPtr<chime> > allCopiers::getCopies(vector<ofPtr<chime> > targetGrp){
 	}
 	
 	
-	nGrp = shiftMod::makeMod(nGrp, mDown, 0.03, false);
+	nGrp = shiftMod::makeMod(nGrp, mDown, 0.03, autoMove);
 	
 	return nGrp;
 	

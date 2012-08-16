@@ -76,7 +76,7 @@ class chimeManager{
 	
 	static void createInitialChime();
 	static void beginCopy(copyPreset cp);
-	static string continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float userB);
+	static string continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float userB, bool autoMove);
 	static void endNewChimes();
 	static string getCopierName(int i);
 	static void deleteHiddenChimes();

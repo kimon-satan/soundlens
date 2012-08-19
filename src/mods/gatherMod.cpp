@@ -13,7 +13,7 @@ gatherMod::gatherMod(){
 	
 	dataElement<float> increment;
 	increment.name = "increment";
-	increment.set(0.01,0.2, SET_USER_B);
+	increment.set(0.01);
 	floatParameters.push_back(increment);
 	
 	dataElement<float> rad;

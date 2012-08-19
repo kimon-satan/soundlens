@@ -97,7 +97,7 @@ string matchSearch::setUserData(ofVec2f mD, ofVec2f mDr, float ua, float ub){
 }
 
 void matchSearch::drawPreview(float dragDist, float dragAngle){
-
+	
 	//may end up as a method in baseSearch for reuse
 	
 	float d = 0.5 + floatParameters[mTolIndex].abs_val * 3.0f/(float)floatParameters[mTolIndex].max_val;

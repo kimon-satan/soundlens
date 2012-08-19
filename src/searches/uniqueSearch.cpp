@@ -25,7 +25,7 @@ uniqueSearch::uniqueSearch(){
 	
 	intParameters.push_back(t_para);
 	
-	float bands[][2] = {{10,64}, {0.1, 0.01}, {2.0, 0.25}};
+	float bands[3][2] = {{10,64}, {0.1, 0.01}, {2.0, 0.25}};
 	
 	for(int i = 0; i < 3; i++){
 		
@@ -52,7 +52,7 @@ vector<ofPtr<chime> > uniqueSearch::getChimes(searchData& sd, ofPtr<chime> sampl
 	vector<ofPtr<chime> >::iterator it;
 	vector<ofPtr<chime> >::iterator it2;
 	
-	float overlap = floatParameters[0].abs_val;
+	float overlap = floatParameters[intParameters[0].abs_val].abs_val;
 	
 	if(paramType == CH_PHASE)overlap = b2_pi/overlap;
 	

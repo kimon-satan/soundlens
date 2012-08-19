@@ -90,6 +90,7 @@ void allSearches::drawSearch(int searchType, float dragDist, float dragAngle){
 	
 	searches[searchType]->drawPreview(dragDist, dragAngle);
 	
+	
 }
 
 

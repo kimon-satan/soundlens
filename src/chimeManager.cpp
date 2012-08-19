@@ -32,6 +32,7 @@ float chimeManager::flashAlpha = 0;
 customListener chimeManager::mListener;
 
 bool isChimeHidden(ofPtr<chime> c){return (c->getBlur() > 0.99);}
+bool isChimeDeSelected(ofPtr<chime> c){return !c->getIsSelected();}
 bool isBankEmpty(vector<ofPtr<chime> > cVec){return (cVec.size() < 1);}
 
 void chimeManager::setup(ofxOscSender & s, ofxOscSender & i_s){
@@ -405,12 +406,22 @@ string chimeManager::continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, flo
 	
 }
 
-void chimeManager::endSearch(){
+void chimeManager::endSearch(bool isSubtract){
 
-	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
-	mSelected.clear();
-	mSelected = mTmpSelected;
-	for(vector<ofPtr<chime> >::iterator it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
+	vector<ofPtr<chime> >::iterator it;
+	
+	if(!isSubtract){
+		for(it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(false);
+		mSelected.clear();
+		mSelected = mTmpSelected;
+		for(it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
+	}else{
+		for(it = mSelected.begin(); it != mSelected.end(); it++)(*it)->setIsSelected(true);
+		for(it = mTmpSelected.begin(); it != mTmpSelected.end(); it++)(*it)->setIsSelected(false);
+		it = remove_if(mSelected.begin(), mSelected.end(), isChimeDeSelected);
+		mSelected.erase(it, mSelected.end());
+	}
+	
 	clearTmps();
 	
 	if(mSelected.size() > 0)isNewSelection = true;

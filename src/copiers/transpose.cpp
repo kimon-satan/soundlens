@@ -46,7 +46,7 @@ vector<ofPtr<chime> >transpose::getCopies(vector<ofPtr<chime> > chimes){
 			}else{
 				
 				float f = (i == CH_PHASE) ?  b2_pi * floatParameters[0].abs_val : floatParameters[0].abs_val;
-				float val =  (*it)->getFixedParam(i) + f;
+				float val =  (i == CH_SPEED) ?  (*it)->getFixedParam(i) * f : (*it)->getFixedParam(i) + f;
 				c->setFixedParam(i,val);
 				
 			}

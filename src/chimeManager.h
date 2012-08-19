@@ -89,7 +89,7 @@ class chimeManager{
 	
 	static void beginSearch();
 	static string continueSearch(int searchType, ofVec2f mD, ofVec2f mDr, float userA, float userB);
-	static void endSearch();
+	static void endSearch(bool isSubtract);
 	static void clearTmps();
 	
 	//

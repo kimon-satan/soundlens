@@ -74,20 +74,10 @@ void testApp::setupSearchPresets(){
 	
 	searchPresets.push_back(sp1);
 	
-	searchPreset sp1a;
-	
-	sp1a.name = "surface";
-	sp1a.autoMacro.push_back(SEARCH_BPF_FDIST);
-	sp1a.autoSettings.push_back(ofVec2f(0.1,0));
-	sp1a.manualMacro.push_back(SEARCH_POSITION);
-	
-	searchPresets.push_back(sp1a);
 	
 	searchPreset sp2;
 	
 	sp2.name = "phaseFund";
-	sp2.autoMacro.push_back(SEARCH_MATCH_SPEED);
-	sp2.autoSettings.push_back(ofVec2f(0,0));
 	sp2.manualMacro.push_back(SEARCH_FUND_PHASE);
 	sp2.manualMacro.push_back(SEARCH_UNIQUE);
 	sp2.manualMacro.push_back(SEARCH_QUANT_PHASE);
@@ -95,20 +85,10 @@ void testApp::setupSearchPresets(){
 	searchPresets.push_back(sp2);
 	
 	
-	searchPreset sp3;
-	
-	sp3.name = "PassFiltering";
-	sp3.manualMacro.push_back(SEARCH_MULTI_LPF);
-	sp3.manualMacro.push_back(SEARCH_MULTI_HPF);
-	
-	searchPresets.push_back(sp3);
-	
-	
 	searchPreset sp4;
 	
-	sp4.name = "freq";
-	sp4.manualMacro.push_back(SEARCH_FUND_FREQ);
-	sp4.manualMacro.push_back(SEARCH_QUANT_FREQ);
+	sp4.name = "matchUnique";
+	sp4.manualMacro.push_back(SEARCH_MATCH_MULTI);
 	sp4.manualMacro.push_back(SEARCH_UNIQUE);
 	
 	searchPresets.push_back(sp4);
@@ -123,15 +103,26 @@ void testApp::setupSearchPresets(){
 	searchPresets.push_back(sp5);
 	
 	
+	searchPreset sp5a;
+	
+	sp5a.name = "fundSieve";
+	
+	sp5a.manualMacro.push_back(SEARCH_FUND_PHASE);
+	sp5a.manualMacro.push_back(SEARCH_SIEVE);
+	
+	searchPresets.push_back(sp5a);
+	
 	searchPreset sp6;
 	
-	sp6.name = "phaseRange";
-	sp6.autoMacro.push_back(SEARCH_MATCH_SPEED);
-	sp6.autoSettings.push_back(ofVec2f(0,0));
-	sp6.manualMacro.push_back(SEARCH_BPF_PHASE);
-
+	sp6.name = "unique2";
+	
+	sp6.manualMacro.push_back(SEARCH_UNIQUE);
+	sp6.manualMacro.push_back(SEARCH_UNIQUE);
 	
 	searchPresets.push_back(sp6);
+	
+	
+
 	
 
 }
@@ -141,7 +132,9 @@ void testApp::setupCopyPresets(){
 	copierSpec cs;
 	copyPreset cp;
 	
-	cp.name = "p transposer";
+	//---------------------------
+	
+	cp.name = "p trans";
 	
 	cs.copierType = CP_TRANSPOSE;
 	cs.chParam = CH_PHASE;
@@ -152,8 +145,18 @@ void testApp::setupCopyPresets(){
 	copyPresets.push_back(cp);
 	
 	
-	cp.name = "fp transposer";
+	//---------------------------
 	
+	cp.name = "fp trans1";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0.0,1.0,SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);	
+	
+	cs.copierType = CP_TRANSPOSE;
 	cs.chParam = CH_FREQ;
 	cs.para1.set(-6,6,SET_MAP_Y);
 	cs.para1.incr = 0.5;
@@ -161,156 +164,216 @@ void testApp::setupCopyPresets(){
 	
 	copyPresets.push_back(cp);
 	
-	cp.name = "fp transposer2";
+	//---------------------------
+	
+	cp.name = "fp trans2";
 	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0.0,1.0,SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);	
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-12,12,SET_USER_A);
+	cs.para1.incr = 0.5;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	//--------------------------------------
+	
+	cp.name = "fp transMut";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
 	cs.chParam = CH_FREQ;
 	cs.para1.set(-6,6,SET_USER_A);
 	cs.para1.incr = 0.5;
 	cp.copiers.push_back(cs);
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0.01,1.0,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
 	
-	copyPresets.push_back(cp);
-	
-	
-	cp.name = "fp Mutator";
-	
-	cp.copiers.clear();
-	cs.copierType = CP_MUTATE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(0,12,SET_USER_A);
-	cs.para1.incr = 0.01;
-	cs.para2.set(0.25);
-	cp.copiers.push_back(cs);
-	
+	cs.copierType = CP_TRANSPOSE;
 	cs.chParam = CH_PHASE;
 	cs.para1.set(0,1,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-	
-	copyPresets.push_back(cp);
-	
-	cp.name = "fp transMutate";
-	
-	cp.copiers.clear();
-	
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-6,6,SET_MAP_Y);
-	cs.para1.incr = 0.5;
-	cp.copiers.push_back(cs);
-	
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0,1,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-	
-	cs.copierType = CP_MUTATE;
-	cs.para1.set(0,1,SET_USER_A);
-	cs.para1.incr = 0.01;
-	cs.para2.set(0.25);
-	cp.copiers.push_back(cs);
-	
-	copyPresets.push_back(cp);
-	
-	
-	cp.name = "f Arranger";
-	cp.copiers.clear();
-	
-	cs.copierType = CP_ARRANGE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(0,3,SET_USER_B);
-	cs.para1.incr = 1.0;
-	cs.para2.set(1,20,SET_USER_A);
-	cs.para2.incr = 1.0;
-	cp.copiers.push_back(cs);
-	
-	copyPresets.push_back(cp);
-	
-	
-	cp.name = "fp Arranger";
-	cp.copiers.clear();
-	
-	cs.copierType = CP_ARRANGE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(0,3,SET_USER_B);
-	cs.para1.incr = 1.0;
-	cs.para2.set(1,20,SET_USER_A);
-	cs.para2.incr = 1.0;
-	cp.copiers.push_back(cs);
-	cs.copierType = CP_ARRANGE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0,3,SET_USER_B);
-	cs.para1.incr = 1.0;
-	cs.para2.set(1,20,SET_USER_A);
-	cs.para2.incr = 1.0;
-	cp.copiers.push_back(cs);
-	
-	copyPresets.push_back(cp);
-	
-	
-	cp.name = "transpose sieve";
-	cp.copiers.clear();
-	cs.chParam = CH_FREQ;
-	cs.copierType = CP_TRANSPOSE;
-	cs.para1.set(-12, 12.0, SET_MAP_Y);
-	cp.copiers.push_back(cs);
-	cs.chParam = CH_FREQ;
-	cs.copierType = CP_SIEVE;
-	cs.para1.set(0, 12.0, SET_USER_B);
-	cp.copiers.push_back(cs);
-	
-	copyPresets.push_back(cp);
-	
-	cp.name = "p Inverter";
-	cp.copiers.clear();
-	cs.chParam = CH_PHASE;
-	cs.copierType = CP_INVERT;
-	cp.copiers.push_back(cs);
-	
-	copyPresets.push_back(cp);
-	
-	
-	cp.name = "p Resizor";
-	cp.copiers.clear();
-	cs.chParam = CH_PHASE;
-	cs.copierType = CP_RESIZE;
-	cs.para1.set(0.25, 2.0, SET_USER_A);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-
-	copyPresets.push_back(cp);
-	
-	
-	cp.name = "pf Resizor";
-	cp.copiers.clear();
-	cs.chParam = CH_PHASE;
-	cs.copierType = CP_RESIZE;
-	cs.para1.set(0.25, 2.0, SET_USER_A);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-	cs.chParam = CH_FREQ;
-	cs.copierType = CP_RESIZE;
-	cs.para1.set(0.25, 2.0, SET_USER_A);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-	
-	copyPresets.push_back(cp);
-	
-	
-	cp.name = "s Transposor";
-	cp.copiers.clear();
-	cs.chParam = CH_SPEED;
-	cs.copierType = CP_TRANSPOSE;
-	cs.para1.set(-0.5, 0.5, SET_USER_A);
 	cs.para1.incr = 0.05;
 	cp.copiers.push_back(cs);
 	
+	cs.copierType = CP_MUTATE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0.5);
+	cs.para1.incr = 0.01;
+	cs.para2.set(0.25);
+	cp.copiers.push_back(cs);
+	
 	copyPresets.push_back(cp);
 	
 	
+	//--------------------------------------
+	
+	cp.name = "f transMut";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-6,6,SET_USER_B);
+	cs.para1.incr = 0.5;
+	cp.copiers.push_back(cs);
+
+	
+	cs.copierType = CP_MUTATE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(0,7,SET_USER_A);
+	cs.para1.incr = 0.5;
+	cs.para2.set(0.35);
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	//--------------------------------------
+	
+	cp.name = "fp transSieve";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-12,12,SET_USER_A);
+	cs.para1.incr = 1.0;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0.0,1.0,SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_SIEVE;
+	cs.para1.set(0);
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	//--------------------------------------
+	
+	cp.name = "f transSieve";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-12,12,SET_USER_A);
+	cs.para1.incr = 1.0;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_SIEVE;
+	cs.para1.set(0,12,SET_USER_B);
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	//--------------------------------------
+	
+	cp.name = "fs transSieve";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(-12,12,SET_USER_A);
+	cs.para1.incr = 1.0;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_TRANSPOSE;
+	cs.chParam = CH_SPEED;
+	cs.para1.set(0.1,2.0,SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_SIEVE;
+	cs.para1.set(0);
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	
+	//-----------------------------------------
+	
+	cp.name = "p resTrans";
+	cp.copiers.clear();
+	
+
+	cs.chParam = CH_PHASE;
+	cs.copierType = CP_RESIZE;
+	cs.para1.set(0.25, 2.0, SET_USER_A);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	cs.chParam = CH_PHASE;
+	cs.copierType = CP_TRANSPOSE;
+	cs.para1.set(0, 1, SET_USER_B);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	
+	//-----------------------------------------
+	
+	cp.name = "fp arrTrans";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_ARRANGE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(0,3,SET_USER_B);
+	cs.para1.incr = 1.0;
+	cs.para2.set(1);
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_ARRANGE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0,3,SET_USER_B);
+	cs.para1.incr = 1.0;
+	cs.para2.set(1);
+	cp.copiers.push_back(cs);
+	
+	cs.chParam = CH_PHASE;
+	cs.copierType = CP_TRANSPOSE;
+	cs.para1.set(0, 1, SET_USER_A);
+	cs.para1.incr = 0.01;
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
+	
+	
+	//-----------------------------------------
+	
+	cp.name = "fp arrSieve";
+	cp.copiers.clear();
+	
+	cs.copierType = CP_ARRANGE;
+	cs.chParam = CH_FREQ;
+	cs.para1.set(0,3,SET_USER_B);
+	cs.para1.incr = 1.0;
+	cs.para2.set(1,20,SET_USER_A);
+	cs.para2.incr = 1.0;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_ARRANGE;
+	cs.chParam = CH_PHASE;
+	cs.para1.set(0,3,SET_USER_B);
+	cs.para1.incr = 1.0;
+	cs.para2.set(1,20,SET_USER_A);
+	cs.para2.incr = 1.0;
+	cp.copiers.push_back(cs);
+	
+	cs.copierType = CP_SIEVE;
+	cs.para1.set(0);
+	cp.copiers.push_back(cs);
+	
+	copyPresets.push_back(cp);
 	
 	
 	
@@ -329,28 +392,85 @@ void testApp::setupBanks(){
 	banks.push_back(tb);
 	
 	
-	//bank1
+	//------------------------------------------------------
+	
 	tb.copies.clear();
 	tb.searches.clear();
 	
-	tb.name = "intro";
+	tb.name = "build";
 	
 	tb.searches.push_back(getSearchPreset("position"));
-	tb.searches.push_back(getSearchPreset("phaseRange"));
 	tb.searches.push_back(getSearchPreset("phaseFund"));
 	
-	tb.copies.push_back(getCopyPreset("fp transposer"));
-	tb.copies.push_back(getCopyPreset("fp transMutate"));
+	tb.copies.push_back(getCopyPreset("fp trans1"));
+	tb.copies.push_back(getCopyPreset("fp transMut"));
+	tb.copies.push_back(getCopyPreset("fp trans2"));
 	
 	banks.push_back(tb);
 
 	
+	//--------------------------------------------------------
+	
 	tb.copies.clear();
 	tb.searches.clear();
 	
-	tb.name = "section2";
+	tb.name = "arranging";
+	
+	tb.searches.push_back(getSearchPreset("position"));
+	tb.searches.push_back(getSearchPreset("phaseFund"));
+
+
+	//for arranging copying
+	
+	tb.copies.push_back(getCopyPreset("p trans"));
+	tb.copies.push_back(getCopyPreset("fp arrTrans"));
+	tb.copies.push_back(getCopyPreset("fp arrSieve"));
+	
 	
 	banks.push_back(tb);
+	
+	//--------------------------------------------------------
+	
+	tb.copies.clear();
+	tb.searches.clear();
+	
+	tb.name = "wheels";
+	
+	tb.searches.push_back(getSearchPreset("position"));
+	tb.searches.push_back(getSearchPreset("phaseFund"));
+	tb.searches.push_back(getSearchPreset("fundSieve"));
+	tb.searches.push_back(getSearchPreset("freqSieve"));
+	tb.searches.push_back(getSearchPreset("unique2"));
+	
+	
+	//for arranging copying
+	
+	tb.copies.push_back(getCopyPreset("fp trans2"));
+	tb.copies.push_back(getCopyPreset("fp transSieve"));
+	tb.copies.push_back(getCopyPreset("f transMut"));
+	
+	banks.push_back(tb);
+	
+	//--------------------------------------------------------
+	
+	tb.copies.clear();
+	tb.searches.clear();
+	
+	tb.name = "polyLayers";
+	
+	tb.searches.push_back(getSearchPreset("matchUnique"));
+	tb.searches.push_back(getSearchPreset("unique2"));
+	tb.searches.push_back(getSearchPreset("position"));
+
+	tb.copies.push_back(getCopyPreset("fp arrSieve"));
+	tb.copies.push_back(getCopyPreset("fp transSieve"));
+	tb.copies.push_back(getCopyPreset("f transSieve"));
+	tb.copies.push_back(getCopyPreset("fs transSieve"));
+	tb.copies.push_back(getCopyPreset("p resTrans"));
+	
+	
+	banks.push_back(tb);
+	
 	
 	
 
@@ -658,7 +778,7 @@ void testApp::endAction(){
 			break;																
 																				
 		case AT_SELECT:
-			chimeManager::endSearch();
+			chimeManager::endSearch(isRM);
 			cMacroStage = min(cMacroStage + 1,(int)banks[mCurrentBank].searches[cSearchPreset].manualMacro.size()-1);
 			break;
 		
@@ -697,7 +817,7 @@ void testApp::newSearch(bool useResults){
 										 banks[mCurrentBank].searches[cSearchPreset].autoSettings[i].x, 
 										 banks[mCurrentBank].searches[cSearchPreset].autoSettings[i].y 
 										 );
-			chimeManager::endSearch();
+			chimeManager::endSearch(false);
 			
 			
 		}

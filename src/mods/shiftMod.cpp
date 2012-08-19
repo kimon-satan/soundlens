@@ -13,7 +13,7 @@ shiftMod::shiftMod(){
 	
 	dataElement<float> increment;
 	increment.name = "increment";
-	increment.set(0.01,0.2, SET_USER_A);
+	increment.set(0.01);
 	floatParameters.push_back(increment);
 	
 	name = "shift";

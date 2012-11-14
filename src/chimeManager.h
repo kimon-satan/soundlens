@@ -9,7 +9,6 @@
 
 #pragma once
 
-#include "chimeFactory.h"
 #include "chimeRenderer.h"
 #include "chimeUpdater.h"
 

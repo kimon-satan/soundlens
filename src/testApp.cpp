@@ -907,7 +907,7 @@ void testApp::keyPressed(int key){
 	if(key == 'D')chimeRenderer::isDrawPivots = !chimeRenderer::isDrawPivots;
 	if(key == OF_KEY_BACKSPACE)chimeManager::deleteHiddenChimes();
 	
-	
+	if(key == 'F')ofToggleFullscreen();
 	
 }
 

@@ -11,7 +11,6 @@
 
 #include "ofMain.h"
 
-#include "collisionData.h"
 #include "customListener.h"
 #include "modifiable.h"
 #include <Box2D/Box2D.h>

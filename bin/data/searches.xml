@@ -1,0 +1,56 @@
+<SOUNDLENS><SEARCHES>
+		
+	<PRESET>
+		<NAME>posBlur</NAME>
+		<M_ITEM>position</M_ITEM>
+		<M_ITEM>filter_blur</M_ITEM>
+	</PRESET>
+	
+	<PRESET>
+		<NAME>phaseFund</NAME>
+		<M_ITEM>phaseFund</M_ITEM>
+		<M_ITEM>unique</M_ITEM>
+		<M_ITEM>Quant_phase</M_ITEM>
+	</PRESET>
+	
+	<PRESET>
+		<NAME>phaseFilter</NAME>
+		<M_ITEM>filter_phase</M_ITEM>
+		<M_ITEM>unique</M_ITEM>
+	</PRESET>
+	
+	<PRESET>
+		<NAME>freqSieve</NAME>
+		<M_ITEM>sieve</M_ITEM>
+		<M_ITEM>unique</M_ITEM>
+	</PRESET>
+	
+	<PRESET>
+		<NAME>fundSieve</NAME>
+		<M_ITEM>fund_phase</M_ITEM>
+		<M_ITEM>sieve</M_ITEM>
+	</PRESET>
+	
+	
+	<PRESET>
+		<NAME>unique2</NAME>
+		<M_ITEM>unique</M_ITEM>
+		<M_ITEM>unique</M_ITEM>
+	</PRESET>
+    
+    <PRESET>
+		<NAME>freqUnique</NAME>
+		<M_ITEM>filter_freq</M_ITEM>
+		<M_ITEM>unique</M_ITEM>
+	</PRESET>
+    
+    
+    <PRESET>
+		<NAME>matchSpeed</NAME>
+		<M_ITEM>match_speed</M_ITEM>
+		<M_ITEM>unique</M_ITEM>
+	</PRESET>
+
+
+
+</SEARCHES></SOUNDLENS>

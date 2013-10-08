@@ -1,0 +1,60 @@
+<SOUNDLENS><BANKS>
+
+<PRESET>
+
+<NAME>build</NAME>
+
+<SEARCH>posBlur</SEARCH>
+<SEARCH>phaseFilter</SEARCH>
+    
+    
+<COPY>fp trans1</COPY>
+<COPY>fp transSieve</COPY>
+<COPY>fp trans2</COPY>
+
+</PRESET>
+
+<PRESET>
+
+<NAME>heavy</NAME>
+
+<SEARCH>posBlur</SEARCH>
+<SEARCH>phaseFilter</SEARCH>
+<SEARCH>unique2</SEARCH>
+
+<COPY>p trans</COPY>
+
+</PRESET>
+
+<PRESET>
+        
+<NAME>wheels</NAME>
+
+<SEARCH>posBlur</SEARCH>
+<SEARCH>phaseFilter</SEARCH>
+<SEARCH>unique2</SEARCH>
+<SEARCH>freqSieve</SEARCH>
+
+<COPY>p trans</COPY>
+<COPY>fp trans2</COPY>
+<COPY>f transMutSieve</COPY>
+    
+</PRESET>
+    
+<PRESET>
+
+<NAME>pretty</NAME>
+
+<SEARCH>posBlur</SEARCH>
+<SEARCH>unique2</SEARCH>
+<SEARCH>freqSieve</SEARCH>
+<SEARCH>matchSpeed</SEARCH>
+
+<COPY>fs transSieve</COPY>
+<COPY>fs transSieve2</COPY>
+<COPY>fp transSieve</COPY>
+<COPY>f transMutSieve</COPY>
+
+</PRESET>
+
+</BANKS></SOUNDLENS>

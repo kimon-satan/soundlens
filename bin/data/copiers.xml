@@ -1,0 +1,308 @@
+<SOUNDLENS><COPIERS>
+
+	<PRESET>
+		<NAME>p trans</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN></MIN><MAX></MAX><SET></SET><INC></INC></P1>
+			
+		</ITEM>
+		
+	
+	</PRESET>
+	
+	<PRESET>
+		<NAME>fp trans1</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.0</MIN><MAX>1.0</MAX><SET>userB</SET><INC>0.01</INC></P1>
+			
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-6</MIN><MAX>6</MAX><SET>mapY</SET><INC>0.5</INC></P1>
+		</ITEM>
+		
+	</PRESET>
+	
+	
+	<PRESET>
+		<NAME>fp trans2</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.0</MIN><MAX>1.0</MAX><SET>userB</SET><INC>0.01</INC></P1>
+			
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-12</MIN><MAX>12</MAX><SET>userA</SET><INC>0.5</INC></P1>
+		</ITEM>
+		
+	</PRESET>
+	
+	<PRESET>
+		<NAME>fp transMut</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.0</MIN><MAX>1.0</MAX><SET>userB</SET><INC>0.05</INC></P1>
+			
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-6</MIN><MAX>6</MAX><SET>userA</SET><INC>0.5</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>mutate</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.5</MIN><MAX>0.5</MAX><SET>fixed</SET><INC>0.01</INC></P1>
+			<P2><MIN>0.25</MIN><MAX>0.25</MAX><SET>fixed</SET></P2>
+		</ITEM>
+		
+		
+	</PRESET>
+	
+	<PRESET>
+		<NAME>f transMut</NAME>
+		
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-6</MIN><MAX>6</MAX><SET>userB</SET><INC>0.5</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>mutate</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>0</MIN><MAX>7</MAX><SET>userA</SET><INC>0.5</INC></P1>
+			<P2><MIN>0.5</MIN><MAX>0.5</MAX><SET>fixed</SET></P2>
+		</ITEM>
+		
+		
+		
+	</PRESET>
+	
+		
+	<PRESET>
+		<NAME>f transMutSieve</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-6</MIN><MAX>6</MAX><SET>userB</SET><INC>0.5</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>mutate</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>0</MIN><MAX>7</MAX><SET>userA</SET><INC>0.5</INC></P1>
+			<P2><MIN>0.5</MIN><MAX>0.5</MAX><SET>fixed</SET></P2>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>sieve</CTYPE>
+			<P1><MIN>0</MIN><MAX>0</MAX><SET>fixed</SET></P1>
+		</ITEM>
+		
+		
+	</PRESET>
+	
+	
+	<PRESET>
+		<NAME>fp transSieve</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-12</MIN><MAX>12</MAX><SET>userA</SET><INC>1.0</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0</MIN><MAX>1</MAX><SET>userB</SET><INC>0.01</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>sieve</CTYPE>
+			<P1><MIN>0</MIN><MAX>0</MAX><SET>fixed</SET></P1>
+		</ITEM>
+		
+	</PRESET>
+	
+	
+	
+	<PRESET>
+		<NAME>f transSieve</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-12</MIN><MAX>12</MAX><SET>userA</SET><INC>1.0</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>sieve</CTYPE>
+			<P1><MIN>0</MIN><MAX>12</MAX><SET>userB</SET></P1>
+		</ITEM>
+		
+	</PRESET>
+	
+	
+	<PRESET>
+		<NAME>fs transSieve</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-12</MIN><MAX>12</MAX><SET>userA</SET><INC>1.0</INC></P1>
+		</ITEM>
+				
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>speed</PARAM>
+			<P1><MIN>0.1</MIN><MAX>2.0</MAX><SET>userB</SET><INC>0.01</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>sieve</CTYPE>
+			<P1><MIN>0</MIN><MAX>0</MAX><SET>fixed</SET></P1>
+		</ITEM>
+		
+	</PRESET>
+    
+    <PRESET>
+		<NAME>fs transSieve2</NAME>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-12</MIN><MAX>12</MAX><SET>mapY</SET><INC>1.0</INC></P1>
+		</ITEM>
+				
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>speed</PARAM>
+			<P1><MIN>0.1</MIN><MAX>2.0</MAX><SET>userB</SET><INC>0.01</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>sieve</CTYPE>
+			<P1><MIN>0</MIN><MAX>6</MAX><INC>1</INC><SET>userA</SET></P1>
+		</ITEM>
+		
+	</PRESET>
+
+	
+	
+	<PRESET>
+		<NAME>p resizeTrans</NAME>
+		
+		<ITEM>
+			<CTYPE>resize</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.25</MIN><MAX>2.0</MAX><SET>userA</SET><INC>0.01</INC></P1>
+		</ITEM>
+				
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.0</MIN><MAX>1.0</MAX><SET>userB</SET><INC>0.01</INC></P1>
+		</ITEM>
+		
+	</PRESET>
+	
+		
+	<PRESET>
+		<NAME>fp transResizeSieve</NAME>
+		
+		<ITEM>
+			<CTYPE>resize</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.25</MIN><MAX>2.0</MAX><SET>userA</SET><INC>0.01</INC></P1>
+		</ITEM>
+				
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>-12</MIN><MAX>12</MAX><SET>mapY</SET><INC>1.0</INC></P1>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>sieve</CTYPE>
+			<P1><MIN>0</MIN><MAX>6</MAX><INC>1</INC><SET>userB</SET></P1>
+		</ITEM>
+	
+		
+	</PRESET>
+	
+	
+	
+	<PRESET>
+		<NAME>fp arrTrans</NAME>
+		
+		<ITEM>
+			<CTYPE>arrange</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>0</MIN><MAX>3.0</MAX><SET>userB</SET><INC>1.0</INC></P1>
+			<P2><MIN>1</MIN><SET>fixed</SET></P2>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>arrange</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0</MIN><MAX>3.0</MAX><SET>userB</SET><INC>1.0</INC></P1>
+			<P2><MIN>1</MIN><SET>fixed</SET></P2>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>transpose</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0.0</MIN><MAX>1.0</MAX><SET>userA</SET><INC>0.01</INC></P1>
+		</ITEM>
+		
+	</PRESET>
+	
+	<PRESET>
+		<NAME>fp arrSieve</NAME>
+		
+		<ITEM>
+			<CTYPE>arrange</CTYPE>
+			<PARAM>freq</PARAM>
+			<P1><MIN>0</MIN><MAX>3.0</MAX><SET>userB</SET><INC>1.0</INC></P1>
+			<P2><MIN>1</MIN><SET>fixed</SET></P2>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>arrange</CTYPE>
+			<PARAM>phase</PARAM>
+			<P1><MIN>0</MIN><MAX>3.0</MAX><SET>userB</SET><INC>1.0</INC></P1>
+			<P2><MIN>1</MIN><SET>fixed</SET></P2>
+		</ITEM>
+		
+		<ITEM>
+			<CTYPE>sieve</CTYPE>
+			<P1><MIN>0.0</MIN><SET>fixed</SET></P1>
+		</ITEM>
+		
+	</PRESET>
+	
+	
+	
+
+</COPIERS></SOUNDLENS>

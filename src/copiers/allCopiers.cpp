@@ -139,3 +139,20 @@ string allCopiers::updateUserValues(ofVec2f mD, ofVec2f mDr, float ua, float ub)
 	
 }
 
+
+int allCopiers::getCopierIndex(string str){
+
+
+			
+		if( str == "transpose") return CP_TRANSPOSE;
+		if( str == "mutate") return CP_MUTATE;
+		if( str == "arrange")	return CP_ARRANGE;
+		if( str == "invert") return CP_INVERT;
+		if( str == "resize") return CP_RESIZE;
+		if( str == "sieve") return CP_SIEVE;
+
+	
+	return 0;
+
+}
+

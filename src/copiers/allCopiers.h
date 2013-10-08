@@ -56,6 +56,8 @@ public:
 	void nextGeneration();
 	void resetGenCount();
 	
+	int getCopierIndex(string str);
+	
 private:
 	
 	vector<ofPtr<baseCopy> > copiers;

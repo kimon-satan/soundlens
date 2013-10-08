@@ -22,8 +22,8 @@ class chimeRenderer{
 	static void drawStem(ofPtr<chime> c);
 	static void drawHammer(ofPtr<chime> c);
 	static void drawSensors(ofPtr<chime> c);
-	static void drawHighlight(ofPtr<chime> c, ofColor c);
-	static void drawOutline(ofPtr<chime> c, ofColor c);
+	static void drawHighlight(ofPtr<chime> c, ofColor col);
+	static void drawOutline(ofPtr<chime> c, ofColor col);
 	
 	static bool isDrawPivots;
 	

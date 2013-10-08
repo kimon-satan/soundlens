@@ -78,6 +78,7 @@ class allSearches{
 	void reset();
 	
 	string getSearchName(int i);
+	int getSearchIndex(string str);
 	
 	private:
 	

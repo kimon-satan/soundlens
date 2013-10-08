@@ -3,6 +3,10 @@
 #include "ofMain.h"
 #include "chimeManager.h"
 #include "tuningEngine.h"
+#include "ofxXmlSettings.h"
+
+
+
 
 #define HOST "127.0.0.1"
 #define SC_PORT 57120
@@ -74,8 +78,12 @@ class testApp : public ofBaseApp{
 	void handleMessages();	
 
 	void setupCopyPresets();
-	void setupSearchPresets();
 	void setupBanks();
+	
+	void loadPresets();
+	void loadSearchPresets();
+	void loadCopyPresets();
+	
 	searchPreset getSearchPreset(string name);
 	copyPreset getCopyPreset(string name);
 	

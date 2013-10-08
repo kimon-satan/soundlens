@@ -130,5 +130,16 @@ ofPtr<chime> allSearches::getSample(){return mSample;}
 
 string allSearches::getSearchName(int i){return searches[i]->getName();}
 
+int allSearches::getSearchIndex(string str){
+
+	for(int i = 0; i < searches.size(); i++){
+		
+		if(str == searches[i]->getName())return i;
+	
+	}
+	
+	return 0; //position search if not found
+}
+
 bool allSearches::getIsSampleSelected(){return isSampleSelected;}
 bool allSearches::getIsSampleFound(){return isSampleFound;}

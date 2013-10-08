@@ -19,8 +19,6 @@
 #include "allCopiers.h"
 
 
-
-
 struct groupPreset{
 	
 	groupPreset(){
@@ -78,11 +76,14 @@ class chimeManager{
 	static string continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float userB, bool autoMove);
 	static void endNewChimes();
 	static string getCopierName(int i);
+	static int getCopierIndex(string str);
+	static int getSetTypeIndex(string str);
 	static void deleteHiddenChimes();
 	
 	//search methods
 	
 	static string getSearchName(int i);
+	static int getSearchIndex(string str);
 	
 	static void newSearch(bool useResults);
 	

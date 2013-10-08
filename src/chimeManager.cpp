@@ -114,6 +114,27 @@ string chimeManager::continueCopy(ofVec2f mD, ofVec2f mDr, float userA, float us
 
 }
 
+int chimeManager::getCopierIndex(string str){
+
+	return mCopyEngine.getCopierIndex(str);
+}
+
+
+int chimeManager::getSetTypeIndex(string str){
+	
+	
+	if(str == "fixed") return SET_FIXED;
+	if(str == "userA") return SET_USER_A;
+	if(str == "userB") return SET_USER_B;
+	if(str == "userAinv") return SET_USER_A_INV;
+	if(str == "userBinv") return SET_USER_B_INV;
+	if(str == "mapX") return SET_MAP_X;
+	if(str == "mapY") return SET_MAP_Y;
+	
+	return 0;
+	
+}
+
 void chimeManager::endNewChimes(){
 	
 	
@@ -512,7 +533,13 @@ void chimeManager::draw(){
 	
 	for(int i = renderList.size()-1; i > -1; i--){
 		
-		for(vector<ofPtr<chime> >::iterator it = renderList[i].begin(); it != renderList[i].end(); it++)chimeRenderer::draw(*it);
+        
+        
+		for(vector<ofPtr<chime> >::iterator it = renderList[i].begin(); it != renderList[i].end(); it++){
+            //if(!(*it)->getIsTmpSelected() && !(*it)->getIsSelected()){ //need a this doesn't work ... need to check more carefully at some point
+                chimeRenderer::draw(*it);
+            //}
+        }
 		
 	}
 	
@@ -585,4 +612,5 @@ void chimeManager::drawCopyEngine(float dragDist, float dragAngle){
 }
 
 string chimeManager::getSearchName(int i){return mSearchEngine.getSearchName(i);}
+int chimeManager::getSearchIndex(string str){return mSearchEngine.getSearchIndex(str);}
 string chimeManager::getModName(int i){return mModEngine.getModName(i);}

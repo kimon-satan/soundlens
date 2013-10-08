@@ -37,23 +37,23 @@ void chimeRenderer::loadSprites(){
 						};
 	
 	
-	for(int s = 0; s < 12; s++){
+	for(int spr = 0; spr < 12; spr++){
 		
-		string path = filePath + spriteNames[s] + "/";
+		string path = filePath + spriteNames[spr] + "/";
 		ofDirectory dir(path);
 		if(dir.exists()){
 			
 			int numFiles = dir.listDir();
 			
 			for(int i = 0; i < numFiles; i++){
-				ofPtr<ofImage> img = ofPtr<ofImage>(new ofImage(path + spriteNames[s] + "_" + ofToString(i,0) + ".png"));
-				switch(s){
+				ofPtr<ofImage> img = ofPtr<ofImage>(new ofImage(path + spriteNames[spr] + "_" + ofToString(i,0) + ".png"));
+				switch(spr){
 					case 0:mStemSprite.push_back(img);break;
 					case 1:mPivotSprite.push_back(img);break;
-					case 2:mEmptyHammerSprite.push_back(img);
-					case 3: case 4: case 5:mAlphaSensorSprite[s - 3].push_back(img);break;
-					case 6: case 7: case 8:mFilledSensorSprite[s - 6].push_back(img);break;
-					case 9: case 10: case 11:mEmptySensorSprite[s - 9].push_back(img);break;
+					case 2:mEmptyHammerSprite.push_back(img);break;
+					case 3: case 4: case 5:mAlphaSensorSprite[spr - 3].push_back(img);break;
+					case 6: case 7: case 8:mFilledSensorSprite[spr - 6].push_back(img);break;
+					case 9: case 10: case 11:mEmptySensorSprite[spr - 9].push_back(img);break;
 	
 				}
 			}

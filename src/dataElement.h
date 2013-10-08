@@ -22,6 +22,10 @@ enum e_setType{
 	
 };
 
+
+
+		
+
 template <class T>
 
 class dataElement{
@@ -44,9 +48,13 @@ public:
 	
 	void set(T t_mi, T t_ma, int s){
 		
-		min_val = t_mi;
-		max_val = t_ma;
-		setType = e_setType(s);
+		if(s == SET_FIXED){
+			set(t_mi);
+		}else{
+			min_val = t_mi;
+			max_val = t_ma;
+			setType = e_setType(s);
+		}
 		
 	};
 	

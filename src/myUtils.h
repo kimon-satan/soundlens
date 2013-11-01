@@ -10,10 +10,10 @@
 #pragma once
 
 #include "ofMain.h"
-#include "Box2D.h"
+#include <Box2D/Box2D.h>
 
 namespace myUtils{
-	
+
 	float getSinVal(float freq, float phase, float mul, float add);
 	b2Vec2 mul(b2Vec2 b, b2Vec2 mul);
 	b2Vec2 mul(b2Vec2 b, float mul);

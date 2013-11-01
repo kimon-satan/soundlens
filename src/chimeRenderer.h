@@ -12,9 +12,9 @@
 #include "chime.h"
 
 class chimeRenderer{
-	
+
 	public:
-	
+
 	static void loadSprites();
 	static void draw(ofPtr<chime> c);
 	static void drawAnchor(ofPtr<chime> c);
@@ -22,13 +22,13 @@ class chimeRenderer{
 	static void drawStem(ofPtr<chime> c);
 	static void drawHammer(ofPtr<chime> c);
 	static void drawSensors(ofPtr<chime> c);
-	static void drawHighlight(ofPtr<chime> c, ofColor c);
-	static void drawOutline(ofPtr<chime> c, ofColor c);
-	
+	static void drawHighlight(ofPtr<chime> c, ofColor col);
+	static void drawOutline(ofPtr<chime> c, ofColor col);
+
 	static bool isDrawPivots;
-	
+
 	private:
-	
+
 	static vector<ofPtr<ofImage> >  mStemSprite;
 	static vector<vector<ofPtr<ofImage> > > mEmptySensorSprite;
 	static vector<vector<ofPtr<ofImage> > > mAlphaSensorSprite;
@@ -36,8 +36,8 @@ class chimeRenderer{
 	static vector<ofPtr<ofImage> >	mEmptyHammerSprite;
 	static vector<ofPtr<ofImage> >	mFilledHammerSprite;
 	static vector<ofPtr<ofImage> >	mPivotSprite;
-	
-	
 
-	
+
+
+
 };

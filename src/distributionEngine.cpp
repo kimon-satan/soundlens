@@ -39,11 +39,8 @@ float distributionEngine::getFlat(float initVal, float rng, float unit){
 
 float distributionEngine::getNorm(float initVal, float rng, float unit, float dev){
 
-/*	static boost::mt19937 randGen;
-	boost::normal_distribution<float> normDist(0,dev);
-	boost::variate_generator<boost::mt19937&,boost::normal_distribution<float> > normGen(randGen, normDist); */
+	float f = max(min(1.0f, ofRandom(0,1)),-1.0f) * rng/2.0f;
 
-	float f = max(min(1.0f,normGen()),-1.0f) * rng/2.0f;
 	if(unit > 0)f -= fmod(f,unit);
 	return initVal + f;
 

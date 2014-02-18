@@ -4,13 +4,12 @@
 //--------------------------------------------------------------
 void testApp::setup(){
 
-	ofSetVerticalSync(true);
+	ofSetVerticalSync(false);
 	ofSetFrameRate(TARGET_FRAME);
 	ofSetCircleResolution(100);
 
 	scale = 80;
 
-//	mCam.cacheMatrices(true);
 	mCam.setNearClip(0);
 	mCam.setFarClip(2000);
 	mCam.setPosition(0,0,800);
@@ -34,7 +33,7 @@ void testApp::setup(){
 	ofSetDrawBitmapMode(OF_BITMAPMODE_MODEL_BILLBOARD);
 
 	currentMode = MT_COPY;
-	currentMod = MOD_GATHER; //need to change name of this
+	currentMod = MSORT_GATHER; //need to change name of this
 
 	mCurrentCopier= 0;
 	cSearchPreset = 0;
@@ -43,8 +42,7 @@ void testApp::setup(){
 
 	isMouseDown = false;
 
-	setupSearchPresets();
-	setupCopyPresets();
+	loadPresets();
 	setupBanks();
 
 	chimeManager::createInitialChime();
@@ -63,415 +61,259 @@ void testApp::setup(){
 }
 
 
+void testApp::loadPresets(){
 
-void testApp::setupSearchPresets(){
-
-	searchPreset sp1;
-
-	sp1.name = "position";
-	sp1.manualMacro.push_back(SEARCH_POSITION);
-	sp1.manualMacro.push_back(SEARCH_BPF_FDIST);
-
-	searchPresets.push_back(sp1);
-
-
-	searchPreset sp2;
-
-	sp2.name = "phaseFund";
-	sp2.manualMacro.push_back(SEARCH_FUND_PHASE);
-	sp2.manualMacro.push_back(SEARCH_UNIQUE);
-	sp2.manualMacro.push_back(SEARCH_QUANT_PHASE);
-
-	searchPresets.push_back(sp2);
-
-
-	searchPreset sp4;
-
-	sp4.name = "matchUnique";
-	sp4.manualMacro.push_back(SEARCH_MATCH_MULTI);
-	sp4.manualMacro.push_back(SEARCH_UNIQUE);
-
-	searchPresets.push_back(sp4);
-
-
-	searchPreset sp5;
-
-	sp5.name = "freqSieve";
-	sp5.manualMacro.push_back(SEARCH_SIEVE);
-	sp5.manualMacro.push_back(SEARCH_UNIQUE);
-
-	searchPresets.push_back(sp5);
-
-
-	searchPreset sp5a;
-
-	sp5a.name = "fundSieve";
-
-	sp5a.manualMacro.push_back(SEARCH_FUND_PHASE);
-	sp5a.manualMacro.push_back(SEARCH_SIEVE);
-
-	searchPresets.push_back(sp5a);
-
-	searchPreset sp6;
-
-	sp6.name = "unique2";
-
-	sp6.manualMacro.push_back(SEARCH_UNIQUE);
-	sp6.manualMacro.push_back(SEARCH_UNIQUE);
-
-	searchPresets.push_back(sp6);
-
-
+	loadSearchPresets();
+	loadCopyPresets();
 
 
 
 }
 
-void testApp::setupCopyPresets(){
+void testApp::loadSearchPresets(){
 
-	copierSpec cs;
-	copyPreset cp;
+	ofxXmlSettings XML;
 
-	//---------------------------
+	if(XML.loadFile("searches.xml")){
 
-	cp.name = "p trans";
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0.01,1.0,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
+		if(XML.pushTag("SOUNDLENS")){
 
-	copyPresets.push_back(cp);
+			if(XML.pushTag("SEARCHES")){
 
+				int nPresets = XML.getNumTags("PRESET");
 
-	//---------------------------
+				for(int i = 0; i < nPresets; i ++){
 
-	cp.name = "fp trans1";
-	cp.copiers.clear();
+					if(XML.pushTag("PRESET", i)){
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0.0,1.0,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
+						searchPreset sp;
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-6,6,SET_MAP_Y);
-	cs.para1.incr = 0.5;
-	cp.copiers.push_back(cs);
+						sp.name = XML.getValue("NAME", "default");
 
-	copyPresets.push_back(cp);
+						int n_aItems = XML.getNumTags("A_ITEM");
 
-	//---------------------------
+						for(int j = 0; j < n_aItems; j++){
 
-	cp.name = "fp trans2";
-	cp.copiers.clear();
+							if(XML.pushTag("A_ITEM", j)){
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0.0,1.0,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
+								string st = XML.getValue("N", "position");
+								int si = chimeManager::getSearchIndex(st);
+								sp.autoMacro.push_back(si);
+								ofVec2f a_set;
+								a_set.x = XML.getValue("V1", 0);
+								a_set.y = XML.getValue("V2", 0);
+								sp.autoSettings.push_back(a_set);
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-12,12,SET_USER_A);
-	cs.para1.incr = 0.5;
-	cp.copiers.push_back(cs);
+								XML.popTag();
+							}
 
-	copyPresets.push_back(cp);
+						}
 
-	//--------------------------------------
 
-	cp.name = "fp transMut";
-	cp.copiers.clear();
+						int n_mItems = XML.getNumTags("M_ITEM");
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-6,6,SET_USER_A);
-	cs.para1.incr = 0.5;
-	cp.copiers.push_back(cs);
+						for(int j = 0; j < n_mItems; j++){
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0,1,SET_USER_B);
-	cs.para1.incr = 0.05;
-	cp.copiers.push_back(cs);
+							string st = XML.getValue("M_ITEM", "position", j);
+							int si = chimeManager::getSearchIndex(st);
+							sp.manualMacro.push_back(si);
 
-	cs.copierType = CP_MUTATE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0.5);
-	cs.para1.incr = 0.01;
-	cs.para2.set(0.25);
-	cp.copiers.push_back(cs);
 
-	copyPresets.push_back(cp);
+						}
 
 
-	//--------------------------------------
+						searchPresets.push_back(sp);
 
-	cp.name = "f transMut";
-	cp.copiers.clear();
+						XML.popTag();
+					}
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-6,6,SET_USER_B);
-	cs.para1.incr = 0.5;
-	cp.copiers.push_back(cs);
 
+				}
 
-	cs.copierType = CP_MUTATE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(0,7,SET_USER_A);
-	cs.para1.incr = 0.5;
-	cs.para2.set(0.35);
-	cp.copiers.push_back(cs);
 
-	copyPresets.push_back(cp);
+				XML.popTag();
+			}
 
 
-	//--------------------------------------
+			XML.popTag();
 
-	cp.name = "fp transSieve";
-	cp.copiers.clear();
+		}
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-12,12,SET_USER_A);
-	cs.para1.incr = 1.0;
-	cp.copiers.push_back(cs);
 
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0.0,1.0,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
+	}else{
 
-	cs.copierType = CP_SIEVE;
-	cs.para1.set(0);
-	cp.copiers.push_back(cs);
+		cout << "searches.xml file not found \n";
 
-	copyPresets.push_back(cp);
-
-	//--------------------------------------
-
-	cp.name = "f transSieve";
-	cp.copiers.clear();
-
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-12,12,SET_USER_A);
-	cs.para1.incr = 1.0;
-	cp.copiers.push_back(cs);
-
-	cs.copierType = CP_SIEVE;
-	cs.para1.set(0,12,SET_USER_B);
-	cp.copiers.push_back(cs);
-
-	copyPresets.push_back(cp);
-
-
-	//--------------------------------------
-
-	cp.name = "fs transSieve";
-	cp.copiers.clear();
-
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(-12,12,SET_USER_A);
-	cs.para1.incr = 1.0;
-	cp.copiers.push_back(cs);
-
-	cs.copierType = CP_TRANSPOSE;
-	cs.chParam = CH_SPEED;
-	cs.para1.set(0.1,2.0,SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-
-	cs.copierType = CP_SIEVE;
-	cs.para1.set(0);
-	cp.copiers.push_back(cs);
-
-	copyPresets.push_back(cp);
-
-
-
-	//-----------------------------------------
-
-	cp.name = "p resTrans";
-	cp.copiers.clear();
-
-
-	cs.chParam = CH_PHASE;
-	cs.copierType = CP_RESIZE;
-	cs.para1.set(0.25, 2.0, SET_USER_A);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-
-	cs.chParam = CH_PHASE;
-	cs.copierType = CP_TRANSPOSE;
-	cs.para1.set(0, 1, SET_USER_B);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-
-	copyPresets.push_back(cp);
-
-
-
-	//-----------------------------------------
-
-	cp.name = "fp arrTrans";
-	cp.copiers.clear();
-
-	cs.copierType = CP_ARRANGE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(0,3,SET_USER_B);
-	cs.para1.incr = 1.0;
-	cs.para2.set(1);
-	cp.copiers.push_back(cs);
-
-	cs.copierType = CP_ARRANGE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0,3,SET_USER_B);
-	cs.para1.incr = 1.0;
-	cs.para2.set(1);
-	cp.copiers.push_back(cs);
-
-	cs.chParam = CH_PHASE;
-	cs.copierType = CP_TRANSPOSE;
-	cs.para1.set(0, 1, SET_USER_A);
-	cs.para1.incr = 0.01;
-	cp.copiers.push_back(cs);
-
-	copyPresets.push_back(cp);
-
-
-	//-----------------------------------------
-
-	cp.name = "fp arrSieve";
-	cp.copiers.clear();
-
-	cs.copierType = CP_ARRANGE;
-	cs.chParam = CH_FREQ;
-	cs.para1.set(0,3,SET_USER_B);
-	cs.para1.incr = 1.0;
-	cs.para2.set(1,20,SET_USER_A);
-	cs.para2.incr = 1.0;
-	cp.copiers.push_back(cs);
-
-	cs.copierType = CP_ARRANGE;
-	cs.chParam = CH_PHASE;
-	cs.para1.set(0,3,SET_USER_B);
-	cs.para1.incr = 1.0;
-	cs.para2.set(1,20,SET_USER_A);
-	cs.para2.incr = 1.0;
-	cp.copiers.push_back(cs);
-
-	cs.copierType = CP_SIEVE;
-	cs.para1.set(0);
-	cp.copiers.push_back(cs);
-
-	copyPresets.push_back(cp);
+	}
 
 
 
 }
+
+void testApp::loadCopyPresets(){
+
+	ofxXmlSettings XML;
+
+	if(XML.loadFile("copiers.xml")){
+
+
+		if(XML.pushTag("SOUNDLENS")){
+
+			if(XML.pushTag("COPIERS")){
+
+				int nPresets = XML.getNumTags("PRESET");
+
+				for(int i = 0; i < nPresets; i ++){
+
+					if(XML.pushTag("PRESET", i)){
+
+						copyPreset cp;
+
+
+						cp.name = XML.getValue("NAME", "default");
+
+						int nItems = XML.getNumTags("ITEM");
+
+						for(int j = 0; j < nItems; j++){
+
+							if(XML.pushTag("ITEM", j)){
+
+								copierSpec cs;
+
+								string cp_t = XML.getValue("CTYPE", "transpose");
+								string cp_p = XML.getValue("PARAM", "freq");
+
+								cs.copierType = chimeManager::getCopierIndex(cp_t);
+								cs.chParam = chime::getChParamIndex(cp_p);
+
+								if(XML.pushTag("P1")){
+
+
+									cs.para1.set(XML.getValue("MIN",0.01)
+												 ,XML.getValue("MAX",1.0),
+												 chimeManager::getSetTypeIndex(XML.getValue("SET", "userB")));
+
+									cs.para1.incr = XML.getValue("INC",0.01);
+
+									XML.popTag();
+								}
+
+								if(XML.pushTag("P2")){
+
+									cs.para2.set(XML.getValue("MIN",0.01)
+												 ,XML.getValue("MAX",1.0),
+												 chimeManager::getSetTypeIndex(XML.getValue("SET", "userB")));
+
+									cs.para2.incr = XML.getValue("INC",0.01);
+
+
+									XML.popTag();
+								}
+
+								cp.copiers.push_back(cs);
+								XML.popTag();
+							}
+
+
+						}
+
+
+						copyPresets.push_back(cp);
+
+						XML.popTag();
+					}
+
+
+				}
+
+
+				XML.popTag();
+			}
+
+
+			XML.popTag();
+
+		}
+
+
+	}else{
+
+		cout << "copiers.xml file not found \n";
+
+	}
+
+
+
+}
+
+
+
 
 void testApp::setupBanks(){
 
 
-	bank tb;
+	bank apb;
 
 	//allPresets
-	tb.name = "allPresets";
-	tb.copies = copyPresets;
-	tb.searches = searchPresets;
+	apb.name = "allPresets";
+	apb.copies = copyPresets;
+	apb.searches = searchPresets;
 
-	banks.push_back(tb);
-
-
-	//------------------------------------------------------
-
-	tb.copies.clear();
-	tb.searches.clear();
-
-	tb.name = "build";
-
-	tb.searches.push_back(getSearchPreset("position"));
-	tb.searches.push_back(getSearchPreset("phaseFund"));
-
-	tb.copies.push_back(getCopyPreset("fp trans1"));
-	tb.copies.push_back(getCopyPreset("fp transMut"));
-	tb.copies.push_back(getCopyPreset("fp trans2"));
-
-	banks.push_back(tb);
+	banks.push_back(apb);
 
 
-	//--------------------------------------------------------
+	ofxXmlSettings XML;
 
-	tb.copies.clear();
-	tb.searches.clear();
+	if(XML.loadFile("banks.xml")){
 
-	tb.name = "arranging";
+		if(XML.pushTag("SOUNDLENS")){
 
-	tb.searches.push_back(getSearchPreset("position"));
-	tb.searches.push_back(getSearchPreset("phaseFund"));
+			if(XML.pushTag("BANKS")){
 
+				int numPresets = XML.getNumTags("PRESET");
 
-	//for arranging copying
+				for(int i = 0; i < numPresets; i++){
 
-	tb.copies.push_back(getCopyPreset("p trans"));
-	tb.copies.push_back(getCopyPreset("fp arrTrans"));
-	tb.copies.push_back(getCopyPreset("fp arrSieve"));
+					if(XML.pushTag("PRESET", i)){
 
+						bank tb;
 
-	banks.push_back(tb);
+						tb.name = XML.getValue("NAME", "default");
 
-	//--------------------------------------------------------
+						int nSearches = XML.getNumTags("SEARCH");
+						int nCopies = XML.getNumTags("COPY");
 
-	tb.copies.clear();
-	tb.searches.clear();
+						for(int j = 0; j < nSearches; j++){
 
-	tb.name = "wheels";
+							string srch = XML.getValue("SEARCH", "",j);
+							tb.searches.push_back(getSearchPreset(srch));
 
-	tb.searches.push_back(getSearchPreset("position"));
-	tb.searches.push_back(getSearchPreset("phaseFund"));
-	tb.searches.push_back(getSearchPreset("fundSieve"));
-	tb.searches.push_back(getSearchPreset("freqSieve"));
-	tb.searches.push_back(getSearchPreset("unique2"));
+						}
 
 
-	//for arranging copying
+						for(int j = 0; j < nCopies; j++){
 
-	tb.copies.push_back(getCopyPreset("fp trans2"));
-	tb.copies.push_back(getCopyPreset("fp transSieve"));
-	tb.copies.push_back(getCopyPreset("f transMut"));
+							string cpy = XML.getValue("COPY", "",j);
+							tb.copies.push_back(getCopyPreset(cpy));
 
-	banks.push_back(tb);
+						}
 
-	//--------------------------------------------------------
+						banks.push_back(tb);
 
-	tb.copies.clear();
-	tb.searches.clear();
+						XML.popTag();
+					}
 
-	tb.name = "polyLayers";
+				}
 
-	tb.searches.push_back(getSearchPreset("matchUnique"));
-	tb.searches.push_back(getSearchPreset("unique2"));
-	tb.searches.push_back(getSearchPreset("position"));
+				XML.popTag();
+			}
 
-	tb.copies.push_back(getCopyPreset("fp arrSieve"));
-	tb.copies.push_back(getCopyPreset("fp transSieve"));
-	tb.copies.push_back(getCopyPreset("f transSieve"));
-	tb.copies.push_back(getCopyPreset("fs transSieve"));
-	tb.copies.push_back(getCopyPreset("p resTrans"));
+			XML.popTag();
+		}
 
 
-	banks.push_back(tb);
-
-
+	}
 
 
 }
@@ -701,7 +543,7 @@ void testApp::drawActions(){
 		if(currentMode != MT_PIVOT){
 			chimeManager::drawModEngine(currentMod, dragDist, dragAngle);
 		}else{
-			chimeManager::drawModEngine(MOD_SET_MULTI, dragDist, dragAngle);
+			chimeManager::drawModEngine(MSORT_SET_MULTI, dragDist, dragAngle);
 		}
 
 		ofSetColor(100);
@@ -758,7 +600,7 @@ void testApp::continueAction(){
 			if(currentMode != MT_PIVOT){
 				mDisplayString = chimeManager::continueMod(currentMod, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			}else{
-				mDisplayString = chimeManager::continueMod(MOD_SET_MULTI, mouseDownPos, mouseDragPos, dragDist, dragAngle);
+				mDisplayString = chimeManager::continueMod(MSORT_SET_MULTI, mouseDownPos, mouseDragPos, dragDist, dragAngle);
 			}
 			break;
 
@@ -787,7 +629,7 @@ void testApp::endAction(){
 			if(currentMode != MT_PIVOT){
 				chimeManager::endMod(currentMod);
 			}else{
-				chimeManager::endMod(MOD_SET_MULTI);
+				chimeManager::endMod(MSORT_SET_MULTI);
 			}
 			break;
 
@@ -841,7 +683,7 @@ void testApp::keyPressed(int key){
 
 	}else if(currentMode == MT_MOVE){
 
-		if(key == OF_KEY_UP)currentMod = min(currentMod + 1, (int)MOD_COUNT -2);
+		if(key == OF_KEY_UP)currentMod = min(currentMod + 1, (int)MSORT_COUNT -2);
 		if(key == OF_KEY_DOWN)currentMod = max(currentMod - 1,0);
 
 	}
@@ -862,7 +704,7 @@ void testApp::keyPressed(int key){
 	}
 
 	if(key == ' ')newSearch(false);
-	if(key == 0)newSearch(true); //ctrl + space
+	if(key == OF_KEY_ALT)newSearch(true); //ctrl + space
 	if(key == 'm')currentMode = MT_MOVE;
 	if(key == 'n')currentMode = MT_PIVOT;
 	if(key == '.')chimeManager::incrementMod(1);
@@ -882,21 +724,21 @@ void testApp::keyPressed(int key){
 	if(key == 'r')tuningEngine::changeCScale(-1);
 
 	if(key == 'i')chimeManager::invertSelection();
-	if(key == 9)isTab = true;
+	if(key == OF_KEY_TAB)isTab = true;
 
 	for(int i=0; i < 10; i++)if(key == 48 + i)chimeManager::switchToBank(i, isTab);
 
 	switch(key){
-		case'!':chimeManager::saveToBank(1);break;
-		case'@':chimeManager::saveToBank(2);break;
-		case 163:chimeManager::saveToBank(3);break; //£ doesn't work ?
-		case'$':chimeManager::saveToBank(4);break;
-		case'%':chimeManager::saveToBank(5);break;
-		case'^':chimeManager::saveToBank(6);break;
-		case'&':chimeManager::saveToBank(7);break;
-		case'*':chimeManager::saveToBank(8);break;
-		case'(':chimeManager::saveToBank(9);break;
-		case')':chimeManager::saveToBank(0);break;
+		case OF_KEY_F1:chimeManager::saveToBank(1);break;
+		case OF_KEY_F2:chimeManager::saveToBank(2);break;
+		case OF_KEY_F3:chimeManager::saveToBank(3);break; //£ doesn't work ?
+		case OF_KEY_F4:chimeManager::saveToBank(4);break;
+		case OF_KEY_F5:chimeManager::saveToBank(5);break;
+		case OF_KEY_F6:chimeManager::saveToBank(6);break;
+		case OF_KEY_F7:chimeManager::saveToBank(7);break;
+		case OF_KEY_F8:chimeManager::saveToBank(8);break;
+		case OF_KEY_F9:chimeManager::saveToBank(9);break;
+		case OF_KEY_F10:chimeManager::saveToBank(0);break;
 	}
 
 
@@ -914,11 +756,11 @@ void testApp::keyPressed(int key){
 //--------------------------------------------------------------
 void testApp::keyReleased(int key){
 
-	if(key == ' ' || key == 'n'|| key == 'm' || key == 0){
+	if(key == ' ' || key == 'n'|| key == 'm' || key == OF_KEY_ALT){
 		currentMode = MT_COPY;
 	}
 
-	if(key == 9)isTab = false;
+	if(key == OF_KEY_TAB)isTab = false;
 
 	if(key == 'r' || key == 't')tuningEngine::requestScale();
 

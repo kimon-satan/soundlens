@@ -25,6 +25,10 @@ class chimeRenderer{
 	static void drawHighlight(ofPtr<chime> c, ofColor col);
 	static void drawOutline(ofPtr<chime> c, ofColor col);
 
+
+
+	
+
 	static bool isDrawPivots;
 
 	private:

@@ -139,6 +139,7 @@ public:
 	
 	static string getChFixedString(int i);
 	static string getChModString(int i);
+	static int getChParamIndex(string str);
 	
 	static int cIndex;
 	

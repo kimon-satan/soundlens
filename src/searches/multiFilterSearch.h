@@ -25,7 +25,7 @@ class multiFilterSearch : public baseSearch{
 	private:
 	
 	bool mIsHighPass;
-	int paramIndexes[];
+	//int paramIndexes[];
 	int paramType;
 	
 };

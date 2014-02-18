@@ -3,8 +3,12 @@
 #include "ofMain.h"
 #include "chimeManager.h"
 #include "tuningEngine.h"
+#include "ofxXmlSettings.h"
 
-#define HOST "127.0.0.1"
+
+
+
+#define HOST "localhost"
 #define SC_PORT 57120
 #define IN_PORT 8010
 #define I_HOST "192.168.1.3"
@@ -17,15 +21,15 @@ struct searchPreset{
 	string name;
 	vector<int> autoMacro;
 	vector<ofVec2f>autoSettings;
-	
+
 	vector<int> manualMacro;
 
 };
 
 struct bank{
-	
+
 	string name;
-	
+
 	vector<searchPreset> searches;
 	vector<copyPreset> copies;
 	vector<int> mods;
@@ -40,7 +44,7 @@ class testApp : public ofBaseApp{
 		void setup();
 		void update();
 		void draw();
-	
+
 		void keyPressed  (int key);
 		void keyReleased(int key);
 		void mouseMoved(int x, int y );
@@ -50,18 +54,18 @@ class testApp : public ofBaseApp{
 		void windowResized(int w, int h);
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
-	
+
 		void exit();
-	
+
 	private:
-	
+
 	enum e_ActionType {
 		AT_ADD,
 		AT_SELECT,
 		AT_ADJUST,
 		AT_NONE
 	};
-	
+
 	enum e_MenuType {
 		MT_COPY,
 		MT_SEARCH,
@@ -69,40 +73,44 @@ class testApp : public ofBaseApp{
 		MT_PIVOT,
 		MT_COUNT,
 	};
-	
-	
-	void handleMessages();	
+
+
+	void handleMessages();
 
 	void setupCopyPresets();
-	void setupSearchPresets();
 	void setupBanks();
+
+	void loadPresets();
+	void loadSearchPresets();
+	void loadCopyPresets();
+
 	searchPreset getSearchPreset(string name);
 	copyPreset getCopyPreset(string name);
-	
+
 	ofVec2f getZPlaneProjection(ofVec2f screenPoint);
-	
+
 	void beginAction();
 	void continueAction();
 	void endAction();
-	
+
 	void drawActions();
-	
+
 	void newSearch(bool useResults);
 
 	ofCamera mCam;
 	float scale;
-	
+
 	ofxOscSender sender, iSender;
 	ofxOscReceiver receiver;
-	
+
 	e_ActionType currentAction;
 	int currentMode;
 	int mDCount;
-	
+
 	vector<string> menuStrings;
-	
+
 	//mouse stuff
-	
+
 	ofVec2f mouseDownPos, mouseDragPos, mouseMovePos;
 	bool isMouseDown, isRM;
 	float dragDist, dragAngle;
@@ -110,22 +118,22 @@ class testApp : public ofBaseApp{
 	string mDisplayString;
 
 	bool isLastActionCopy;
-	
+
 	//search stuff
 
 	vector<searchPreset> searchPresets;
 	vector<copyPreset> copyPresets;
-	
+
 	vector<bank> banks;
-	
+
 	vector<vector<searchPreset> > searchBank;
 	vector<vector<copyPreset> > copyBank;
-	
-	
+
+
 	int cSearchPreset, cMacroStage;
 	int currentMod;
 	int mCurrentCopier, mCurrentBank;
 	bool isTab;
-	
-	
+
+
 };

@@ -26,6 +26,19 @@ string chime::getChModString(int i){
 	
 }
 
+int chime::getChParamIndex(string str){
+
+	if(str == "phase")return CH_PHASE;
+	if(str == "speed")return CH_SPEED;
+	if(str == "length")return CH_LENGTH;
+	if(str == "freq")return CH_FREQ;
+	if(str == "decay")return CH_DECAY;
+	if(str == "color")return CH_COLOR;
+	
+	
+	return 0;
+
+}
 
 
 chime::chime(){
